@@ -1,0 +1,41 @@
+%% Load some adaptData
+
+
+%% Get relevant data
+ll=(adaptData.data.getLabelsThatMatch('^(f|s).+s\d+$'));
+AA=adaptData.data.getDataAsVector(ll);
+ii=adaptData.getIndsInCondition({'TM base','Adap','Wash'});
+muscleList=unique(cellfun(@(x) x{1},regexp(ll,'s\d+$','split'),'UniformOutput',false));
+
+%% Normalize
+B=nanmedian(AA(ii{1},:)); %Baseline estimate
+AAnorm=nan(size(AA));
+normFactor=nan(size(muscleList));
+for i=1:length(muscleList)
+    idx=cellfun(@(x) ~isempty(x),regexp(ll,muscleList{i}));
+    normFactor(i)=max(B(idx));
+    AAnorm(:,idx)=AA(:,idx)/normFactor(i);
+end
+%%
+BB=nanmedian(AAnorm(ii{1},:)); %Baseline estimate
+yA=bsxfun(@minus,AAnorm(ii{2},:),BB); %Adapt data, minus baseline
+yP=bsxfun(@minus,AAnorm(ii{3},:),BB); %Adapt data, minus baseline
+
+%% Fit data
+yA2=yA;
+yA2(any(isnan(yA2),2),:)=[];
+[p,c,a]=pca(yA2','Centered',false);
+yA2=p(:,1:10)*c(:,1:10)'; %PCA reduction for complexity's sake
+N=size(yA2,2);
+M=size(yA2,1);
+t=[0:M-1]';
+x0=nan(1,2*N+2);
+x0([1:N])=nanmedian(yA2(1:10,:));
+x0([N+1:2*N])=nanmedian(yA2(end-10:end,:));
+x0(2*N+1)=10;
+x0(2*N+2)=50;
+oo=optimoptions('MaxIter',1
+x=lsqnonlin(@(x) yA2- ( exp(-t/x(2*N+1))*x([1:N]) + (1-exp(-t/x(2*N+2)))*x([N+1:2*N])),x0);
+
+%%
+figure; plot(yA,'.')
