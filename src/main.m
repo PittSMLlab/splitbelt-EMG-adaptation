@@ -1,2 +1,0 @@
-N1_newSubPreProc
-N2_newSynCoefExtract
