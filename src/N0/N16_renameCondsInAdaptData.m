@@ -1,4 +1,6 @@
 %% Basics
+
+error('This script has been deprecated, renaming happens automatically in N13 now')
 clearvars -except sub* adaptData
 
 %% Start diary
