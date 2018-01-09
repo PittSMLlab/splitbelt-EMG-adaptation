@@ -10,7 +10,7 @@ function expData=loadProcessed(sub,matDataDir,avoidIDcheck)
         elseif sum(fileFlag~=0)==0
             disp(matDataDir)
             disp(sub)
-            error('loadProcessedFile:noMatchingFiles','Did not find .mat file that could match the requested data')
+            error('loadProcessedFile:noMatchingFiles',['Did not find .mat file that could match the requested data.'])
             
         else
             a=load(filename{fileFlag~=0});

@@ -1,4 +1,4 @@
-function [bool,idxs] = compareLists(list1,list2)
+function [bool,idxs] = compareListsOld(list1,list2)
 %Searches for strings in list2 to match any string in list1.
 %List2 has to be a cell array of strings.
 %List 1 has to be a cell array containing strings or cell arrays of
@@ -20,7 +20,7 @@ bool=false(size(list2));
 idxs=nan(size(list2));
 for i=1:length(list1)
     if isa(list1{i},'cell')
-        [aux,~] = compareLists(list1{i},list2);
+        [aux,~] = compareListsOld(list1{i},list2);
     elseif isa(list1{i},'char')
         aux=strcmp(list1{i},list2); %Compares the full list2 to one element of list1
     else
