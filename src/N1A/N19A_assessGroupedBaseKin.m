@@ -7,13 +7,13 @@ if ~exist(dirStr,'dir');
     mkdir(dirStr);
 end
 %%
+matchSpeedFlag=0;
 removeMissing=false;
 matDataDir='../../paramData/';
 loadName=[matDataDir 'groupedParams'];
 loadName=[loadName '_wMissingParameters']; %Never remove missing for this script
 if (~exist('patients','var') || ~isa('patients','groupAdaptationData')) || (~exist('controls','var') || ~isa('controls','groupAdaptationData'))
     load(loadName)
-    load([loadName 'Unbiased'])
 end
 
 patientFastList=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
@@ -24,22 +24,22 @@ patientUphillList=strcat(patientUphillList_,'u'); %patients that did the uphill
 
 removeP07Flag=1;
 if removeP07Flag
-    patients2=patients.removeSubs({'P0007'});
-    controls2=controls.removeSubs({'C0007'});
-    patientsUnbiased2=patientsUnbiased.removeSubs({'P0007'});
-    controlsUnbiased2=controlsUnbiased.removeSubs({'C0007'});
+    patients2=patients.removeSubs({'P0007','P0008'});
+    controls2=controls.removeSubs({'C0007','C0008'});
+    patientsUnbiased2=patients2.removeBias;
+    controlsUnbiased2=controls2.removeBias;
 end
 switch matchSpeedFlag
     case 1 %Speed matched groups
-        patients2=patients.getSubGroup(patientFastList).removeBadStrides;
-        controls2=controls.getSubGroup(controlsSlowList).removeBadStrides;
-        patientsUnbiased2=patientsUnbiased.getSubGroup(patientFastList).removeBadStrides;
-        controlsUnbiased2=controlsUnbiased.getSubGroup(controlsSlowList).removeBadStrides;
+        patients2=patients2.getSubGroup(patientFastList).removeBadStrides;
+        controls2=controls2.getSubGroup(controlsSlowList).removeBadStrides;
+        patientsUnbiased2=patientsUnbiased2.getSubGroup(patientFastList).removeBadStrides;
+        controlsUnbiased2=controlsUnbiased2.getSubGroup(controlsSlowList).removeBadStrides;
     case 0 %Full groups
-        patients2=patients.removeBadStrides;
-        controls2=controls.removeBadStrides;
-        patientsUnbiased2=patientsUnbiased.removeBadStrides;
-        controlsUnbiased2=controlsUnbiased.removeBadStrides;
+        patients2=patients2.removeBadStrides;
+        controls2=controls2.removeBadStrides;
+        patientsUnbiased2=patientsUnbiased2.removeBadStrides;
+        controlsUnbiased2=controlsUnbiased2.removeBadStrides;
     case 2 %Uphill-matched groups (not all P's did uphill)
 %         if (~exist('patientsUp','var') || ~isa('patientsUp','groupAdaptationData'))
 %             loadName=[loadName '_wUphill']; 
@@ -61,20 +61,22 @@ end
 
 load ../../paramData/bioData.mat %speeds, ages and Fugl-Meyer
 %% Colormap:
-colorScheme
-cc=cell2mat(colorConds');
+%colorScheme
+figuresColorMap
+ccd=condColors;
+ccd=[ccd; [.6,.6,0]];
 
 %% Parameters and conditions to plot
 
 paramList={'spatialContribution','stepTimeContribution','velocityContribution','netContribution','correctedVelocityContribution'};
-
+paramList={'spatialContribution','stepTimeContribution','velocityContribution','netContribution'};
 
 %patients=patients.addNewParameter('correctedVelocityContribution',@(x,y,z) x +(y-z),{'velocityContribution','singleStanceSpeedFastAbs','singleStanceSpeedSlowAbs'},'');
 %controls=controls.addNewParameter('correctedVelocityContribution',@(x,y,z) x +(y-z),{'velocityContribution','singleStanceSpeedFastAbs','singleStanceSpeedSlowAbs'},'');
 %patientsUnbiased=patientsUnbiased.addNewParameter('correctedVelocityContribution',@(x,y,z) x +(y-z),{'velocityContribution','singleStanceSpeedFastAbs','singleStanceSpeedSlowAbs'},'');
 %controlsUnbiased=controlsUnbiased.addNewParameter('correctedVelocityContribution',@(x,y,z) x +(y-z),{'velocityContribution','singleStanceSpeedFastAbs','singleStanceSpeedSlowAbs'},'');
 
-
+suffix='Norm2';
 %suffix='NormAlt';
 paramList=strcat(paramList,suffix);
 removeBiasFlag=0;
@@ -161,9 +163,9 @@ dC=squeeze(nanmean(cData,1))';
 b2=bar([34,36],cat(1,nanmean(dP),nanmean(dC)));
 for i=1:4
     errb=cat(1,squeeze(nanstd(pData(:,i,:),1)),squeeze(nanstd(cData(:,i,:),1)))./sqrt(cat(1,squeeze(sum(~isnan(pData(:,i,:)))),squeeze(sum(~isnan(cData(:,i,:))))));
-    errorbar([1:length(dP)+length(dC)] +i/5 -.5,cat(1,dP(:,i),dC(:,i)),errb,'Color',colorConds{i},'LineStyle','None')
-    errorbar(34+1.8*i/5 -.9,nanmean(dP(:,i)),nanstd(dP(:,i))/sqrt(size(dP,1)),'Color',colorConds{i})
-    errorbar(36+1.8*i/5 -.9,nanmean(dC(:,i)),nanstd(dC(:,i))/sqrt(size(dC,1)),'Color',colorConds{i})
+    errorbar([1:length(dP)+length(dC)] +i/5 -.5,cat(1,dP(:,i),dC(:,i)),errb,'Color',ccd(i,:),'LineStyle','None')
+    errorbar(34+1.8*i/5 -.9,nanmean(dP(:,i)),nanstd(dP(:,i))/sqrt(size(dP,1)),'Color',ccd(i,:))
+    errorbar(36+1.8*i/5 -.9,nanmean(dC(:,i)),nanstd(dC(:,i))/sqrt(size(dC,1)),'Color',ccd(i,:))
 end
 names=cellfun(@(x) x([1,4,5]),[patients2.ID(aux1) controls2.ID(aux2)],'UniformOutput',false);
 set(gca,'XTick',[1:1:length(names),34,36],'XTickLabel',[names {'Patients','Controls'}],'XTickLabelRotation',90)
@@ -172,57 +174,57 @@ legend(labels)
 end
 %axis tight
 for i=1:4
-    b(i).FaceColor=colorConds{i};
-    b2(i).FaceColor=colorConds{i};
+    b(i).FaceColor=ccd(i,:);
+    b2(i).FaceColor=ccd(i,:);
     [mx,iii]=(max(nanmean(cData(:,i,:),1)));
     
     
     %mx2=(max(nanmean(cData(:,i,[1:iii-1,iii+1:end]),1)));
     mx2=mean(nanmean(cData(:,i,:),1))+2*nanstd(nanmean(cData(:,i,:),1));
-%p=plot([0,33],mx*[1,1],'Color',colorConds{i});
+%p=plot([0,33],mx*[1,1],'Color',ccd(i,:));
 %uistack(p,'bottom')
 [mn,iii]=(min(nanmean(cData(:,i,:),1)));
 %mn2=(min(nanmean(cData(:,i,[1:iii-1,iii+1:end]),1)));
 mn2=mean(nanmean(cData(:,i,:),1))-2*nanstd(nanmean(cData(:,i,:),1));
-text(17,.3+i/15,['Min=' num2str(mn,2) '; Max=' num2str(mx,2) ],'Color',colorConds{i})
-text(23,.3+i/15,['Min=' num2str(mn2,2) '; Max=' num2str(mx2,2) ],'Color',colorConds{i})
-%p=plot([0,33],mn*[1,1],'Color',colorConds{i});
+text(17,.3+i/15,['Min=' num2str(mn,2) '; Max=' num2str(mx,2) ],'Color',ccd(i,:))
+text(23,.3+i/15,['Min=' num2str(mn2,2) '; Max=' num2str(mx2,2) ],'Color',ccd(i,:))
+%p=plot([0,33],mn*[1,1],'Color',ccd(i,:));
 %uistack(p,'bottom')
 
 aux=[1:size(dP,1)] + i/5 -.5;
 [hh,pp]=ttest(squeeze(pData(:,i,:)));
 hh(isnan(hh))=0;
 aux(~hh)=nan;
-plot(aux,1.1*min(dP(:))-.01,'.','Color',colorConds{i})
+plot(aux,1.1*min(dP(:))-.01,'.','Color',ccd(i,:))
 
 aux=size(dP,1) + [1:size(dC,1)] + i/5 -.5;
 [hh,pp]=ttest(squeeze(cData(:,i,:)));
 hh(isnan(hh))=0;
 aux(~hh)=nan;
-plot(aux,1.1*min(dP(:))-.01,'.','Color',colorConds{i})
+plot(aux,1.1*min(dP(:))-.01,'.','Color',ccd(i,:))
 
 aux=[1:size(dP,1)] + i/5 -.5;
 aux(dP(:,i)<=mx & dP(:,i)>=mn)=nan; %Inside ranges = NaN
-plot(aux,1.2*min(dP(:))-.05,'*','Color',colorConds{i})
+plot(aux,1.2*min(dP(:))-.05,'*','Color',ccd(i,:))
 
 [h,p]=ttest(dP(:,i));
 if h==1
-plot(34+1.8*i/5 -.9,1.2*min(dP(:))-.05,'o','Color',colorConds{i});
+plot(34+1.8*i/5 -.9,1.2*min(dP(:))-.05,'o','Color',ccd(i,:));
 end
-text(1,.3+i/15,['N=' num2str(sum(~isnan(aux))) '; N(+)=' num2str(sum(dP(:,i)>mx)) '; N(-)=' num2str(sum(dP(:,i)<mn))],'Color',colorConds{i})
+text(1,.3+i/15,['N=' num2str(sum(~isnan(aux))) '; N(+)=' num2str(sum(dP(:,i)>mx)) '; N(-)=' num2str(sum(dP(:,i)<mn))],'Color',ccd(i,:))
 
 aux=[1:size(dP,1)] + i/5 -.5;
 aux(dP(:,i)<=mx2 & dP(:,i)>=mn2)=nan; %Inside ranges = NaN
-plot(aux,1.2*min(dP(:))-.05,'o','Color',colorConds{i})
+plot(aux,1.2*min(dP(:))-.05,'o','Color',ccd(i,:))
 [h,p]=ttest(dC(:,i));
 if h==1
-plot(36+1.8*i/5 -.9,1.2*min(dP(:))-.05,'o','Color',colorConds{i});
+plot(36+1.8*i/5 -.9,1.2*min(dP(:))-.05,'o','Color',ccd(i,:));
 end
 [h,p]=ttest2(dP(:,i),dC(:,i),'VarType','Unequal');
 if h==1
-plot([34,36]+1.8*i/5 -.9,(1.2*min(dP(:))*(1-.05*(i-1)))*[1,1],'Color',colorConds{i},'LineWidth',2);
+plot([34,36]+1.8*i/5 -.9,(1.2*min(dP(:))*(1-.05*(i-1)))*[1,1],'Color',ccd(i,:),'LineWidth',2);
 end
-text(7,.3+i/15,['N=' num2str(sum(~isnan(aux))) '; N(+)=' num2str(sum(dP(:,i)>mx2)) '; N(-)=' num2str(sum(dP(:,i)<mn2))],'Color',colorConds{i})
+text(7,.3+i/15,['N=' num2str(sum(~isnan(aux))) '; N(+)=' num2str(sum(dP(:,i)>mx2)) '; N(-)=' num2str(sum(dP(:,i)<mn2))],'Color',ccd(i,:))
 
 if i==4
     text(1,.3+5/15,'# of patients outside control range (*):')
