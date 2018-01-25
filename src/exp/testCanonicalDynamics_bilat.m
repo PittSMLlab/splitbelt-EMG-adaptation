@@ -1,7 +1,7 @@
 %% Load params
 %auxI=[];
-%loadEMGParams_controls
-error('Need to review loadEMGParams_controls to figure out what the proper way of aligning subjects is. Perhaps there is no good workaround')
+loadEMGParams_controls
+
 %Needed to bypass matlab error:
 auxII=auxI;
 auxI=auxII;
@@ -33,75 +33,165 @@ aBB=nanmean(ayB(end-exempt-[lateStrides:-1:1],:,:),1); %Baseline estimate
 
 YallB=[yM; yS; yB; yA; yP]-BB;
 aYallB=[ayM; ayS; ayB; ayA; ayP]-aBB;
-Yall=YallB(:,1:Nn*(Nm/2))-YallB(:,Nn*(Nm/2)+[1:Nn*(Nm/2)]);
-aYall=aYallB(:,1:Nn*(Nm/2),:)-aYallB(:,Nn*(Nm/2)+[1:Nn*(Nm/2)],:);
+Yall=YallB;
+aYall=aYallB;
 Uall=[zeros(size(yM,1),1);ones(size(yS,1),1);zeros(size(yB,1),1);ones(size(yA,1),1);zeros(size(yP,1),1)];
 
 %% Generate models
 %Get adapt and post data:
-Ya=[yA(1:end-3,:)]-BB; Ya=Ya(:,1:Nn*(Nm/2))-Ya(:,Nn*(Nm/2)+[1:Nn*(Nm/2)]);
-ta=1:size(Ya,1); nanidx=any(isnan(Ya),2);
+Ya=[yA(1:end-3,:)]-BB;
+%Ya=Ya(:,1:Nn*(Nm/2))-Ya(:,Nn*(Nm/2)+[1:Nn*(Nm/2)]);
+ta=1:size(Ya,1);
+nanidx=any(isnan(Ya),2);
 Ya=interp1(ta(~nanidx),Ya(~nanidx,:),ta,'linear','extrap')'; %Substitute nans
 
-Yp=[yP(1:end-10,:)]-BB; Yp=Yp(:,[1:Nn*(Nm/2)])-Yp(:,Nn*(Nm/2)+[1:Nn*(Nm/2)]);
-tp=1:size(Yp,1); nanidx=any(isnan(Yp),2);
+Yp=[yP(1:end-10,:)]-BB;
+%Yp=Yp(:,[1:Nn*(Nm/2)])-Yp(:,Nn*(Nm/2)+[1:Nn*(Nm/2)]);
+tp=1:size(Yp,1);
+nanidx=any(isnan(Yp),2);
 Yp=interp1(tp(~nanidx),Yp(~nanidx,:),tp,'linear','extrap')';
 
-Ys=yS-BB; Ys=Ys(:,1:Nn*(Nm/2))'-Ys(:,Nn*(Nm/2)+[1:Nn*(Nm/2)])';
+Ys=yS-BB;
+%Ys=Ys(:,1:Nn*(Nm/2))'-Ys(:,Nn*(Nm/2)+[1:Nn*(Nm/2)])';
 
-%cross-validated model fitting:
+%Models Based on adapt data:
 forcePCS=false;
+nullBD=false;
 model={};
-outputUnderRank=[];
-for dataSet=1:2%3
-    switch dataSet
-        case 1
-            data=Ya';
-            nn='Adapt';
-            nullBD=false;
-        case 2
-            data=Yp';
-            nn='Post';
-            nullBD=true;
-        case 3
-            data=Yp';
-            nn='Post*';
-            nullBD=false;
-    end
-    for Nfolds=1:3
-        for order=1:4
-            model(end+[1:Nfolds]) = CVsPCA(data,order,forcePCS,nullBD,outputUnderRank,Nfolds);
-            for j=1:Nfolds %Setting names
-                model{end-Nfolds+j}.name=[nn '[' num2str(order) '.' num2str(j) '/' num2str(Nfolds) ']'];
-                if dataSet==2
-                    m=model{end-Nfolds+j};
-                    I=eye(size(m.J));
-                    m.B= (m.J^900-I)\(m.J-I)*m.X(:,1); %Setting B such that the computed initState is reached within 900 strides starting from 0.
-                    if isempty(m.D); m.D=0; end %No D fitting
-                    model{end-Nfolds+j}=m;
-                end
-            end
-        end
-    end
+for order=1:4
+    model{end+1} = sPCAv8(Ya',order,forcePCS,nullBD);
+    model{end}.name=['Adapt [' num2str(order) ']'];
 end
+model{end+1} = sPCAv8(Ya',2,forcePCS,nullBD);
+model{end}.name='Short [2]';
+% model{end+1} = sPCAv8(Ya',2,forcePCS,nullBD,1);
+% model{end}.name='Adapt [2+1]';
+Nfolds=2;
+outputUnderRank=[];
+
+for order=1:4
+model(end+[1:2]) = CVsPCA(Ya',order,forcePCS,nullBD,outputUnderRank,Nfolds);
+model{end-1}.name=['Adapt [' num2str(order) '.1]'];
+model{end}.name=['Adapt [' num2str(order) '.2]'];
+end
+
+%Also, based on post-data
+for order=1:4
+    model{end+1} = sPCAv8(Yp',order,forcePCS,false);
+    model{end}.name=['Post* [' num2str(order) ']'];
+    I=eye(size(model{end}.J));
+    model{end}.B= (model{end}.J^900-I)\(model{end}.J-I)*model{end}.X(:,1);%Re-writing B value to have x=x(0) at end of adapt
+end
+%Same, asuming final state =0
+for order=1:4
+    model{end+1} = sPCAv8(Yp',order,forcePCS,true);
+    model{end}.name=['Post [' num2str(order) ']'];
+    I=eye(size(model{end}.J));
+    model{end}.B= (model{end}.J^900-I)\(model{end}.J-I)*model{end}.X(:,1);
+end
+%Taking every other stride for cross-validation:
+for order=1:4
+model(end+[1:2]) = CVsPCA(Yp',order,forcePCS,true,outputUnderRank,Nfolds);
+model{end-1}.name=['Post [' num2str(order) '.1]'];
+model{end}.name=['Post [' num2str(order) '.2]'];
+I=eye(size(model{end}.J));
+model{end}.B= (model{end}.J^900-I)\(model{end}.J-I)*model{end}.X(:,1);
+model{end-1}.B= (model{end-1}.J^900-I)\(model{end-1}.J-I)*model{end-1}.X(:,1);
+end
+
+% %Add PCA models (CV):
+% for i=1:2
+% [pp,cc]=pca(Ya(:,i:2:end)','Centered',false);
+% model{end+1}.C=pp(:,1:3);
+% model{end}.X=model{end}.C*(model{end}.C\Ya(:,(3-i):2:end));
+% model{end}.D=0;
+% model{end}.name=['Adapt [PCA.' num2str(i) ']'];
+% model{end}.J=[];
+% [pp,cc]=pca(Yp(:,i:2:end)','Centered',false);
+% model{end+1}.C=pp(:,1:3);
+% model{end}.X=model{end}.C*(model{end}.C\Ya(:,(3-i):2:end));
+% model{end}.D=0;
+% model{end}.name=['Post [PCA.' num2str(i) ']'];
+% model{end}.J=[];
+% end
 
 %Add the baseline model:
-model{end+1}.J=0; model{end}.C=zeros(size(Ya,1),1); model{end}.D=0;
-model{end}.X=zeros(1,size(Yall,2)); model{end}.name='Baseline [0]'; model{end}.B=0;
+model{end+1}.J=[];
+model{end}.C=zeros(size(Ya,1),1);
+model{end}.D=0;
+model{end}.X=zeros(1,size(Yall,2));
+model{end}.name='Baseline [0]';
 
-% Simulate models forward & get residuals
+%
 for k=1:length(model)
-    model{k}.Xproj=model{k}.C\(Yall'-model{k}.D*Uall'); %Projecting data onto C's span
-    model{k}.Xsim=zeros(size(model{k}.C,2),size(Yall,2));
-    for i=2:size(Yall,1)
-        model{k}.Xsim(:,i)=model{k}.J*model{k}.Xsim(:,i-1) + model{k}.B * Uall(i-1);
+    try %For PCA models this makes no sense
+        model{k}.Xinf=((eye(size(model{k}.J))-model{k}.J)\model{k}.B);
+        model{k}.Yinf=model{k}.C*model{k}.Xinf+model{k}.D;
     end
-    model{k}.Ysim=model{k}.C * model{k}.Xsim + model{k}.D * Uall';  
-    model{k}.res=Yall'-model{k}.Ysim;
-    model{k}.r2sim=(sum((model{k}.res).^2));   
 end
 
-save dynamicsModeling_noC07C09_randInit10.mat model Yall YallB Uall aYall aYallB muscleList
+%% Simulate model forward, assess fit to ALL conditions
+yla=mean(Yall(1085:1095,:));
+yep=mean(Yall(1100:1110,:));
+% Simulate models forward & get residuals
+for k=1:length(model)
+    if ~isfield(model{k},'D') || isempty(model{k}.D) || all(model{k}.D==0) %For data fitted to post-adapt, there is no D
+        model{k}.D=0;
+        model{k}.Da=0;
+        model{k}.Cp=model{k}.C;
+        model{k}.Ca=model{k}.C([181:360,1:180],:);
+    else
+        model{k}.Ca=model{k}.C;
+        model{k}.Cp=model{k}.C([181:360,1:180],:);
+        model{k}.Da=model{k}.D;
+        xinf=(eye(size(model{k}.J))-model{k}.J)\model{k}.B;
+        antisymMismatch=model{k}.Da+model{k}.Da([181:360,1:180],:) + (model{k}.Ca+model{k}.Cp)*xinf;
+        model{k}.Da=model{k}.Da-antisymMismatch/2;
+        model{k}.Dp=model{k}.Da([181:360,1:180],:);
+        newYsim_la=model{k}.Da+model{k}.Ca*xinf; %Should be perfectly anti-sym
+        a1=(yep-yla+model{k}.D');
+        a2=model{k}.Da+model{k}.Dp;
+        mula=a1/a2';
+    end
+    model{k}.Xproj=model{k}.C\(Yall'-model{k}.D*Uall'); %Projecting data onto original C's span
+    try
+        model{k}.Xsim=zeros(size(model{k}.C,2),size(Yall,1));
+        model{k}.Ysim=zeros(size(model{k}.C,1),size(Yall,1));
+        setPointY=zeros(size(model{k}.C,1),1);
+        setPointX=zeros(size(model{k}.C,2),1);
+        setPointU=0;
+        for i=2:size(Yall,1) %Time
+            if i>length(Uall)
+                u=0;
+                u_1=0;
+            else
+                u=Uall(i);
+                u_1=Uall(i-1);
+            end
+            model{k}.Xsim(:,i)=model{k}.J*model{k}.Xsim(:,i-1) + model{k}.B * u_1;
+            if u_1~=u && i>200 %Transition
+                setPointU=u_1;
+                %setPointU=mula;
+                setPointY=model{k}.Ysim(:,i-1)-model{k}.Da*(1-setPointU); %Change setpoint at transition
+                setPointX=model{k}.Xsim(:,i-1); %Change setpoint at transition
+                setPointX=xinf;
+                setPointY=newYsim_la;
+                
+            end
+            if Uall(i)~=0
+                model{k}.Ysim(:,i)=model{k}.Ca * (model{k}.Xsim(:,i)-setPointX) + model{k}.Da * (u-setPointU) + setPointY;  
+            else %Uall==0
+                model{k}.Ysim(:,i)=-model{k}.Cp * (model{k}.Xsim(:,i)-setPointX) - model{k}.Dp * (u-setPointU) + setPointY;  
+            end
+        end
+    catch
+        model{k}.Xsim=model{k}.Xproj;
+    end
+    model{k}.res=Yall'-model{k}.Ysim;
+    model{k}.r2sim=(sum((model{k}.res).^2))./(sum((BB').^2));
+end
+
+save dynamicsModeling_noC07C09_bilat_randInit.mat model Yall YallB Uall aYall aYallB muscleList
 %%
 figure; 
 subplot(2,1,1) %Plot states

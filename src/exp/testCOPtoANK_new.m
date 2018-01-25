@@ -46,8 +46,6 @@ stANK=(RANK.* (stepIdx==1)) + (LANK .* (stepIdx==-1));
 dRANK=dAllMarkers.getDataAsOTS({'d/dt RANK'});
 dLANK=dAllMarkers.getDataAsOTS({'d/dt LANK'});
 dstANK=((dRANK) .* (stepIdx==1)) + ((dLANK) .* (stepIdx==-1));
-dstANK=dRANK;
-stANK=RANK;
 
 %Datasets:
 switch dataSets
@@ -109,42 +107,62 @@ dData2stANK_aligned=dData2stANK.align(events,alignLabels,NN);
 
 if i==1
    Data_base=Data2stANK_aligned.median;
+   Data_prev=Data_base;
+   dData_base=dData2stANK_aligned.median;
+   dData_prev=dData_base;
+%elseif i==3
+%   Data_lA=Data2stANK_aligned.median; 
 end
 Data2stANK_unbiased=Data2stANK_aligned;
-Data2stANK_unbiased.Data=bsxfun(@minus,Data2stANK_unbiased.Data,Data_base.Data);
+%Data2stANK_unbiased.Data=bsxfun(@minus,Data2stANK_unbiased.Data,Data_base.Data);
+Data2stANK_unbiased.Data=bsxfun(@minus,Data2stANK_unbiased.Data,Data_prev.Data); %Subtracting prev phase
+Data_prev=Data2stANK_aligned.median;
+dData2stANK_unbiased=dData2stANK_aligned;
+dData2stANK_unbiased.Data=bsxfun(@minus,dData2stANK_unbiased.Data,dData_prev.Data); %Subtracting prev phase
+dData_prev=dData2stANK_aligned.median;
 
 if dataSets==3
     MM=15;
 else
     MM=2;
 end
-Data2stANK_aligned.Data(1:MM,:,:)=NaN;
-Data2stANK_aligned.Data(sum(NN(1:2))+[0:MM]-1,:,:)=NaN;
-dData2stANK_aligned.Data(1:MM,:,:)=NaN;
-dData2stANK_aligned.Data(sum(NN(1:2))+[0:MM]-1,:,:)=NaN;
-Data2stANK_unbiased.Data(1:MM,:,:)=NaN;
-Data2stANK_unbiased.Data(sum(NN(1:2))+[0:MM]-1,:,:)=NaN;
+% Data2stANK_aligned.Data(1:MM,:,:)=NaN;
+% Data2stANK_aligned.Data(sum(NN(1:2))+[0:MM]-1,:,:)=NaN;
+% dData2stANK_aligned.Data(1:MM,:,:)=NaN;
+% dData2stANK_aligned.Data(sum(NN(1:2))+[0:MM]-1,:,:)=NaN;
+% Data2stANK_unbiased.Data(1:MM,:,:)=NaN;
+% Data2stANK_unbiased.Data(sum(NN(1:2))+[0:MM]-1,:,:)=NaN;
 %Data2stANK_alignedAlt.Data(1:MM,:,:)=NaN;
 %Data2stANK_alignedAlt.Data(N(3)+[0:MM]-1,:,:)=NaN;
 
 %% Do some plotting:
 if i==1
     fh=figure();
-    b=3;
+    b=4;
     a=3;
     ph=tight_subplot(b,a,[.02 .02],[.05 .05], [.05 .05]); %External function
     set(fh,'Name',[dataSetNames{dataSets} ' to stance ANKLE'])
 end
+if i==2 || i==1 
+    || i==4
 bounds=[0,0] ; %This plots ste
 Data2stANK_aligned.plot(fh,ph([1:3]),colorConds{i},[],0,[],bounds);
-Data2stANK_unbiased.plot(fh,ph(3+[1:3]),colorConds{i},[],0,[],bounds);
-dData2stANK_aligned.plot(fh,ph(6+[1:3]),colorConds{i},[],0,[],bounds);
+Data2stANK_unbiased.plot(fh,ph(6+[1:3]),colorConds{i},[],0,[],bounds);
+dData2stANK_aligned.plot(fh,ph(3+[1:3]),colorConds{i},[],0,[],bounds);
+dData2stANK_unbiased.plot(fh,ph(9+[1:3]),colorConds{i},[],0,[],bounds);
+end
 %Data2stANK_alignedAlt.plot(fh,ph(9+[1:3]),colorConds{i},[],0,[],[16,84]);
 end
 %% Save
 for jj=1:length(ph)
     subplot(ph(jj))
     axis tight
+    a=axis;
+    axis([a(1:2) [-1 1]*max(abs(a(3:4)))])
+    set(gca,'YTick',0)
+    if jj==1
+        legend(name([4,2,1]))
+    end
 end
 saveDir='./';
 %saveFig(fh,saveDir,[dataSetNames{dataSets} '2ANK_C0003'])

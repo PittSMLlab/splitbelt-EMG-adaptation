@@ -1,12 +1,25 @@
+%%
+loadEMGParams_controls
+load('dynamicsModeling.mat')
 %% SLA plotting
+for k=1%1:2
+    switch k
+        case 1
+        name='netContributionNorm2';
+        figName='SLA';
+        case 2
+           name='stepTimeContributionNorm2';
+        figName='SLT'; 
+    end
+        
 M=[150 900 600];
 for i=1:length(subs.adaptData)
-    subs.adaptData{i}.data=subs.adaptData{i}.data.getDataAsPS({'netContributionNorm2'}).substituteNaNs;
+    subs.adaptData{i}.data=subs.adaptData{i}.data.getDataAsPS({name}).substituteNaNs;
 end
-SLA=subs.getGroupedData({'netContributionNorm2'},conds(2),0,M(2),0,0,pWNf);
-SLP=subs.getGroupedData({'netContributionNorm2'},conds(3),0,M(3),0,0,pWNf);
-SLB=subs.getGroupedData({'netContributionNorm2'},conds(1),0,M(1),0,0,pWNf);
-subjs=[2:16];
+SLA=subs.getGroupedData({name},conds(2),0,M(2),0,0,pWNf);
+SLP=subs.getGroupedData({name},conds(3),0,M(3),0,0,pWNf);
+SLB=subs.getGroupedData({name},conds(1),0,M(1),0,0,pWNf);
+subjs=[1:16];
 %subjs=2:16;
 aSLB=squeeze(SLB{1});
 aSLB=aSLB(:,subjs);
@@ -45,26 +58,31 @@ switch avgFlag
         SLP=nanmedian(aSLP,2);
 end
 
-figure; 
-taus=[42.4,526];
+fh=figure; 
+taus=-1./log(diag(model{3}.J));
 U=[zeros(size(SLB)); ones(size(SLA)); zeros(size(SLP))];
 p1=plot(sum(M(1:2))+1:sum(M(1:3)),SLP); grid on; hold on; 
 plot(M(1)+1:sum(M(1:2)),SLA,'Color',p1.Color);
 plot(1:M(1),SLB,'Color',p1.Color);
 MM=21;
-pp=plot([sum(M(1:2))+1:sum(M(1:3))],medfilt2(aSLP,[MM 1]),'Color',.7*ones(1,3));
-uistack(pp,'bottom');
-pp=plot(M(1)+1:sum(M(1:2)),medfilt2(aSLA,[MM 1]),'Color',.7*ones(1,3));
-uistack(pp,'bottom');
-EA=[exp(-[0:899]/taus(1));exp(-[0:899]/taus(2));ones(1,900)]; 
-EP=[exp(-[0:599]/taus(1));exp(-[0:599]/taus(2))]; 
+%pp=plot([sum(M(1:2))+1:sum(M(1:3))],medfilt2(aSLP,[MM 1]),'Color',.7*ones(1,3));
+%uistack(pp,'bottom');
+%pp=plot(M(1)+1:sum(M(1:2)),medfilt2(aSLA,[MM 1]),'Color',.7*ones(1,3));
+%uistack(pp,'bottom');
+EA=[1-exp(-[0:899]./taus);ones(1,900)]; 
+EP=[exp(-[0:599]./taus)].*1-exp(-900./taus); 
+E=[EA [EP; zeros(1,600)]];
+x=E'\[SLA; SLP];
 xA=(EA'\SLA);
-plot(M(1)+1:sum(M(1:2)),EA'*xA,'k')
+%plot(M(1)+1:sum(M(1:2)),EA'*xA,'k')
 xP=(EP'\SLP);
-plot(sum(M(1:2))+1:sum(M(1:3)),EP'*xP,'r')
-plot(sum(M(1:2))+1:sum(M(1:3)),EP'*(xA(1:2).*(EA(1:2,end)-1)),'k')
+%plot(sum(M(1:2))+1:sum(M(1:3)),EP'*xP,'r')
+%plot(sum(M(1:2))+1:sum(M(1:3)),EP'*(xA(1:length(taus)).*(EA(1:length(taus),end))),'k')
+p1=plot(sum(M(1))+1:sum(M(1:3)),E'*x,'r');
 title('SL asymmetry fitted to EMG time-constants')
-legend(p1,['\tau_1 = ' num2str(taus(1),3) ', \tau_2 = ' num2str(taus(2),3)])
+legend(p1,['\tau = ' num2str(sort(taus)',3) ])
+saveFig(fh,'./',[figName 'fit'])
+end
 %%
-[C,J,~,~,D]=sPCAv5(SLA,2,false,false,1)
-[C,J,~,~,D]=sPCAv5(SLP,2,false,false,1)
+%[C,J,~,~,D]=sPCAv5(SLA,2,false,false,1) %Using 3rd order returns a double-pole
+%[C,J,~,~,D]=sPCAv5(SLP,2,false,false,1)
