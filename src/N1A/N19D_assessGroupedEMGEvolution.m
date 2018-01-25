@@ -16,7 +16,7 @@ cc=condColors;
 
 %% Define groups from lists:
 controlList=controls.ID;
-patientList=patients.removeSubs({'P0007','P0008'}).ID;
+patientList=patients.removeSubs({'P0007'}).ID;
 groups{1}=controls.getSubGroup(controlList);
 groups{2}=patients.getSubGroup(patientList);
 
@@ -74,8 +74,9 @@ axes(ph(1,end))
 colorbar
 set(ph(1,end),'Position',pos);
 %% Do stats.plotCheckerboard
-minEffectSize=.05; %At least 5% increase over max baseline activity
-fdr=.1;
+minEffectSize=0;%At least 5% increase over max baseline activity
+minEffectSize2=0.1;
+fdr=.05;
 for k=1:length(groups)
     for i=1:length(ep)+1
         if i>1
@@ -84,14 +85,19 @@ for k=1:length(groups)
             dd=reshape(dataRef{k}(:,:,i,:),size(dataRef{k},1)*size(dataRef{k},2),size(dataRef{k},4));
         end
         %effects that are significantly larger than the minEffectSize (MES)
-        [~,pR]=ttest(dd',minEffectSize,'tail','right');
-        [~,pL]=ttest(dd',-minEffectSize,'tail','left');
+        %[~,pR]=ttest(dd',minEffectSize,'tail','right');
+        %[~,pL]=ttest(dd',-minEffectSize,'tail','left');
+        %p2=nan(size(pL));
+        [~,p2]=ttest(dd');
         for j=1:size(dd,1)
-            [pR(j)]=signrank(dd(j,:),minEffectSize,'tail','right','method','exact');
-            [pL(j)]=signrank(dd(j,:),-minEffectSize,'tail','left','method','exact');
+           %[pR(j)]=signrank(dd(j,:),minEffectSize,'tail','right','method','exact');
+           %[pL(j)]=signrank(dd(j,:),-minEffectSize,'tail','left','method','exact');
+           [p2(j)]=signrank(dd(j,:));
         end
-        p=2*min(pR,pL); %Two-tailed test for effect larger than MES: taking twice the minimum of the two p-values
+        %p=2*min(pR,pL); %Two-tailed test for effect larger than MES: taking twice the minimum of the two p-values
+        p=p2;
         [h,pTh]=BenjaminiHochberg(p,fdr); %Conservative mult-comparisons: Benjamini & Hochberg approach
+        h(abs(median(dd'))<minEffectSize2)=0; %Conservative approach to Bonferroni: not reporting small effects
         %Add to plot:
         subplot(ph(k,i))
         hold on

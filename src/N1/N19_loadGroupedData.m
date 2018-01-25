@@ -2,14 +2,14 @@ clearvars -except sub* stroke* health* control* age* vels* FM* removeMissing pat
 close all
 
 %% Load if not calculated
-matDataDir='../../paramData/';
-%matDataDir='S:\Shared\Exp0001\mat\'; %This works in main lab PC 2
-subs={strokesNames,controlsNames,strokesUpNames,GYAA,GYRC};
+matDataDir='../../data/HPF30/';
+subs={strokesNames,controlsNames};
 groups=cell(length(subs),1);
 removeMissing=false; %Nothing else is allowed
 
 for j=[1,2]% strokes and controls
     nameList=subs{j};
+    nameList=strcat(nameList,'Params.mat');
     subList={};
     for i=1:length(nameList)
         subList{i}=[matDataDir nameList{i}]; %Params is capped in my files, but not on others
@@ -49,14 +49,6 @@ end
 %%
 patients=groups{1};
 controls=groups{2};
-GYAA=groups{4};
-GYRC=groups{5};
-%patientsUp=groups{3};
-%patientsUnbiased=groupsUnbiased{1};
-%controlsUnbiased=groupsUnbiased{2};
-%GYAAUnbiased=groupsUnbiased{4};
-%GYRCUnbiased=groupsUnbiased{5};
-%patientsUpUnbiased=groupsUnbiased{3};
 clear groups*
 
 %%
@@ -75,25 +67,3 @@ tic
 save(saveName,'controls','patients','-v7.3')
 disp('Done!')
 toc
-disp('Saving control+patient UNBIASED data...')
-%tic
-%save([saveName 'Unbiased'],'controlsUnbiased','patientsUnbiased','-v7.3')
-%disp('Done!')
-%toc
-
-saveName=[matDataDir 'groupedParamsYOUNG'];
-saveName=[saveName '_wMissingParameters'];
-
-disp('Saving young subjects data...')
-tic
-%save(saveName,'GYAA','GYRC','-v7.3')
-disp('Done!')
-toc
-disp('Saving young subjects UNBIASED data...')
-%tic
-%save([saveName 'Unbiased'],'GYAAUnbiased','GYRCUnbiased','-v7.3')
-%disp('Done!')
-%toc
-%saveName=[saveName '_wUphill'];
-%save(saveName,'controls','patients','patientsUp','-v7.3')
-%save([saveName 'Unbiased'],'controlsUnbiased','patientsUnbiased','patientsUpUnbiased','-v7.3')
