@@ -35,8 +35,7 @@ for j=[1,2]% strokes and controls
     %Check: commonConditions needs to include all of the newNames ?
     groups{j}.getCommonConditions
     
-    %Generating normalized EMG parameters (so I don't have to recompute
-    %everytime):
+    %Generating normalized EMG parameters (so I don't have to recompute everytime):
     baseEp=getBaseEpoch; %defines baseEp
     mOrder={'TA', 'PER', 'SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF', 'HIP', 'ADM', 'TFL', 'GLU'};
     nMusc=length(mOrder);
@@ -44,7 +43,6 @@ for j=[1,2]% strokes and controls
     labelPrefix=fliplr([strcat('f',mOrder) strcat('s',mOrder)]); %To display
     labelPrefixLong= strcat(labelPrefix,['_' type]); %Actual names
     groups{j}=groups{j}.normalizeToBaselineEpoch(labelPrefixLong,baseEp);
-    
 end
 %%
 patients=groups{1};

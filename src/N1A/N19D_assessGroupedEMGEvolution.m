@@ -162,4 +162,4 @@ end
 if plotSym
     saveName=[saveName '_sym'];
 end
-%saveFig(fh,dirStr,[saveName],0);
+saveFig(fh,dirStr,[saveName],0);
