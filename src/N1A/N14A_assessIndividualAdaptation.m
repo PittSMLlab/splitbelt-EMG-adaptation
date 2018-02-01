@@ -2,7 +2,7 @@
 %Check current directory first?
 
 %if (~exist('loadedSub'))||(loadedSub~=sub)
-matDataDir='../../paramData';
+matDataDir='../../data/HPF30';
 %matDataDir='S:\Shared\Exp0001\mat';
 %% Load adaptation data
 if ~exist('adaptData','var') || ~strcmp(adaptData.subData.ID,sub)
@@ -10,13 +10,17 @@ if ~exist('adaptData','var') || ~strcmp(adaptData.subData.ID,sub)
 end
 
 %% Directory to save figs
-saveDir=['../../fig/indiv/' sub '/adap/'];
-saveDir2=['../../fig/indiv/' sub '/emg/'];
-if ~exist(saveDir,'dir')
-    if ~exist(saveDir(1:end-5),'dir')
-        mkdir(saveDir(1:end-5))
-    end
-    mkdir(saveDir);
+figDir='../../intfig';
+if ~exist(figDir,'dir')
+    mkdir(figDir);
+end
+dirStr=[figDir '/indiv/'];
+if ~exist(dirStr,'dir')
+    mkdir(dirStr);
+end
+dirStr=[figDir '/indiv/adap/'];
+if ~exist(dirStr,'dir')
+    mkdir(dirStr);
 end
 
 %% Define parameters for plots
@@ -38,7 +42,7 @@ ph(1,1).Title.String=[adaptData.subData.ID ' temp params'];
 for j=1:length(paramList)
     ph(j,1).YLabel.FontSize=10;
 end
-saveFig(fh,saveDir,[adaptData.subData.ID 'TempParams']) 
+saveFig(fh,dirStr,['TempParams' adaptData.subData.ID]) 
 
 % %Relative to stride time
 for j=1:length(paramList)
@@ -51,7 +55,7 @@ ph(1,1).Title.String=[adaptData.subData.ID ' relative temp params'];
 for j=1:length(paramList)
     ph(j,1).YLabel.FontSize=10;
 end
-saveFig(fh,saveDir,[adaptData.subData.ID 'RelTempParams']) 
+saveFig(fh,dirStr,['RelTempParams' adaptData.subData.ID]) 
 
 %% Plot temporal evolution of some parameters of interest
 %% Cadence, speed:
@@ -65,7 +69,7 @@ ph(1,1).Title.String=[adaptData.subData.ID ' speed params'];
 for j=1:length(paramList)
     ph(j,1).YLabel.FontSize=10;
 end
-saveFig(fh,saveDir,[adaptData.subData.ID 'SpeedParams'])   
+saveFig(fh,dirStr,['SpeedParams' adaptData.subData.ID])   
 
 
 %% Contribs
@@ -80,7 +84,7 @@ for i=1:length(suffixList)
     for j=1:length(paramList)
         ph(j,1).YLabel.String=paramList{j}(1:end-12);
     end
-    saveFig(fh,saveDir,[adaptData.subData.ID 'contributions' suffixList{i}])
+    saveFig(fh,dirStr,['contributions' suffixList{i} adaptData.subData.ID])
 end
 
 
@@ -96,4 +100,4 @@ end
 
 %%
 %close all
-clear adaptData matDataDir saveDir
+%clear adaptData matDataDir saveDir
