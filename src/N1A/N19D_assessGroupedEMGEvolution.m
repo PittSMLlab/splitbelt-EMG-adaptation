@@ -56,29 +56,33 @@ newLabelPrefix=strcat(labelPrefix,'s');
 
 %% Compute symmetry/asymmetry terms
 if plotSym==1
-    %try %This will fail if parameters were already defined
-        M=numel(l2);
-        aux=reshape(l2(M/2+1:M),(M/2)/nMusc,nMusc);
-        N=size(aux,1);
-        aux=aux([N/2+1:N,1:N/2],:); %Flipping first/second halves of stride cycle for fast leg
-        l2=[l2(1:M/2); aux(:)];
-        for k=1:length(groups)
-            for i=1:(M/2)
-                groups{k}=groups{k}.addNewParameter(['a' l2{i}(2:end)],@(x,y) .5*(x-y),{l2{i},l2{i+M/2}},''); %Asymmetry term
-                groups{k}=groups{k}.addNewParameter(['b' l2{i}(2:end)],@(x,y) .5*(x+y),{l2{i},l2{i+M/2}},''); %Symmetry term
-            end
-        end
-    %catch
-        %nop
-    %end
-    newLabelPrefix=regexprep(newLabelPrefix,'^s','a');
-    newLabelPrefix=regexprep(newLabelPrefix,'^f','b');
+%     %try %This will fail if parameters were already defined
+%         M=numel(l2);
+%         aux=reshape(l2(M/2+1:M),(M/2)/nMusc,nMusc);
+%         N=size(aux,1);
+%         aux=aux([N/2+1:N,1:N/2],:); %Flipping first/second halves of stride cycle for fast leg
+%         l2=[l2(1:M/2); aux(:)];
+%         for k=1:length(groups)
+%             for i=1:(M/2)
+%                 groups{k}=groups{k}.addNewParameter(['a' l2{i}(2:end)],@(x,y) .5*(x-y),{l2{i},l2{i+M/2}},''); %Asymmetry term
+%                 groups{k}=groups{k}.addNewParameter(['b' l2{i}(2:end)],@(x,y) .5*(x+y),{l2{i},l2{i+M/2}},''); %Symmetry term
+%             end
+%         end
+%     %catch
+%         %nop
+%     %end
+%     newLabelPrefix=regexprep(newLabelPrefix,'^s','a');
+%     newLabelPrefix=regexprep(newLabelPrefix,'^f','b');
+flip=2;
 end
 
 %% Plot (and get data)
 fh=figure('Units','Normalized','OuterPosition',[0 0 1 1]);
 ph=tight_subplot(length(groups),length(ep)+1,[.03 .005],.04,.04);
 flip=true;
+if plotSym==1
+    flip=2;
+end
 summFlag='median';
 clear dataE dataRef
 for k=1:length(groups)
