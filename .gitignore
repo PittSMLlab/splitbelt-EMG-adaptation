@@ -3,3 +3,5 @@ data/HPF30/
 data/HPF200/
 *.m~
 intfig/indiv/
+src/N1/*.mat
+src/N1A/*.mat
