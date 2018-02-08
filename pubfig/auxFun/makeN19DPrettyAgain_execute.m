@@ -29,9 +29,11 @@ titles=get(plots,'Title');
 strTitle=cellfun(@(x) get(x,'String'),titles,'UniformOutput',false);
 strTitle=cellfun(@(x) x{1},strTitle,'UniformOutput',false);
 descriptionMatch=find(all(cell2mat(cellfun(@(x) contains(strTitle,x,'IgnoreCase',true),desiredPlotDescription,'UniformOutput',false)),2));
+mLabels=plots(end).YTickLabels;
 newFig=figure('Name',saveName,'Units','Normalized','OuterPosition',[.3 .1 .5 .8],'Color',bgColor);
 newAxes=copyobj(plots(descriptionMatch),newFig);
 newFig.InvertHardcopy = 'off';
+close(oldFig)
 
 
 %% Make pretty
@@ -143,7 +145,8 @@ if length(yCoord)<17
     maxI=1;
 
 else %Change muscle names
-    aux=cellfun(@(x) x(1:end-1),newAxes.YTickLabel,'UniformOutput',false);
+    %mLabels=newAxes.YTickLabel;
+    aux=cellfun(@(x) x(1:end-1),mLabels,'UniformOutput',false);
     newAxes.YTickLabel=cellfun(@(x) x([2,max(3,length(x)-1):length(x)]),aux,'UniformOutput',false);
     maxI=2;
 end
