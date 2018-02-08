@@ -4,7 +4,7 @@ name='allChangesEMG.fig';
 desiredPlotDescription={'late A'};
 desiredPlotDescription2={'early P'};
 plotTitles={'Late Adaptation','    Early Post-Adap'};
-saveName='Fig2B';
+saveName='Fig3B';
 lineFlag=1;
 makeN19DPrettyAgain_execute
 %%

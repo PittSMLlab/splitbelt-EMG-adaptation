@@ -1,4 +1,7 @@
 %%
+%This script generates the METHODS figure (Fig1)
+%Requires F1C.m and F1D.m to be run BEFORE
+%%
 name='Fig1';
 fh=figure('Name',name,'Units','Normalized','OuterPosition',[0 0 .55 1]);
 figuresColorMap

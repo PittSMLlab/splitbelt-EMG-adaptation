@@ -1,20 +1,19 @@
+%% 
+%This script generates the checkerboards with late Adaptation (steady-state) and early Post-adaptation (aftereffects)
+
 %% Run scripts for each panel (if needed):
 %run ./Fig2A.m
 %run ./Fig2B.m
 
 %% Arrange panels in single fig:
-%close all
-fA=openfig('./Fig2A.fig');
+close all
+fA=openfig('./fig/Fig3A.fig');
 axA=findobj(fA,'Type','Axes');
-fB=openfig('./Fig2B.fig');
+fB=openfig('./fig/Fig3B.fig');
 axB=findobj(fB,'Type','Axes');
-sslA=findobj(axB(2),'Type','Surface');
-fC=openfig('./Fig4A.fig');
-axC=findobj(fC,'Type','Axes');
-sseA=findobj(axC(2),'Type','Surface');
 
 
-fh=figure('Units','Normalized','OuterPosition',[0 0 .53 .9],'Color',ones(1,3));
+fh=figure('Units','Normalized','OuterPosition',[0 0 .53 .9],'Color','None');
 condColors=[.6,.6,.6; 0,.5,.4; .5,0,.6];
 figuresColorMap
 colormap(flipud(map))
@@ -48,18 +47,20 @@ if i==1
     cc.TickLabels={'-50%','0%','+50%'};
     set(cc,'FontSize',16,'FontWeight','bold')
     cc.Position=cc.Position.*[1 1 1 .98] + [0 .02 0 0];
-    text(-1.35,32.5, 'B', 'FontSize',22,'FontWeight','bold','Clipping','off')
-    text(-.08,32.5, 'C', 'FontSize',22,'FontWeight','bold','Clipping','off')
-    text(-1.35,45, 'A', 'FontSize',22,'FontWeight','bold','Clipping','off')
+    text(-1.35,31.5, 'B', 'FontSize',22,'FontWeight','bold','Clipping','off')
+    text(-.08,31.5, 'C', 'FontSize',22,'FontWeight','bold','Clipping','off')
+    text(-1.35,43, 'A', 'FontSize',22,'FontWeight','bold','Clipping','off')
     title('    Early Post-Adaptation')
     %Delete contours for post-adap
     ll=findobj(gca,'type','contour');
     delete(ll)
-    ss=findobj(gca,'Type','Surface');
-    ss.CData=sslA.CData-.3*sseA.CData+.7*sseA.CData([17:31,16,1:16],:);
-    title('eP=lA-eA')
-        ll=findobj(gca,'Type','Line','LineStyle','none');
-    delete(ll)
+        for j=1:length(pB(i).YTickLabel)
+        if j<16
+            pB(i).YTickLabel{j}=['\color[rgb]{0,0.447,0.741} ' pB(i).YTickLabel{j}];
+        else
+            pB(i).YTickLabel{j}=['\color[rgb]{0.85,0.325,0.098} ' pB(i).YTickLabel{j}];
+        end
+    end
 else
         ll2=findobj(pB(i),'Type','line','LineWidth',10);
         xOff=1.28;
@@ -72,17 +73,36 @@ else
     tt.Position=tt.Position+[xOff yOff 0];
     tt=findobj(pB(i),'Type','text','String','FLEXORS');
     tt.Position=tt.Position+[xOff yOff 0];
+    %Change contour colors for late adapt:
     ll=findobj(gca,'type','contour');
+    if ~isempty(ll)
+    auxZ=ll.ZData;
+    auxZ(571:end,:)=0;
+    contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
+    auxZ=ll.ZData;
+    auxZ(1:570,:)=0;
+    auxZ(1649:end,:)=0;
+    contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
+    auxZ=ll.ZData;
+    auxZ(1:1649,:)=0;
+    auxZ(1649+571:end,:)=0;
+    contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
+    auxZ=ll.ZData;
+    auxZ(1:1649+570,:)=0;
+    contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
     delete(ll)
-    ss=findobj(gca,'Type','Surface');
-    ss.CData=sslA.CData+sseA.CData([17:31,16,1:16],:);
-    title('eP=lA+eA^T')
-        ll=findobj(gca,'Type','Line','LineStyle','none');
-    delete(ll)
+    ll=findobj(gca,'type','contour');
+    cc1=get(gca,'ColorOrder');
+    ll(2).Color=cc1(2,:);
+    ll(1).Color=cc1(1,:);
+    ll(3).Color=cc1(2,:);
+    ll(4).Color=cc1(1,:);
+    set(ll,'LineWidth',4)
+    end
 
 end
 end
 
 
 %%
-saveFig(fh,'./','Fig_HypAftereffects',1)
+saveFig(fh,'./','Fig3',1)

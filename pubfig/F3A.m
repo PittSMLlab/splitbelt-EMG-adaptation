@@ -103,4 +103,4 @@ for i=1:2
 end
 set(gcf,'Position',[0 0 .5 .2])
 %%
-saveFig(fh,'./','Fig2A',1)
+saveFig(fh,'./','Fig3A',1)
