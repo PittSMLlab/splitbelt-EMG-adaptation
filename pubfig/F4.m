@@ -1,6 +1,5 @@
 %% Run scripts for each panel (if needed):
-%run ./Fig2A.m
-%run ./Fig2B.m
+run ./F4A.m
 
 %% Arrange panels in single fig:
 close all

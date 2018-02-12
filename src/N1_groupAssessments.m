@@ -10,7 +10,7 @@ controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0007','C0008','
 
 %Some meta-data:
 load ../data/bioData.mat %speeds, ages and Fugl-Meyer
-run ./N1/N19_loadGroupedData.m %This actually load indiv params files and
+%run ./N1/N19_loadGroupedData.m %This actually load indiv params files and
 
 %If N19 is not run, need to load:
 %load ../data/HPF30/groupedParams_wMissingParameters.mat
@@ -27,8 +27,8 @@ suffix='Norm2';
   for matchSpeedFlag=0%:1 %Unimplemented
      for subCountFlag=0%0:1 %Unimplemented
          for useLateAdapBase=0%:1
-             for plotSym=0%:1 %Unimplemented
-               % run ./N1A/N19D_assessGroupedEMGEvolution.m
+             for plotSym=1%0%:1 %Unimplemented
+                run ./N1A/N19D_assessGroupedEMGEvolution.m
              end
          end
      end

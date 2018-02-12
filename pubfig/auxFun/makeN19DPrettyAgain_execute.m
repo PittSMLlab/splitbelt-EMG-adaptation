@@ -33,7 +33,6 @@ mLabels=plots(end).YTickLabels;
 newFig=figure('Name',saveName,'Units','Normalized','OuterPosition',[.3 .1 .5 .8],'Color',bgColor);
 newAxes=copyobj(plots(descriptionMatch),newFig);
 newFig.InvertHardcopy = 'off';
-close(oldFig)
 
 
 %% Make pretty
@@ -252,4 +251,10 @@ if lineFlag==1
 end
 end
 
-
+%%
+try
+close(oldFig)
+close(oldFig2)
+catch
+    
+end

@@ -1,5 +1,8 @@
 %%
 %This script generates the METHODS figure (Fig1)
+%%
+run ./F1C.m
+run ./F1D.m
 %Requires F1C.m and F1D.m to be run BEFORE
 %%
 name='Fig1';

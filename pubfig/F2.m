@@ -2,7 +2,7 @@
 %This script generates the FEEDBACK activity figure
 
 %% Run scripts for each panel (if needed):
-%run ./F2A.m
+run ./F2A.m
 run ./F2B.m
 
 %% Arrange panels in single fig:
@@ -48,11 +48,13 @@ for i=1:length(ax.YTickLabel)
         ax.YTickLabel{i}=['\color[rgb]{0.85,0.325,0.098} ' ax.YTickLabel{i}];
     end
 end
-text(-.3, 31,'A','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-.2, 32.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
+text(1.4, 32.5,'B','FontSize',24,'FontWeight','bold','Clipping','off')
+text(1.4, 13,'C','FontSize',24,'FontWeight','bold','Clipping','off')
 
 tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
 tt.String='NON-DOMINANT (SLOW)';
-tt.Position=tt.Position+[0 -2 0];
+tt.Position=tt.Position+[0 -2.75 0];
 tt.FontWeight='bold';
 tt=findobj(gca,'Type','Text','String','FAST/DOMINANT');
 tt.String='DOMINANT (FAST)';
@@ -70,16 +72,31 @@ hold on
 ll=findobj(pB,'Type','Line');
 pp=pB.YLim;
 plot([.01 .49]*240,100*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
-text(.05*240,110,{'FAST STANCE'},'FontWeight','bold','Fontsize',14,'Color',[0,.447,.741])
+text(.05*240,110,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
 plot((.5+[0.01 .49])*240,100*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
-text(.55*240,110,{'SLOW STANCE'},'FontWeight','bold','Fontsize',14,'Color',[0.85,.325,.098])
+text(.53*240,110,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
 pB.YLim=pp;
 pB.FontSize=14;
 pB.FontWeight='bold';
 legend(ll)
 pB.YAxis.FontSize=10;
+pB.XAxis.FontSize=12;
 
 %% Panel C: little dude
+fC=imread('../intfig/littleGuy.png');
+N=size(fC,1);
+if mod(N,2)==1
+fC=fC(1:N-1,:,:);
+N=N-1;
+end
+fC=cat(2,fC(1:N/2,:,:),255*ones(N/2,50,3),fC(N/2+1:N,:,:));
+pC=axes();
+pC.Position=[.51 .07 .4 .45];
+image(fC)
+axis equal
+pC.Box='off';
+pC.Visible='off';
+text(300,1500,{'POSTURAL RESPONSES TO';' DISPLACEMENTS OF COM'},'Clipping','off','Fontsize',12,'FontWeight','bold')
 
 %%
 saveFig(fh,'./','Fig2',1)

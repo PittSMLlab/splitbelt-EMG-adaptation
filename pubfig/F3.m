@@ -2,8 +2,8 @@
 %This script generates the checkerboards with late Adaptation (steady-state) and early Post-adaptation (aftereffects)
 
 %% Run scripts for each panel (if needed):
-%run ./Fig2A.m
-%run ./Fig2B.m
+%run ./F3A.m
+%run ./F3B.m
 
 %% Arrange panels in single fig:
 close all
@@ -26,13 +26,18 @@ for i=1:length(pA)
     for j=1:length(tt)
         set(tt(j),'FontSize',16,'Position',get(tt(j),'Position')-[0 0 0])
     end
-    set(pA(i),'Position',get(pA(i),'Position').*[1.05 .3 1 .26] + [.03 .71 0 0]);
+    drawnow
+    pause(1)
+    
     pA(i).YLabel.FontWeight='bold';
     caxis(Clim*[-1 1])
     if i==1
         ll=findobj(gca,'Type','Line');
         lg=legend(ll(end-1:end));
     end
+    drawnow
+    pause(1)
+    set(pA(i),'Position',get(pA(i),'Position').*[1.05 .3 1 .26] + [.03 .71 0 0]);
     lg.Position=lg.Position+[.003 0 0 0];
 end
 pB=copyobj(axB,fh);

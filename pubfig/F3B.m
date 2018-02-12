@@ -5,7 +5,7 @@ desiredPlotDescription={'late A'};
 desiredPlotDescription2={'early P'};
 plotTitles={'Late Adaptation','    Early Post-Adap'};
 saveName='Fig3B';
-lineFlag=1;
+lineFlag=0;
 makeN19DPrettyAgain_execute
 %%
 tt=findobj(gcf,'Type','Text');
