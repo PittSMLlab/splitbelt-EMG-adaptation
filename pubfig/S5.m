@@ -8,33 +8,35 @@ for k=1:maxK
         case 1
             x=[ageC'];
             xlab='Age';
-            data{1}=[auxNorm(eP)' auxNorm(lA-eA)' auxNorm(lA)'];
-            names{1}={'||eP||','||lA-eA||','||lA||'};
-            data{2}=[1-auxCosine(eA,lA), auxCosine(eA,eAT)];
-            names{2}={'cos(lA,eA)','eA EMG Sym'};
+            data{1}=[auxNorm(eP)' auxNorm(lA)' auxNorm(eP-lA)' auxNorm(eA)'];
+            names{1}={'||eP||','||lA||','||eP-lA||','||eA||'};
+            data{2}=[auxCosine(eA,lA), auxCosine(eA,eAT) auxCosine(lS,lST)];
+            names{2}={'cos(lA,eA)','eA EMG Sym','lS Sym'};
             ylab{1}='Norm (a.u.)';
             ylab{2}='Similarity (cos)';
         case 2
             x=[velsC'];
             xlab='Speed (m/s)';
-            data{1}=[auxNorm(eP)' auxNorm(lA-eA)'];
-            names{1}={'||eP||','||lA-eA||'};
-            data{2}=[1-auxCosine(eA,lA), auxCosine(eA,eAT)];
-            names{2}={'cos(lA,eA)','eA EMG Sym'};
+            data{1}=[auxNorm(eP)' auxNorm(lA)' auxNorm(eP-lA)' auxNorm(eA)' auxNorm(lS)'];
+            names{1}={'||eP||','||lA||','||eP-lA||','||eA||','||lS||'};
+            data{2}=[auxCosine(eA,lA), auxCosine(eA,eAT) auxCosine(lS,lST)];
+            names{2}={'cos(lA,eA)','eA EMG Sym','lS Sym'};
         case 3
-            x=EMGsym;
+            x=auxCosine(eA,eAT);
             xlab='eA EMG Symm.';
-            data{1}=[auxNorm(eP)' auxNorm(lA-eA)'];
-            names{1}={'||eP||','||lA-eA||'};
-            data{2}=[1-auxCosine(eA,lA)];
+            data{1}=[auxNorm(eP)' auxNorm(lA)' auxNorm(eP-lA)' auxNorm(eA)'];
+            names{1}={'||eP||','||lA||','||eP-lA||','||eA||'};
+            data{2}=[auxCosine(eA,lA)];
             names{2}={'cos(eA,lA)'};
         case 4
             x=auxCosine(lS,lST);
             xlab='eS EMG Symm.';
-            data{1}=[auxNorm(eP)' auxNorm(lA-eA)'];
-            names{1}={'||eP||','||lA-eA||'};
-            data{2}=[Dsim DsimS];;
-            names{2}={'\Delta Sim Long','\Delta Sim Short'};
+            data{1}=[auxNorm(eP)' auxNorm(lA)' auxNorm(eP-lA)' auxNorm(eA)'];
+            names{1}={'||eP||','||lA||','||eP-lA||','||eA||'};
+            data{2}=[auxCosine(eA,lA), auxCosine(eA,eAT)];
+            names{2}={'cos(lA,eA)','eA EMG Sym'};
+            %data{2}=[Dsim DsimS];;
+            %names{2}={'\Delta Sim Long','\Delta Sim Short'};
     end
 for i=1:2%:4 % 4 panels
     clear ph
@@ -47,7 +49,7 @@ for i=1:2%:4 % 4 panels
         YY=data{i}(:,j);
                [rr,pp]=corr(XX,YY,'type','pearson');
        [rs,ps]=corr(XX,YY,'type','spearman');
-       ph(j)=plot(XX,YY,'o','DisplayName',[names{i}{j} ', p=' num2str(pp,2)],'LineWidth',3);
+       ph(j)=plot(XX,YY,'o','DisplayName',[names{i}{j} ', p=' num2str(ps,2)],'LineWidth',3);
        hold on
 
        m=polyfit(XX,YY,1);
@@ -139,4 +141,4 @@ for i=1:2%:4 % 4 panels
         getNiceAxisLimits; 
 end
 end
-saveFig(fh,'./','Fig5S2',0)
+%saveFig(fh,'./','Fig5S2',0)

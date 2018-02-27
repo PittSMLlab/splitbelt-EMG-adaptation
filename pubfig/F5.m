@@ -27,6 +27,7 @@ names{2}={'','||eA||/||B||'};
 EMGsym=auxCosine(eA,eAT);
 %EMGsym=auxCosine(lS,lST);
 x{2}=EMGsym;
+%x{2}=velsC';
 
 xlab{2}='eA EMG Symmetry';% [cos(eA,eA^T)]';
 ylab{2}='';
@@ -51,7 +52,7 @@ for i=1:2 %
        [rs,ps]=corr(XX,YY,'type','spearman');
        m=polyfit(XX,YY,1);
        m=polyfit1PCA(XX,YY,1);
-       ph(j)=plot(XX,YY,'o','DisplayName',['r=' num2str(rr,2) ', p=' num2str(pp,2)],'LineWidth',3,'Color',cc(j,:));
+       ph(j)=plot(XX,YY,'o','DisplayName',['r=' num2str(rs,2) ', p=' num2str(ps,2)],'LineWidth',3,'Color',cc(j,:));
        plot(XX,m(1)*XX+m(2),'Color',ph(j).Color)
        txt={['r=' num2str(rr,3) ', p=' num2str(pp,3)], ['r_{sp}=' num2str(rs,3) ', p_{sp}=' num2str(ps,3)]};
     end
@@ -65,7 +66,7 @@ for i=1:2 %
     title(titl{i})
     set(gca,'FontSize',14,'FontWeight','bold')
         getNiceAxisLimits; 
-    ax.YLim=[ax.YLim(1) 1.5];
+    ax.YLim=[-.2 1.7];
     lg=legend(ph);
     legend({},'Location','Best','FontSize',14)
     lg.Position=lg.Position+[0 .01 0 0];
@@ -83,6 +84,5 @@ title('')
 text(.3,1.88,'A','FontSize',20,'FontWeight','bold','Clipping','off')
 text(2.75,1.88,'B','FontSize',20,'FontWeight','bold','Clipping','off')
 text(4.9,1.88,'C','FontSize',20,'FontWeight','bold','Clipping','off')
-set(gca,'Fontsize',14)
-
+set(gca,'Fontsize',14,'YLim',[-.2 1.7])
 saveFig(fh,'./','Fig5',0)

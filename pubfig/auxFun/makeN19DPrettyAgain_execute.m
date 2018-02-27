@@ -61,7 +61,7 @@ newAxes.Position=[.1 .2 .3 .7];
 aa=axis;
 newAxes.YAxisLocation='right';
 hold on
-newAxes.XTick=[.5 3 5.5 8]/10;
+newAxes.XTick=[1 4 7 10]/12;
 ccc=get(gca,'ColorOrder');
 
 % Find significant points & mark anti-symmetric changes
@@ -103,10 +103,10 @@ end
 drawnow
 %Add swing/stance/DS lines & text
 newAxes.XTickLabel={'DS','STANCE','DS','SWING'};
-plot([.1 .9]/10,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-plot([1.1 4.9]/10,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-plot([5.1 5.9]/10,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-plot([6.1 9.9]/10,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
+plot([.1 1.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
+plot([2.1 5.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
+plot([6.1 7.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
+plot([8.1 11.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
 
 xOff=-.5;
 %Slow/fast legs
@@ -203,13 +203,13 @@ if dualPlot
     newAxes2.YAxisLocation='right';
     hold on
     newAxes2.YTickLabel=cellfun(@(x) x([2,max(3,length(x)-1):length(x)]),newAxes2.YTickLabel,'UniformOutput',false);
-    newAxes2.XTick=[.5 3 5.5 8]/10;
+    newAxes2.XTick=[1 4 7 10]/12;
     newAxes2.XTickLabel={'DS','STANCE','DS','SWING'};
 
-    plot([.1 .9]/10,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-    plot([1.1 4.9]/10,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-    plot([5.1 5.9]/10,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-    plot([6.1 9.9]/10,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
+    plot([.1 1.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
+    plot([2.1 5.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
+    plot([6.1 7.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
+    plot([8.1 11.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
     axis(aa)
 
 % Find significant points & mark anti-symmetric changes

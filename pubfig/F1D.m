@@ -1,102 +1,58 @@
-%% Load data
-subj='C0014';
-load(['../data/HPF30/' subj '.mat']);
-
-%% Align it
-conds={'TM Base','Adap'};
-events={'RHS','LTO','LHS','RTO'};
-alignmentLengths=[16,64,16,64];
-muscle='LG';
-RBase=expData.getAlignedField('procEMGData',conds(1),events,alignmentLengths).getPartialDataAsATS({['R' muscle]});
-LBase=expData.getAlignedField('procEMGData',conds(1),events([3,4,1,2]),alignmentLengths).getPartialDataAsATS({['L' muscle]});
-RAdap=expData.getAlignedField('procEMGData',conds(2),events,alignmentLengths).getPartialDataAsATS({['R' muscle]});
-LAdap=expData.getAlignedField('procEMGData',conds(2),events([3,4,1,2]),alignmentLengths).getPartialDataAsATS({['L' muscle]});
-
-%% Create plots
-
-fh=figure('Units','Normalized');
-ph=[];
-ph1=[];
-prc=[16,84];
-MM=sum(alignmentLengths);
-M=cumsum([0 alignmentLengths]);
-xt=sort([M,M(1:end-1)+[diff(M)/2]]);
-xt=[0,8,16:16:80,88,96:16:160];
-figuresColorMap
-%xt=[0:8:MM];
-fs=16; %FontSize
-for i=1
-    ph(i)=axes();
-    set(ph(i),'Position',[.05+(i-1)*.45 .4 .4 .5]);
-    cca=get(gca,'ColorOrder');
-end
-linkaxes(ph,'y') 
-for i=1
-    hold on
-    switch i
-        case 1
-            B=LBase;
-            A=LAdap;
-            tit=['F' muscle];
-        case 2
-            B=RBase;
-            A=RAdap;
-            tit=['Slow leg ' muscle];
-     end
-    B.plot(fh,ph(i),cca(1,:),[],0,[-49:0],prc,true);
-    axis tight
-    ylabel('')
-    ylabel(tit)
-    
-    ph1(i)=axes;
-    set(ph1(i),'Position',[.05+(i-1)*.45 .1 .4 .1]);  
-    da=randn(1,12);
-    aux=nanmedian(B.Data,3)';
-    clear aux2
-    for j=1:length(xt)-1
-        aux2(j)=mean(aux(xt(j)+1:xt(j+1)));
-    end
-    aux3([1,2:2:10,11,12:2:20])=aux2;
-    aux3([3:2:10,13:2:20])=aux2([3:6,9:12]);
-    imagesc(aux3/max(nanmedian(B.Data,3)))
-    view(2)
-    colormap(flipud(map))
-    caxis([-.5 .5])
-    rectangle('Position',[.5 .5 20 1],'EdgeColor','k')
-    set(ph1(i),'XTickLabel','','YTickLabel','','XTick','','YTick','')
-    if i==2
-    pos=get(ph1(i),'Position');
-    end
-end
-drawnow
-for i=1
-    axes(ph(i))
-    ll=findobj(ph(i),'Type','Line');
-    set(ll,'LineWidth',3)
-    set(ph(i),'FontSize',fs,'YTickLabel','','XTickLabel','','XTick',xt,'YTick','')
-    a=axis;
-    yOff=a(3)-.2*(a(4)-a(3));
-    text(.01*MM,yOff,'DS','Clipping','off','FontSize',fs)
-    %text(.18*MM,yOff,{'Early'; 'Stance'},'Clipping','off','FontSize',fs)
-    %text(.36*MM,yOff,{'Late'; 'Stance'},'Clipping','off','FontSize',fs)
-    text(.2*MM,yOff,{'STANCE'},'Clipping','off','FontSize',fs)
-    text(.51*MM,yOff,'DS','Clipping','off','FontSize',fs)
-    %text(.68*MM,yOff,{'Early'; 'Swing'},'Clipping','off','FontSize',fs)
-    %text(.86*MM,yOff,{'Late';'Swing'},'Clipping','off','FontSize',fs)
-    text(.7*MM,yOff,{'SWING'},'Clipping','off','FontSize',fs)
-    if i==2
-            legend(ll(end:-1:1),{'Baseline','Adaptation'})
-    end
-    axis(a)
-    hold on
-    yOff=a(3)-.05*(a(4)-a(3));
-plot([.1 .9]*16,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-plot([1.1 4.9]*16,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-plot([5.1 5.9]*16,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-plot([6.1 9.9]*16,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-     
-end
-
-set(gcf,'Position',[0 0 .5 .2])
+%From makeN19DPrettyAgain
+saveDir='./';
+name='allChangesEMG.fig';
+desiredPlotDescription={'Ref','Base'};
+desiredPlotDescription2={};
+plotTitles={'Baseline activity'};
+saveName='Fig1D';
+lineFlag=0;
+makeN19DPrettyAgain_execute
 %%
-saveFig(fh,'./','Fig1D',1)
+drawnow
+tt=findobj(gcf,'Type','Text');
+set(tt(strcmp(get(tt,'String'),'SLOW/PARETIC')),'String','SLOW/NON-DOM')
+set(tt(strcmp(get(tt,'String'),'FAST/NON-PARETIC')),'String','FAST/DOMINANT')
+colorbar
+ss=findobj(gca,'Type','surface');
+%ss.CData(16,:)=0;
+title('')
+
+drawnow
+
+allSS=findobj(gcf,'Type','Surface');
+for i=1:length(allSS)
+    ss=allSS(i);
+%ss.CData(16,:)=0;
+tt=findobj(gcf,'Type','Text');
+idx=strcmp(get(tt,'String'),'SLOW/PARETIC');
+set(tt(idx),'String','SLOW/NON-DOM');
+idx=strcmp(get(tt,'String'),'FAST/NON-PARETIC');
+set(tt(idx),'String','FAST/DOMINANT');
+end
+
+figuresColorMap
+colormap(flipud(map))
+caxis([-1 1])
+cc=findobj(gcf,'Type','Colorbar');
+cc.Location='southoutside';
+set(cc,'Ticks',[0 .5 1],'FontSize',16,'FontWeight','bold');
+set(cc,'TickLabels',{'0%','50%','100%'});
+set(gcf,'Color',ones(1,3))
+cc.Limits=[0 1];
+cc.Position=cc.Position+[.08 .01 -.02 0];
+set(gcf,'Position',[0 0 .5 .8])
+
+        ll2=findobj(gca,'Type','line','LineWidth',10);
+        xOff=-1.15;
+        yOff=.8;
+    for j=[length(ll2)+[-1:0]]
+        ll2(j).XData=ll2(j).XData+xOff;
+        ll2(j).YData=ll2(j).YData+yOff;
+    end
+    tt=findobj(gca,'Type','text','String','EXTENSORS');
+    tt.Position=tt.Position+[xOff yOff 0];
+    tt=findobj(gca,'Type','text','String','FLEXORS');
+    tt.Position=tt.Position+[xOff yOff 0];
+    
+%%
+saveFig(newFig,saveDir,saveName,0)
