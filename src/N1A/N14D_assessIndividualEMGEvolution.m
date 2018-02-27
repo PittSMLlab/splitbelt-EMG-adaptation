@@ -40,10 +40,15 @@ l2=regexprep(regexprep(ll,normString,''),'_s','s');
 adaptData=adaptData.renameParams(ll,l2);
 newLabelPrefix=strcat(labelPrefix,'s');
 
+%% Sym/asym 
+flip=1;
+if plotSym==1
+    flip=2;
+end
+
 %% Plot (and get data)
 fh=figure('Units','Normalized','OuterPosition',[0 0 1 1]);
 ph=tight_subplot(2,length(ep)+1,[.03 .005],.04,.04);
-flip=true;
 summFlag='median';
 clear dataE dataRef
 adaptData.plotCheckerboards(newLabelPrefix,ep,fh,ph(1,2:end),[],flip); %First, plot raw
@@ -63,4 +68,10 @@ set(ph(1,end),'Position',pos);
 ph(2,1).Title.String='eP - lA';
 %% Save
 saveName=['allChangesEMG' sub];
+if useLateAdapBase
+    saveName=[saveName '_lateAdapBase'];
+end
+if plotSym
+    saveName=[saveName '_sym'];
+end
 saveFig(fh,dirStr,[saveName],0);
