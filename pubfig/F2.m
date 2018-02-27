@@ -2,8 +2,8 @@
 %This script generates the FEEDBACK activity figure
 
 %% Run scripts for each panel (if needed):
-run ./F2A.m
-run ./F2B.m
+%run ./F2A.m
+%run ./F2B.m
 
 %% Arrange panels in single fig:
 close all
@@ -48,9 +48,10 @@ for i=1:length(ax.YTickLabel)
         ax.YTickLabel{i}=['\color[rgb]{0.85,0.325,0.098} ' ax.YTickLabel{i}];
     end
 end
-text(-.2, 32.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
-text(1.4, 32.5,'B','FontSize',24,'FontWeight','bold','Clipping','off')
-text(1.4, 13,'C','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-.2, 32.5,'C','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-1.9, 32.5,'B','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-1.9, 13,'C','FontSize',24,'FontWeight','bold','Clipping','off')
+ax.Position(1)=ax.Position(1)+.5;
 
 tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
 tt.String='NON-DOMINANT (SLOW)';
@@ -81,6 +82,11 @@ pB.FontWeight='bold';
 legend(ll)
 pB.YAxis.FontSize=10;
 pB.XAxis.FontSize=12;
+drawnow
+pause(1)
+pB.Position(1)=.11;
+pB.YTick=[-80:40:80];
+pB.YTickLabel={'80','40','0','-40','-80'};
 
 %% Panel C: little dude
 fC=imread('../intfig/littleGuy.png');
@@ -91,7 +97,7 @@ N=N-1;
 end
 fC=cat(2,fC(1:N/2,:,:),255*ones(N/2,50,3),fC(N/2+1:N,:,:));
 pC=axes();
-pC.Position=[.51 .07 .4 .45];
+pC.Position=[.05 .07 .4 .45];
 image(fC)
 axis equal
 pC.Box='off';
@@ -99,4 +105,4 @@ pC.Visible='off';
 text(300,1500,{'POSTURAL RESPONSES TO';' DISPLACEMENTS OF COM'},'Clipping','off','Fontsize',12,'FontWeight','bold')
 
 %%
-saveFig(fh,'./','Fig2',1)
+%saveFig(fh,'./','Fig2',1)
