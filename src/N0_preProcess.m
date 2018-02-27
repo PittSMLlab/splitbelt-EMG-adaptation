@@ -33,6 +33,8 @@ for i=1:length(subs)
     end
     %run ./N1A/N13A_assessData.m
     %run ./N1A/N14A_assessIndividualAdaptation.m
+    plotSym=1;
+    useLateAdapBase=false;
     run ./N1A/N14D_assessIndividualEMGEvolution.m
     close all
 end
