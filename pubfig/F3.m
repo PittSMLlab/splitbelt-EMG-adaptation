@@ -7,43 +7,43 @@
 
 %% Arrange panels in single fig:
 close all
-fA=openfig('./fig/Fig3A.fig');
-axA=findobj(fA,'Type','Axes');
+%fA=openfig('./fig/Fig3A.fig');
+%axA=findobj(fA,'Type','Axes');
 fB=openfig('./fig/Fig3B.fig');
 axB=findobj(fB,'Type','Axes');
 
 
-fh=figure('Units','Normalized','OuterPosition',[0 0 .53 .9],'Color','None');
+fh=figure('Units','Normalized','OuterPosition',[0 0 .5 .8],'Color','None');
 condColors=[.6,.6,.6; 0,.5,.4; .5,0,.6];
 figuresColorMap
 colormap(flipud(map))
 Clim=.5;
-pA=copyobj(axA,fh);
-for i=1:length(pA)
-    axes(pA(i))
-    title('')
-    tt=findobj(pA(i),'Type','Text');
-    for j=1:length(tt)
-        set(tt(j),'FontSize',16,'Position',get(tt(j),'Position')-[0 0 0])
-    end
-    drawnow
-    pause(1)
-    
-    pA(i).YLabel.FontWeight='bold';
-    caxis(Clim*[-1 1])
-    if i==1
-        ll=findobj(gca,'Type','Line');
-        lg=legend(ll(end-1:end));
-    end
-    drawnow
-    pause(1)
-    set(pA(i),'Position',get(pA(i),'Position').*[1.05 .3 1 .26] + [.03 .71 0 0]);
-    lg.Position=lg.Position+[.003 0 0 0];
-end
+% pA=copyobj(axA,fh);
+% for i=1:length(pA)
+%     axes(pA(i))
+%     title('')
+%     tt=findobj(pA(i),'Type','Text');
+%     for j=1:length(tt)
+%         set(tt(j),'FontSize',16,'Position',get(tt(j),'Position')-[0 0 0])
+%     end
+%     drawnow
+%     pause(1)
+%     
+%     pA(i).YLabel.FontWeight='bold';
+%     caxis(Clim*[-1 1])
+%     if i==1
+%         ll=findobj(gca,'Type','Line');
+%         lg=legend(ll(end-1:end));
+%     end
+%     drawnow
+%     pause(1)
+%     set(pA(i),'Position',get(pA(i),'Position').*[1.05 .3 1 .26] + [.03 .71 0 0]);
+%     lg.Position=lg.Position+[.003 0 0 0];
+% end
 pB=copyobj(axB,fh);
 for i=1:length(pB)
 %set(pB(i),'Position',get(pB(i),'Position').*[1.1 1 1.05 .8] + [0 -.1 0 0])
-set(pB(i),'Position',get(pB(i),'Position').*[1.1 1 .8/.7 .8/.9] + [-.02 -.13 0 0])
+set(pB(i),'Position',get(pB(i),'Position').*[1 1 1 .9/.8] + [0 -.1 0 0])
 axes(pB(i))
 caxis(Clim*[-1 1])
 if i==1
@@ -52,9 +52,9 @@ if i==1
     cc.TickLabels={'-50%','0%','+50%'};
     set(cc,'FontSize',16,'FontWeight','bold')
     cc.Position=cc.Position.*[1 1 1 .98] + [0 .02 0 0];
-    text(-1.35,31.5, 'B', 'FontSize',22,'FontWeight','bold','Clipping','off')
-    text(-.08,31.5, 'C', 'FontSize',22,'FontWeight','bold','Clipping','off')
-    text(-1.35,43, 'A', 'FontSize',22,'FontWeight','bold','Clipping','off')
+    text(-1.35,31.5, 'A', 'FontSize',22,'FontWeight','bold','Clipping','off')
+    text(-.08,31.5, 'B', 'FontSize',22,'FontWeight','bold','Clipping','off')
+    %text(-1.35,43, 'A', 'FontSize',22,'FontWeight','bold','Clipping','off')
     title('    Early Post-Adaptation')
     %Delete contours for post-adap
     ll=findobj(gca,'type','contour');

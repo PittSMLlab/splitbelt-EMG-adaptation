@@ -151,19 +151,23 @@ for k=1:4
         case 1 %eA
             aux1=auxF;
             aux2=auxS;
-            tt='eA';
+            tt='';
+tt2='{\Delta}eA';
         case 2
             tt='H1';
             aux1=zeros(size(auxF));
             aux2=zeros(size(auxS));
+tt2='0';
         case 3
             tt='H2';
             aux1=-auxF;
             aux2=-auxS;
+tt2='-{\Delta}eA';
         case 4
             tt='H3';
             aux1=auxS;
             aux2=auxF;
+tt2='{\Delta}eA^*';
     end
 ax=axes;
 ax.Position=[.02+(k-1)*.075+(k>1)*.06 .03 .2 .1];
@@ -171,29 +175,31 @@ I=imshow(size(map,1)*(aux1+.5),flipud(map),'Border','tight');
 rectangle('Position',[.5 .5 1 3],'EdgeColor','k')
 %%Add arrows
 hold on
-quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux1),zeros(size(aux1)),-.7*sign(aux1),0,'Color','k','LineWidth',2)
+quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux1),zeros(size(aux1)),-.7*sign(aux1),0,'Color','k','LineWidth',2,'MaxHeadSize',.5)
 ax=axes;
-ax.Position=[.02+(k-1)*.075+(k>1)*.06 .15 .2 .1];
+ax.Position=[.02+(k-1)*.075+(k>1)*.06 .14 .2 .1];
 I=imshow(size(map,1)*(aux2+.5),flipud(map),'Border','tight');
 rectangle('Position',[.5 .5 1 3],'EdgeColor','k')
 %%Add arrows
 hold on
-quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux2),zeros(size(aux1)),-.7*sign(aux2),0,'Color','k','LineWidth',2)
+quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux2),zeros(size(aux1)),-.7*sign(aux2),0,'Color','k','LineWidth',2,'MaxHeadSize',.5)
 
 set(gca,'XTickLabel','','YTickLabel','','XTick','','YTick','')
-text(.6,0,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
+text(.4+(k==2)*.3+(k==3)*-.1,.1,tt2,'Clipping','off','FontSize',14,'FontWeight','bold')
+text(.6,7.2,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
 
 end
 
-text(-1.8,-.65,'eP-lA','Clipping','off','FontSize',14,'FontWeight','bold')
-plot([-3.5 1.5],-.3*[1 1],'k','LineWidth',2,'Clipping','off')
+text(-3,-1.3,'HYPOTHESES','Clipping','off','FontSize',14,'FontWeight','bold')
+text(-1.8,-.65,'eP-lA=','Clipping','off','FontSize',14,'FontWeight','bold')
+plot([-3.5 1.5],-.33*[1 1],'k','LineWidth',2,'Clipping','off')
 %plot(-4*[1 1],[.5 7],'k','LineWidth',1,'Clipping','off')
 
 %Add lines on fast/slow:
 ccc=get(gca,'ColorOrder');
 plot(-7.5*[1 1],[.5 3.5],'LineWidth',4,'Color',ccc(2,:),'Clipping','off')
 text(-8,3.55,'NON-DOM','Color',ccc(2,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
-plot(-7.5*[1 1],3.6+[.5 3.5],'LineWidth',4,'Color',ccc(1,:),'Clipping','off')
-text(-8,6.3,'DOM','Color',ccc(1,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
+plot(-7.5*[1 1],3.3+[.5 3.5],'LineWidth',4,'Color',ccc(1,:),'Clipping','off')
+text(-8,6.25,'DOM','Color',ccc(1,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
 %% Save fig
 saveFig(fh,'./',name,0)

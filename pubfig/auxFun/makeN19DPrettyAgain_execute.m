@@ -202,7 +202,9 @@ if dualPlot
     
     newAxes2.YAxisLocation='right';
     hold on
-    newAxes2.YTickLabel=cellfun(@(x) x([2,max(3,length(x)-1):length(x)]),newAxes2.YTickLabel,'UniformOutput',false);
+    %newAxes2.YTickLabel=cellfun(@(x) x([2,max(3,length(x)-1):length(x)]),newAxes2.YTickLabel,'UniformOutput',false);
+    aux=cellfun(@(x) x(1:end-1),mLabels,'UniformOutput',false);
+    newAxes2.YTickLabel=cellfun(@(x) x([2,max(3,length(x)-1):length(x)]),aux,'UniformOutput',false);
     newAxes2.XTick=[1 4 7 10]/12;
     newAxes2.XTickLabel={'DS','STANCE','DS','SWING'};
 

@@ -43,16 +43,21 @@ cc.Position=cc.Position+[.08 .01 -.02 0];
 set(gcf,'Position',[0 0 .5 .8])
 
         ll2=findobj(gca,'Type','line','LineWidth',10);
-        xOff=-1.15;
+        xOff=-1.2;
         yOff=.8;
     for j=[length(ll2)+[-1:0]]
         ll2(j).XData=ll2(j).XData+xOff;
         ll2(j).YData=ll2(j).YData+yOff;
     end
-    tt=findobj(gca,'Type','text','String','EXTENSORS');
-    tt.Position=tt.Position+[xOff yOff 0];
-    tt=findobj(gca,'Type','text','String','FLEXORS');
-    tt.Position=tt.Position+[xOff yOff 0];
-    
+    tt1=findobj(gca,'Type','text','String','EXTENSORS');
+    tt1.Position=tt1.Position+[xOff yOff 0];
+    tt2=findobj(gca,'Type','text','String','FLEXORS');
+    tt2.Position=tt2.Position+[xOff yOff 0];
+    aux=tt1.Position;
+    tt1.Position=tt2.Position;
+    tt2.Position=aux;
+    aux=ll2(end).Color;
+    ll2(end).Color=ll2(end-1).Color;
+    ll2(end-1).Color=aux;
 %%
 saveFig(newFig,saveDir,saveName,0)

@@ -49,8 +49,8 @@ for i=1:length(ax.YTickLabel)
     end
 end
 text(-.2, 32.5,'C','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.9, 32.5,'B','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.9, 13,'C','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-1.9, 32.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-1.9, 13,'B','FontSize',24,'FontWeight','bold','Clipping','off')
 ax.Position(1)=ax.Position(1)+.5;
 
 tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
@@ -97,7 +97,7 @@ N=N-1;
 end
 fC=cat(2,fC(1:N/2,:,:),255*ones(N/2,50,3),fC(N/2+1:N,:,:));
 pC=axes();
-pC.Position=[.05 .07 .4 .45];
+pC.Position=[.06 .07 .4 .45];
 image(fC)
 axis equal
 pC.Box='off';
@@ -105,4 +105,4 @@ pC.Visible='off';
 text(300,1500,{'POSTURAL RESPONSES TO';' DISPLACEMENTS OF COM'},'Clipping','off','Fontsize',12,'FontWeight','bold')
 
 %%
-%saveFig(fh,'./','Fig2',1)
+saveFig(fh,'./','Fig2',1)

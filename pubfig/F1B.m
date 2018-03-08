@@ -68,7 +68,7 @@ fs=16; %FontSize
             case 3
             aux=1*(nanmedian(A.Data,3)'-nanmedian(B.Data,3)') +.5*max(nanmedian(B.Data,3));
             figuresColorMap;
-            tt='\Delta';
+            tt='{\Delta}lA';
         end
         clear aux2
         for k=1:length(xt)-1
@@ -78,7 +78,7 @@ fs=16; %FontSize
         I.Parent.Colormap=flipud(map);
         rectangle('Position',[.5 .5 12 1],'EdgeColor','k')
         set(ph1(j),'XTickLabel','','YTickLabel','','XTick','','YTick','')
-        text(-.4,1,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
+        text(-.4-.1*(j-1)^2.6,1,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
     end
     drawnow
     %

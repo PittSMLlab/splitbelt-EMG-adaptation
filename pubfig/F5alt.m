@@ -7,19 +7,21 @@ clear x xlab data
 Dsim=auxCosine(eP-lA,eAT)-auxCosine(eP-lA,-eA);
 DsimS=auxCosine(ePS-lS,eAT)-auxCosine(ePS-lS,-eA);
 Dinit=nan(size(Dsim));
+Dff=nan(size(Dsim));
 for i=1:size(eP,2)
-    aux=[-eA(:,i) eAT(:,i)]\(eP(:,i)-lA(:,i));
+    aux=[-eA(:,i) eAT(:,i) lA(:,i)]\(eP(:,i));
     %Dsim(i)=diff(aux); %Difference of projection into eA* and -eA
     Dsim(i)=aux(2);
     Dinit(i)=aux(1);
+    Dff(i)=aux(3);
 
     aux=[-eA(:,i) eAT(:,i)]\(ePS(:,i)-lS(:,i));
     DsimS(i)=diff(aux);
 end
 
-data{1}=[Dsim Dinit];
+data{1}=[Dsim Dinit Dff];
 x{1}=[ageC'];
-names{1}={'\beta_M','\beta_S'};
+names{1}={'\beta_M','\beta_S','\beta_{FF}'};
 xlab{1}='Age';
 ylab{1}='Mirroring extent';
 titl{1}='Feedback (eP-lA) response vs. age';
@@ -40,10 +42,10 @@ ylab{2}='EMG Aftereffect size';
 titl{2}='';
 for i=1:2 %
     ax=axes();
-    set(ax,'ColorOrder',condColors([2-(i-2),3],:))
+    set(ax,'ColorOrder',condColors([2-(i-2),3,1],:))
     ax.Position=[.1+.3*i .2 .28 .7];
     cc=get(ax,'ColorOrder');
-    cc=cc([2,1],:);
+    cc=cc([end:-1:1],:);
     hold on
     clear ph
     for j=1:size(data{i},2)%:-1:1
@@ -55,8 +57,9 @@ for i=1:2 %
         YY=data{i}(:,j);
        %[rr,pp]=corr(XX,YY,'type','pearson');
        [rs,ps]=corr(XX,YY,'type','spearman');
-       %m=polyfit(XX,YY,1);
-       m=polyfit1PCA(XX,YY,1);
+       m=polyfit(XX,YY,1);
+       
+       %m=polyfit1PCA(XX,YY,1);
 ca=cc(j,:);
 ls='-';
        if j==2 && i==1
@@ -64,7 +67,7 @@ ls='-';
 ls='--';
 end
        ph(j)=plot(XX,YY,'o','DisplayName',[names{i}{j} ', r=' num2str(rs,2) ', p=' num2str(ps,2)],'LineWidth',3,'Color',cc(j,:),'MarkerSize',6,'MarkerFaceColor',ca);
-       plot(XX,m(1)*XX+m(2),ls,'Color',ph(j).Color)
+       plot(sort(XX),m(1)*sort(XX)+m(2),ls,'Color',ph(j).Color)
        txt={['r=' num2str(rr,3) ', p=' num2str(pp,3)], ['r_{sp}=' num2str(rs,3) ', p_{sp}=' num2str(ps,3)]};
     end
     xlabel(xlab{i})
