@@ -1,14 +1,23 @@
-%% Load data
-loadEMGParams_controls
-%Define eAT, lAT, etc
+%% 
+addpath(genpath('./fun/'))
+addpath(genpath('../pubfig/auxFun/'))
+%% Define data from params if necessary
+groupName='patients';
+idx=[1:6,8:10,12:16]; %Excluding 7 and 11 which dont have short exp
+groupName='controls';
+idx=1:16;
+%loadEMGParams_controls(groupName)
+
+%% Get all needed vars
+load(['../data/' groupName 'EMGsummary'])
+load ../data/bioData.mat
+write=true;
+%write=false;
+%% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
 veAT=fftshift(veA,1);
 %% Do group analysis:
-idx=1:16;
-%idx=ageC<mean(ageC); %To look at younger subjects only
-%idx=age<57.3; %Youngest 6
-%idx=age>63; %Oldest 6
 
 %%%Short-exposure(to compare):
 ttS=table(-mean(eA(:,idx),2), mean(eAT(:,idx),2), mean(lS(:,idx),2), mean(ePS(:,idx),2)-mean(lS(:,idx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
@@ -100,7 +109,9 @@ for i=1:size(eA,2)
     r2AllS2(i)=aux.uncentered;
 end
 %% Display some summary statistics on Short vs. Long exposure:
-diary(['../intfig/FBmodeling_' date '_' num2str(round(1e6*(now-today)))])
+if write
+diary(['../intfig/FBmodeling_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
+end
 disp(' ')
 disp('%%%%%%%%%%%%%%%%%')
 modNames={'2a','S2','3'};
@@ -119,40 +130,49 @@ for i=1:length(modNames)
         disp(['Indiv. \beta=' num2str(median(eval(['learnAll' modNames{i} '(:,j)'])),3) ' \pm ' num2str(iqr(eval(['learnAll' modNames{i} '(:,j)'])),3) ', (median \pm iqr)'])
     end
 end
+if write
 diary off
+end
 %% Do plots for short vs. long exposure comparison
 figuresColorMap
 data=[learnAllS2 learnAll2a];
 dataM=[learnS2' learn2a'];
-fh=figure('Units','Normalized','OuterPosition',[0 .5 .3 .5]);
-%First: group average results:
-pS=plot([1 ; 2]-.15,([dataM(:,[1,3])]),'o','LineWidth',4,'MarkerSize',6,'Color',condColors(1,:),'MarkerFaceColor',condColors(1,:));
-hold on
-p2=plot([1 ; 2]+.15,([dataM(:,[2,4])]),'o','LineWidth',4,'MarkerSize',6,'Color',condColors(3,:),'MarkerFaceColor',condColors(3,:));
 
-%Add mean and std of pop:
-bb=bar(reshape(mean(data),2,2),'FaceAlpha',.6,'EdgeColor','none');
-bb(1).FaceColor=pS.Color;
-bb(2).FaceColor=p2.Color;
-%errorbar(reshape(.15*[-1 1]+[1; 2],4,1),mean(data),std(data),'Color','k','LineWidth',2,'LineStyle','none')
-errorbar(.15*[-1]+[1; 2],mean(data(:,1:2)),[],std(data(:,1:2)),'Color',pS.Color,'LineWidth',2,'LineStyle','none')
-errorbar(.15*[1]+[1; 2],mean(data(:,3:4)),[],std(data(:,3:4)),'Color',p2.Color,'LineWidth',2,'LineStyle','none')
-set(gca,'XTick',[1,2],'XTickLabel',{'\beta_S','\beta_M'},'YLim',[-.5 1.8])
-pp1=plot(1+.1*[-1 1],data(:,[1,3]),'k');
-pp2=plot(2+.1*[-1 1],data(:,[1,3]+1),'k');
+[fh,ph]=prettyBarPlot(reshape(data,size(data,1),2,2),condColors([1,3],:),1,1,{'Short Exp.','Long Exp.'},{'\beta_S','\beta_M'});
+
+% %Add group average results:
+pS=plot([1 ; 2]-.15,([dataM(:,[1,2])]),'o','LineWidth',4,'MarkerSize',6,'Color',condColors(1,:),'MarkerFaceColor',condColors(1,:));
+p2=plot([1 ; 2]+.15,([dataM(:,[3,4])]),'o','LineWidth',4,'MarkerSize',6,'Color',condColors(3,:),'MarkerFaceColor',condColors(3,:));
+pS.Annotation.LegendInformation.IconDisplayStyle = 'off';
+p2.Annotation.LegendInformation.IconDisplayStyle = 'off';
+set(ph,'YLim',[-.5 1.8])
 ylabel('R^2')
-%text(1.15*ones(16,1),data(:,3),mat2cell(num2str([1:16]'),ones(16,1),2))
-%text(1.5*ones(16,1),data(:,2),mat2cell(num2str([1:16]'),ones(16,1),2))
 text(.75,data(1,1),'C01')
 text(2.13,data(1,4),'C01')
-legend('Short Exp.','Long Exp.')
 title('Regressors vs. exposure length for two-factor model')
-saveFig(fh,'../intfig/','ShortVsLongExpMirroring',0)
+if write
+%saveFig(fh,'../intfig/',['ShortVsLongExpMirroring_' groupName],0)
+end
+
+%% Same thing, dissociating old and young:.
+idxY=age<57.3; %Youngest 6
+idxO=age>63; %Oldest 6
+data=[learnAll2a(idxO,:) learnAll2a(idxY,:)]; %Old and young after Long exp.
+%dataM=[learnS2' learn2a'];
+[fh,ph]=prettyBarPlot(reshape(data,size(data,1),2,2),condColors([3,3],:),1,2,{'Old','Young'},{'\beta_S','\beta_M'});
+bb=findobj(ph,'Type','Bar');
+bb(1).FaceAlpha=1;
+bb=findobj(ph,'Type','Scatter');
+set(bb(1:2),'MarkerFaceAlpha',1)
+set(ph,'YLim',[-.4 1.05])
+ylabel('R^2')
+title('Regressors vs. age for two-factor model')
+legend('Location','NorthWest')
+if write
+saveFig(fh,'../intfig/','AgeVsMirroring',0)
+end
 
 %% learning vs. age
-idx=1:16;
-%idx=2:16; %Exclude C01: step length asymmetry increases during adaptation!
-%idx
 %Define EMG learning:
 betaM=learnAll2a(:,2); 
 betaS=learnAll2a(:,1);
@@ -178,8 +198,10 @@ EAasym=sqrt(sum((eA-eAT).^2))'./sqrt(sum((eA).^2))';
 
 %%%%%%%%%%%%%%%
 %Do fits (NOTE: stepLengthDiff is a slightly better predictor than SLA, but p-values change only slightly):
-logFile=['../intfig/interSubjectRegressions_' date '_' num2str(round(1e6*(now-today)))];
+logFile=['../intfig/interSubjectRegressions_' groupName '_' date '_' num2str(round(1e6*(now-today)))];
+if write
 diary(logFile)
+end
 rob='off';
 display('----------------------\beta_M VS. AGE and SLA---------------------')
 tt2=table(age(idx)', SLA_eP(idx),betaM(idx),betaS(idx),betaFF(idx),norm_eP(idx),norm_S2T(idx),'VariableNames',{'age','SLA_eP','beta_M','beta_S','beta_FF','norm_eP','norm_S2T'}); %Taking SLA in eP minus lA makes SLA coefficients much less predictive (which is even better for making our point!)
@@ -196,6 +218,7 @@ ffVsAge=fitlm(tt2,'beta_FF~age','RobustOpts',rob)
 %learnVsAEsize=fitlm(tt2,'beta_M~AEsize','RobustOpts',rob)
 %AEsizeVsBoth=fitlm(tt2,'AEsize~SLA','RobustOpts',rob) %SLA and AEsize are VERY VERY HIGHLY CORRELATED -> WHY WOULD THIS BE ?
 %learnVsBoth=fitlm(tt2,'beta_M~age+AEsize','RobustOpts',rob)
+if write
 diary off
 txt=fileread(logFile);
 txt=removeTags(txt);
@@ -204,8 +227,9 @@ fwrite(fid,txt,'char');
 fclose(fid);
 
 %%%%%%%%%%%%%%%%
-logFile=['../intfig/interSubjectAGE_' date '_' num2str(round(1e6*(now-today)))];
+logFile=['../intfig/interSubjectAGE_' groupName '_' date '_' num2str(round(1e6*(now-today)))];
 diary(logFile)
+end
 display('----------------------THE EFFECTS OF AGE ON RESPONSE SIZES--------------------------')
 %Making sure that age is not a confound for sth. else: 
 ttA=table(age(idx)',norm_S2T(idx),r2All2c(idx)',norm_T2S(idx),norm_lA(idx),betaFF(idx),SLA_eP(idx),norm_eP(idx),'VariableNames',{'age','norm_S2T','res','norm_T2S','norm_lA','beta_FF','SLA_eP','norm_eP'});
@@ -224,7 +248,8 @@ FFvsAge=fitlm(ttA,'norm_lA~age','RobustOpts',rob)     %Learned response, also no
 %is highly correlated with age. Is it more carryover and less feedback or a different feedback
 %response? Or both? How to tell?
 %FF3vsAge=fitlm(age(idx),FFasym(idx))    %Symmetry of learned response NOT correlated with age either
-
+FF2vsAge=fitlm(ttA,'beta_FF~age');  %Slight (pos) (strong if C01 excluded) correlation: they may be carrying over more (.01/year of age) 
+if write
 diary off
 txt=fileread(logFile);
 txt=removeTags(txt);
@@ -233,15 +258,15 @@ fwrite(fid,txt,'char');
 fclose(fid);
 
 %%%%%%%%
-logFile=['../intfig/interSubjectSLA_' date '_' num2str(round(1e6*(now-today)))];
+logFile=['../intfig/interSubjectSLA_' groupName '_' date '_' num2str(round(1e6*(now-today)))];
 diary(logFile)
+end
 display('-----------------------------WHAT EXPLAINS SLA?-----------------------------')
 ttB=table(SLA_eP(idx),age(idx)',norm_S2T(idx),norm_T2S(idx),norm_lA(idx),norm_eP(idx),'VariableNames',{'SLA_eP','age','norm_S2T','norm_T2S','norm_lA','norm_eP'});
 disp('age, norm_S2T, norm_T2S, norm_lA, norm_eP')
 stepwisefit([age(idx)',norm_S2T(idx),norm_T2S(idx),norm_lA(idx),norm_eP(idx)],SLA_eP(idx))
 fitlm(ttB,'SLA_eP~norm_eP+norm_lA')
 fitlm(ttB,'SLA_eP~norm_S2T+norm_lA')
-%FF2vsAge=fitlm(ttA,'FFamount~age')  %Slight (pos) (strong if C01 excluded) correlation: they may be carrying over more (.01/year of age) 
 %FF2vsBoth=fitlm(ttA,'FFamount~age+SLA_eP') 
 %FF2vsSLA=fitlm(ttA,'FFamount~SLA_eP') 
 
@@ -257,14 +282,14 @@ fitlm(ttB,'SLA_eP~norm_S2T+norm_lA')
 %they all do roughly the same
 %AEasymvsAge=fitlm(age(idx),AEasym(idx)) %Very weakly (p=.049) negatively correlated with age, somwhat stronger (p=.016) if we exclude C01
 %EAasymvsSLA=fitlm(SLA_eP(idx),EAasym(idx)) %Not correlated
-
+if write
 diary off
 txt=fileread(logFile);
 txt=removeTags(txt);
 fid=fopen(logFile,'w');
 fwrite(fid,txt,'char');
 fclose(fid);
-
+end
 
 
 %%
@@ -299,17 +324,19 @@ model.plotPartialDependence('age')
 ylabel('Feedforward carryover (\beta_{FF})')
 xlabel('Age (y.o.)')
 hold on
-plot(age,FFamount,'o','MarkerFaceColor',p2.MarkerFaceColor,'Color','none')
+plot(age,betaFF,'o','MarkerFaceColor',p2.MarkerFaceColor,'Color','none')
 ax=gca;
 ax.Title.String=['FF carryover vs. age, p=' num2str(model.Coefficients.pValue(2)) ', BF=' num2str(BayesFactor(FF2vsAge),3)];
 txt = evalc('model.disp');
 warning('off','MATLAB:handle_graphics:exceptions:SceneNode')
 text(40,-.5,removeTags(txt(2:end-1)),'Fontsize',6)
-txt = evalc('FF2vsBoth.disp');
-text(40,-1.2,removeTags(txt(2:end-1)),'Fontsize',6)
+%txt = evalc('FF2vsBoth.disp');
+%text(40,-1.2,removeTags(txt(2:end-1)),'Fontsize',6)
 %warning('on','MATLAB:handle_graphics:exceptions:SceneNode')
-text(40,-1.55,['BF both vs. age=' num2str(BayesFactor(FF2vsBoth)./BayesFactor(FF2vsAge),3)],'FontSize',6)
-text(40,-1.6,['BF both vs. SLA=' num2str(BayesFactor(FF2vsBoth)./BayesFactor(FF2vsSLA),3)],'FontSize',6)
+%text(40,-1.55,['BF both vs. age=' num2str(BayesFactor(FF2vsBoth)./BayesFactor(FF2vsAge),3)],'FontSize',6)
+%text(40,-1.6,['BF both vs. SLA=' num2str(BayesFactor(FF2vsBoth)./BayesFactor(FF2vsSLA),3)],'FontSize',6)
 set(gca,'YLim',[0 1])
-%saveFig(fh1,'../intfig/','AgeVsFBmirroring',0)
+if write
+saveFig(fh1,'../intfig/',['AgeVsFBmirroring_' groupName],0)
+end
 

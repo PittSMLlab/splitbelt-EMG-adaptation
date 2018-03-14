@@ -1,13 +1,17 @@
+function loadEMGParams_controls(groupName)
 %% Aux vars:
 matDataDir='../data/HPF30/';
 loadName=[matDataDir 'groupedParams'];
 loadName=[loadName '_wMissingParameters']; %Never remove missing for this script
 load(loadName)
-load ../data/bioData.mat
 
 %%
-group=controls;
-age=controls.getSubjectAgeAtExperimentDate/12;
+if nargin<1 || isempty(groupName)
+    group=controls;
+else
+    eval(['group=' groupName ';']);
+end
+age=group.getSubjectAgeAtExperimentDate/12;
 
 %% Define params we care about:
 mOrder={'TA', 'PER', 'SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF', 'HIP', 'ADM', 'TFL', 'GLU'};
@@ -48,3 +52,7 @@ for i=1:length(shortNames)
     eval(['SLA_' shortNames{i} '=aux(:);']);
 end
 clear aux
+
+vars=[shortNames,strcat('SLA_',shortNames), {'age'}];
+save(['../data/' groupName 'EMGsummary'],vars{:})
+end
