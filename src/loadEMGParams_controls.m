@@ -53,6 +53,6 @@ for i=1:length(shortNames)
 end
 clear aux
 
-vars=[shortNames,strcat('SLA_',shortNames), {'age'}];
+vars=[shortNames,strcat('SLA_',shortNames), {'age','labels'}];
 save(['../data/' groupName 'EMGsummary'],vars{:})
 end

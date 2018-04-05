@@ -22,7 +22,9 @@ else
     %Sanity check with Matlab's computation of BIC:
     DB=linModel.ModelCriterion.BIC-nullModel.ModelCriterion.BIC;
     if abs(Delta_BIC-DB)>1e-9
-        error('Inconsistent BIC with Matlab''s computation')
+        if isempty(linModel.Robust)
+            error('Inconsistent BIC with Matlab''s computation')
+        end
     end
     BF=exp(-Delta_BIC/2); %Approximation from Wagenmaker 2007 
 end
