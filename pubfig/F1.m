@@ -41,21 +41,24 @@ epochAlpha=.2;
 ptWidth=80;
 ptc=patch(+[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
 uistack(ptc,'bottom')
-text(207,textY,'eA','FontSize',20,'FontWeight','bold','Color',condColors(2,:))
-text(250,textY+.6,'ADAPTATION (900 strides)','FontSize',20,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+text(207,textY+.03,'eA','FontSize',20,'FontWeight','bold','Color',condColors(2,:))
+text(330,textY+.58,'ADAPTATION','FontSize',20,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+text(345,textY+.4,'(900 STRIDES)','FontSize',16,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
 ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(1,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
 uistack(ptc,'bottom')
-text(135,textY,'B','FontSize',20,'FontWeight','bold','Color',condColors(1,:))
-text(80,textY+.6,'BASE.','FontSize',20,'Clipping','off','Color',condColors(1,:),'FontWeight','bold')
+text(135,textY+.03,'B','FontSize',20,'FontWeight','bold','Color',condColors(1,:))
+text(70,textY+.58,'BASE.','FontSize',20,'Clipping','off','Color',condColors(1,:),'FontWeight','bold')
 ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(5),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
 uistack(ptc,'bottom')
-text(conditionOffset(5)-70,textY,'lA','FontSize',20,'FontWeight','bold','Color',condColors(2,:))
+text(conditionOffset(5)-70,textY+.03,'lA','FontSize',20,'FontWeight','bold','Color',condColors(2,:))
 ptc=patch([0 ptWidth ptWidth 0]+conditionOffset(5),[.5 .5 1.6 1.6],condColors(3,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
 uistack(ptc,'bottom')
-text(conditionOffset(5)+10,textY,'eP','FontSize',20,'FontWeight','bold','Color',condColors(3,:))
-text(830,textY+.5,{'POST-ADAP.'; '(600 strides)'},'FontSize',20,'Clipping','off','Color',condColors(3,:),'FontWeight','bold')
+text(conditionOffset(5)+10,textY+.03,'eP','FontSize',20,'FontWeight','bold','Color',condColors(3,:))
+text(810,textY+.58,'POST-ADAP.','FontSize',20,'Clipping','off','Color',condColors(3,:),'FontWeight','bold')
+text(815,textY+.4,'(600 STRIDES)','FontSize',16,'Clipping','off','Color',condColors(3,:),'FontWeight','bold')
 
-legend(ll,{'Dominant (fast) belt','Non-dom (slow) belt'},'FontSize',14,'FontWeight','bold','Location','South')
+lg=legend(ll,{'DOMINANT (FAST) BELT','NON-DOM. (SLOW) BELT'},'FontSize',12,'FontWeight','bold','Location','South');
+lg.Position=lg.Position-[.03 .005 0 0];
 set(ph,'XTick','')
 %ph.XLabel.Position=ph.XLabel.Position-[300 0 0];
 axis([1 conditionOffset(end) .5 1.55])
@@ -79,6 +82,7 @@ if k==2
     ll=findobj(gca,'Type','text');
 delete(ll)
 text(-.2*p1d(1).XAxis.Limits(2), 1.3*p1d(1).YAxis.Limits(2),'B','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-.2*p1d(1).XAxis.Limits(2), 1.3*p1d(1).YAxis.Limits(2)-7.3e-4,'C','FontSize',24,'FontWeight','bold','Clipping','off')
 ax.Title.String='SINGLE MUSCLE';
 
 end
@@ -152,7 +156,7 @@ for k=1:4
             aux1=auxF;
             aux2=auxS;
             tt='';
-tt2='{\Delta}eA';
+tt2='eA_B';
         case 2
             tt='H1';
             aux1=zeros(size(auxF));
@@ -162,12 +166,12 @@ tt2='0';
             tt='H2';
             aux1=-auxF;
             aux2=-auxS;
-tt2='-{\Delta}eA';
+tt2='-eA_B';
         case 4
             tt='H3';
             aux1=auxS;
             aux2=auxF;
-tt2='{\Delta}eA^*';
+tt2='eA_B^*';
     end
 ax=axes;
 ax.Position=[.02+(k-1)*.075+(k>1)*.06 .03 .2 .1];
@@ -185,14 +189,21 @@ hold on
 quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux2),zeros(size(aux1)),-.7*sign(aux2),0,'Color','k','LineWidth',2,'MaxHeadSize',.5)
 
 set(gca,'XTickLabel','','YTickLabel','','XTick','','YTick','')
-text(.4+(k==2)*.3+(k==3)*-.1,.1,tt2,'Clipping','off','FontSize',14,'FontWeight','bold')
+text(.4+(k==2)*.3+(k==3)*-.1,0,tt2,'Clipping','off','FontSize',14,'FontWeight','bold')
 text(.6,7.2,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
+if k==1
+    for j=1:3
+        text(1.7,j,['m' num2str(j)],'Clipping','off','FontSize',14,'FontWeight','bold')
+        text(1.7,j+3.3,['m' num2str(j)],'Clipping','off','FontSize',14,'FontWeight','bold')
+    end
 
 end
 
-text(-3,-1.3,'HYPOTHESES','Clipping','off','FontSize',14,'FontWeight','bold')
-text(-1.8,-.65,'eP-lA=','Clipping','off','FontSize',14,'FontWeight','bold')
-plot([-3.5 1.5],-.33*[1 1],'k','LineWidth',2,'Clipping','off')
+end
+
+text(-3,-1.5,'HYPOTHESES','Clipping','off','FontSize',14,'FontWeight','bold')
+text(-1.8,-.9,'eP-lA=','Clipping','off','FontSize',14,'FontWeight','bold')
+plot([-3.5 1.5],-.6*[1 1],'k','LineWidth',2,'Clipping','off')
 %plot(-4*[1 1],[.5 7],'k','LineWidth',1,'Clipping','off')
 
 %Add lines on fast/slow:
@@ -201,5 +212,7 @@ plot(-7.5*[1 1],[.5 3.5],'LineWidth',4,'Color',ccc(2,:),'Clipping','off')
 text(-8,3.55,'NON-DOM','Color',ccc(2,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
 plot(-7.5*[1 1],3.3+[.5 3.5],'LineWidth',4,'Color',ccc(1,:),'Clipping','off')
 text(-8,6.25,'DOM','Color',ccc(1,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
+
+
 %% Save fig
 saveFig(fh,'./',name,0)

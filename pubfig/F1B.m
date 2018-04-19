@@ -68,7 +68,7 @@ fs=16; %FontSize
             case 3
             aux=1*(nanmedian(A.Data,3)'-nanmedian(B.Data,3)') +.5*max(nanmedian(B.Data,3));
             figuresColorMap;
-            tt='{\Delta}lA';
+            tt='lA_B';
         end
         clear aux2
         for k=1:length(xt)-1
@@ -89,12 +89,12 @@ fs=16; %FontSize
     set(ll,'LineWidth',3)
     set(ph(i),'FontSize',fs,'YTickLabel','','XTickLabel','','XTick',xt,'YTick','')
     a=axis;
-    yOff=a(3)-.15*(a(4)-a(3));
+    yOff=a(3)-.2*(a(4)-a(3));
     %Add labels:
     text(.25*2*phaseSize,yOff,'DS','Clipping','off','FontSize',fs)
-    text(1.35*2*phaseSize,yOff,{'STANCE'},'Clipping','off','FontSize',fs)
-    text(3.25*2*phaseSize,yOff,'DS','Clipping','off','FontSize',fs)
-    text(4.35*2*phaseSize,yOff,{'SWING'},'Clipping','off','FontSize',fs)
+    text(1.15*2*phaseSize,yOff,{'STANCE'},'Clipping','off','FontSize',fs)
+    text(3.225*2*phaseSize,yOff,'DS','Clipping','off','FontSize',fs)
+    text(4.25*2*phaseSize,yOff,{'SWING'},'Clipping','off','FontSize',fs)
     axis(a)
     hold on
     yOff=a(3)-.05*(a(4)-a(3));

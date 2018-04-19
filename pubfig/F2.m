@@ -38,7 +38,7 @@ set(cc,'Ticks',[-.5 0 .5],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'-50%','0%','50%'});
 set(gcf,'Color',ones(1,3))
 %cc.Position=cc.Position+[.08 .01 -.02 0];
-title('Muscle activity modulation')
+title('EMG CHANGE: eA - B')
 ax=gca;
 %ax.Title.Color=condColors(1,:);
 for i=1:length(ax.YTickLabel)
@@ -73,9 +73,9 @@ hold on
 ll=findobj(pB,'Type','Line');
 pp=pB.YLim;
 plot([.01 .49]*240,100*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
-text(.05*240,110,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
+text(.08*240,110,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
 plot((.5+[0.01 .49])*240,100*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
-text(.53*240,110,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
+text(.57*240,110,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
 pB.YLim=pp;
 pB.FontSize=14;
 pB.FontWeight='bold';
@@ -87,6 +87,9 @@ pause(1)
 pB.Position(1)=.11;
 pB.YTick=[-80:40:80];
 pB.YTickLabel={'80','40','0','-40','-80'};
+title('HIP A-P POSITION (WRT ANKLE)')
+ll=findobj(gca,'Type','Line');
+legend(ll(end-1:end),{'eA','B'})
 
 %% Panel C: little dude
 fC=imread('../intfig/littleGuy.png');

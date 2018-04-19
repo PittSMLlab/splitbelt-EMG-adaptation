@@ -43,4 +43,4 @@ drawnow
     tt=findobj(gca,'Type','text','String','FLEXORS');
     tt.Position=tt.Position+[xOff yOff 0];
 %%
-saveFig(gcf,saveDir,saveName,0)
+%saveFig(gcf,saveDir,saveName,0)
