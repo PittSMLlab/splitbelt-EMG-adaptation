@@ -12,7 +12,7 @@ idx=1:16;
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
 write=true;
-%write=false;
+write=false;
 %% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
@@ -395,12 +395,12 @@ for i=1:2
     for j=1:4
         switch j
             case 1 %First panel: regressors vs. explanatory variable
-                data2=learnAll2a;
-                names=mod.CoefficientNames;
+                data2=[learnAll2a r2All2a'];
+                names=[mod.CoefficientNames, {'R^2'}];
                 yl='Regressors';
                 tt='Model fit';
-                ci=[3,3];
-                ai=[1,.5];
+                ci=[3,3,2];
+                ai=[1,.5,1];
             case 2 %Second panel: eP and lA sizes
                 data2=[norm_eP,norm_lA];
                 names={'||eP_B||','||lA_B||'};
@@ -426,7 +426,7 @@ for i=1:2
         subplot(2,4,j+(i-1)*4)
         hold on
         ss=[];
-        for k=1:length(names)
+        for k=1:min(2,length(names))
             [rs,ps]=corr(x(idx)',data2(idx,k),'Type','Spearman');
             ss(k)=scatter(x(idx),data2(idx,k),50,condColors(ci(k),:),'filled','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);
             pp=polyfit1PCA(x(idx),data2(idx,k),1);
@@ -445,7 +445,37 @@ end
     if write
         saveFig(fh,'../intfig/intersubj/',['AgeSpeedEffects_' groupName],0)
     end
-
+%% Alternative figure
+fh=figure;
+data2=learnAll2a;
+c1=[1,0,0]*.9;
+c2=(condColors(3,:));
+c1=condColors(1,:)*1.8;
+normAge=(age-min(age))/(max(age)-min(age));
+scatter(data2(:,1),data2(:,2),60,normAge','filled')
+colormap((c1.*[0:.01:1]'+c2.*[1:-.01:0]').^.5)
+cc=colorbar;
+xlabel('\beta_S')
+ylabel('\beta_M')
+set(cc,'Ticks',[0:.2:1],'TickLabels',num2str((max(age)-min(age))*[0:.2:1]' +min(age),2))
+rL=modelFit2a.Coefficients.Estimate;
+rS=modelFitS2a.Coefficients.Estimate;
+hold on
+scatter(rS(1),rS(2),150,condColors(1,:),'filled')
+text(rS(1)-.15,rS(2)-.1,{'   Short','exposure'})
+scatter(rL(1),rL(2),150,condColors(3,:),'filled')
+text(rL(1)+.05,rL(2),{'   Long','exposure'})
+scatter(1,0,100,'k','filled')
+scatter(0,1,100,'k','filled')
+text(.8,.1,{'   H2: No','Adaptation'})
+text(-.4,.99,{' H3: Ideal'; 'Adaptation'})
+%TO DO: add expected split-to-tied and tied-to-split
+axis([-.5 1.35 -.2 1.1])
+title('Projection of split-to-tied changes in muscle activity')
+    %Save fig:
+    if write
+        saveFig(fh,'../intfig/intersubj/',['RegressorSpace_' groupName],0)
+    end
 %%
 % figuresColorMap
 % %First: eAT regressor vs age
