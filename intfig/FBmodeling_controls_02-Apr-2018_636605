@@ -1,0 +1,57 @@
+ 
+%%%%%%%%%%%%%%%%%
+ 
+Model 2a (LE):
+Avg. (uncent.) R^2=0.7423
+Indiv. \R^2=0.372 \pm 0.164, (mean \pm std)
+Indiv. \R^2=0.32 \pm 0.236, (median \pm iqr)
+Avg. \beta eA CI=0.15      0.24, p=5.8262e-16
+Indiv. \beta=0.105 \pm 0.218, (mean \pm std)
+Indiv. \beta=0.196 \pm 0.402, (median \pm iqr)
+Avg. \beta eAT CI=0.69      0.78, p=7.8349e-107
+Indiv. \beta=0.453 \pm 0.153, (mean \pm std)
+Indiv. \beta=0.432 \pm 0.185, (median \pm iqr)
+Bayes Factor over 2a model:1
+Bayes Factor over 2c model:3.25e-13
+ 
+Model S2a (SE):
+Avg. (uncent.) R^2=0.877
+Indiv. \R^2=0.559 \pm 0.143, (mean \pm std)
+Indiv. \R^2=0.593 \pm 0.106, (median \pm iqr)
+Avg. \beta eA CI=1.15      1.24, p=8.6912e-163
+Indiv. \beta=0.906 \pm 0.311, (mean \pm std)
+Indiv. \beta=0.916 \pm 0.469, (median \pm iqr)
+Avg. \beta eAT CI=-0.0641    0.0304, p=0.48309
+Indiv. \beta=0.0201 \pm 0.224, (mean \pm std)
+Indiv. \beta=0.0682 \pm 0.354, (median \pm iqr)
+Bayes Factor over 2a model:1.16e+42
+Bayes Factor over 2c model:3.76e+29
+ 
+Model 3b (LE3new):
+Avg. (uncent.) R^2=0.7807
+Indiv. \R^2=0.491 \pm 0.153, (mean \pm std)
+Indiv. \R^2=0.492 \pm 0.177, (median \pm iqr)
+Avg. \beta eA CI=-0.0363    0.0832, p=0.4415
+Indiv. \beta=-0.0802 \pm 0.195, (mean \pm std)
+Indiv. \beta=-0.0743 \pm 0.244, (median \pm iqr)
+Avg. \beta eAT CI=0.598     0.693, p=1.0864e-87
+Indiv. \beta=0.403 \pm 0.14, (mean \pm std)
+Indiv. \beta=0.383 \pm 0.181, (median \pm iqr)
+Avg. \beta lA CI=0.35     0.582, p=3.3062e-14
+Indiv. \beta=0.558 \pm 0.24, (mean \pm std)
+Indiv. \beta=0.582 \pm 0.263, (median \pm iqr)
+Bayes Factor over 2a model:2.19e+11
+Bayes Factor over 2c model:0.0711
+ 
+Model 2c (LEwoBetaS):
+Avg. (uncent.) R^2=0.7804
+Indiv. \R^2=0.463 \pm 0.14, (mean \pm std)
+Indiv. \R^2=0.48 \pm 0.146, (median \pm iqr)
+Avg. \beta eAT CI=0.595      0.68, p=9.114e-98
+Indiv. \beta=0.446 \pm 0.185, (mean \pm std)
+Indiv. \beta=0.422 \pm 0.175, (median \pm iqr)
+Avg. \beta lA CI=0.417     0.579, p=1.6991e-28
+Indiv. \beta=0.466 \pm 0.234, (mean \pm std)
+Indiv. \beta=0.511 \pm 0.296, (median \pm iqr)
+Bayes Factor over 2a model:3.08e+12
+Bayes Factor over 2c model:1

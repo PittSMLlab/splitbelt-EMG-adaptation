@@ -5,3 +5,5 @@ data/HPF200/
 intfig/indiv/
 src/N1/*.mat
 src/N1A/*.mat
+
+*.fig
