@@ -43,3 +43,26 @@ subplot(M1,M2,3)
 imagesc(reshape(median(lA,2)+median(fftshift(eA,1),2),12,30)')
 caxis(ct*[-1 1])
 title('lA+eA^T')
+
+%%
+fh=figure('Units','Normalized','OuterPosition',[0 0 1 1],'Name','residuals');
+figuresColorMap
+colormap(flipud(map))
+ct=.6;
+M1=1;
+M2=4;
+subplot(M1,M2,1)
+imagesc(reshape(median(lP-lA,2),12,30)')
+caxis(ct*[-1 1])
+title('lP-lA')
+
+subplot(M1,M2,2)
+imagesc(reshape(median(-lA,2),12,30)')
+caxis(ct*[-1 1])
+title('-lA')
+
+subplot(M1,M2,3)
+imagesc(reshape(median(fftshift(lA,1),2),12,30)')
+caxis(ct*[-1 1])
+title('lA^T')
+

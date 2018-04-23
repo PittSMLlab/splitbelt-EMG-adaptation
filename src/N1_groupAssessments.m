@@ -1,4 +1,6 @@
 %% Group assessments
+addpath(genpath('./auxData/'))
+addpath(genpath('./fun/'))
 clc
 strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0007','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};
 controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0007','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, plus it has
@@ -23,7 +25,7 @@ suffix='Norm2';
 % run ./N1A/N19B2_assessGroupedKinEvolution2.m
 % run ./N1A/N19B3_assessGroupedKinEvolutionIndividuals.m
 
-% %
+%%
   for matchSpeedFlag=0%:1 %Unimplemented
      for subCountFlag=0%0:1 %Unimplemented
          for useLateAdapBase=0%:1
