@@ -33,17 +33,23 @@ newLabelPrefix=strcat(labelPrefix,'s');
 %% Define epochs & get data:
 baseEp=getBaseEpoch;
 %Adaptation epochs
-strides=[300 900 400];exemptFirst=[0];exemptLast=[0];
+strides=[-50 900 600];exemptFirst=[0];exemptLast=[0];
 names={};
 shortNames={};
-cond={'Base','Adaptation','Washout'};
+cond={'TM Base','Adaptation','Washout'};
 ep=defineEpochs(cond,cond,strides,exemptFirst,exemptLast,'nanmedian',{'B','A','P'});
 
-padWithNaNFlag=false;
+padWithNaNFlag=true;
 [dataEMG,labels,allDataEMG]=group.getPrefixedEpochData(newLabelPrefix,ep,padWithNaNFlag);
+%Flipping EMG:
+for i=1:length(allDataEMG)
+    aux=reshape(allDataEMG{i},size(allDataEMG{i},1),size(labels,1),size(labels,2),size(allDataEMG{i},3));
+    allDataEMG{i}=reshape(flipEMGdata(aux,2,3),size(aux,1),numel(labels),size(aux,4));
+end
+
 %[dataContribs]=group.getEpochData(ep,{'netContributionNorm2'},padWithNaNFlag);
 %dataContribs=dataContribs-dataContribs(:,strcmp(ep.Properties.ObsNames,'Base'),:); %Removing base
 
 %% 
-
+save ../data/dynamicsData.mat allDataEMG
 end

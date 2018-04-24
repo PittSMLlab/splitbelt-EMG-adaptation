@@ -14,6 +14,10 @@ map=[bsxfun(@plus,ex1,bsxfun(@times,1-ex1,[0:.01:1]'));bsxfun(@plus,ex2,bsxfun(@
 colormap(flipud(map))
 cl=1;
 
+%Condition offsets
+    adaptOffset=51;
+    postOffset=951;
+
 %
 if size(trainingData,1)==2*size(model.C,1)
    bilatFlag=1;
@@ -33,7 +37,6 @@ if bilatFlag
 end
 
 %Plot model matrices C and D
-postOffset=1099;
 N=size(model.C,2);
 [~,ind]=sort(diag(model.J),'ascend');
 for i=1:N
@@ -59,8 +62,7 @@ if ~all(model.D(:)==0)
 else %Models fitted to post-adapt data
     tit='D*';
     %model.D=nanmean((trainingData(:,trainingU~=0)-model.Ysim(:,trainingU~=0))./trainingU(trainingU~=0),2);
-    adaptOffset=199;
-    postOffset=1099;
+
     yA=trainingData(:,adaptOffset:postOffset-1);
     hatYA=model.Ysim(:,adaptOffset:postOffset-1);
     model.D=nanmean(yA-hatYA,2);
@@ -80,6 +82,7 @@ set(gca,'XTick','','YTick','')
 %Add Y_\infty
 ax=axes();
 ax.Position=[5*margin*width+.03 margin*height*3+.05 width .8*height];
+model.Yinf=model.D+model.C * model.Xsim(:,postOffset-1);
 imagesc(reshape(model.Yinf,12,15*(bilatFlag+1))')
 title('Y_\infty ')
 caxis(cl*[-1 1])
@@ -108,11 +111,9 @@ set(gca,'XTick','','YTick','')
 %Add data & simulation
 auxStride=[1 4 10 85 40];
 strideNo=[40 auxStride auxStride];
-adaptOffset=199;
-postOffset=1099;
 MM=size(trainingData,2);
 offset=[adaptOffset+[-45 0 1 5 15 855] postOffset+[0 1 5 15 (MM-postOffset)-44]];
-normFactor=sqrt(nanmean(sum(trainingData(:,offset(1)+[0:strideNo(1)-1]).^2,1),2));
+normFactor=nanmean(sqrt(sum(trainingData(:,offset(1)+[0:strideNo(1)-1]).^2,1)),2);
 for i=1:length(strideNo)
     strides=offset(i)+[0:strideNo(i)-1];
     
@@ -148,7 +149,7 @@ for i=1:length(strideNo)
    else
        set(gca,'YTick','')
    end
-   res=sqrt(nanmean(sum((simData(:,strides)-trainingData(:,strides)).^2,1),2));
+   res=nanmean(sqrt(sum((simData(:,strides)-trainingData(:,strides)).^2,1)),2); %Error norm (L2, euclidean), averaged over strides
    text(4,0,['e = ' num2str(round(100*res/normFactor)/100)],'FontSize',8,'Clipping','off','FontWeight','bold')
    
    %PLot residuals:

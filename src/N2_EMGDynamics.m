@@ -1,74 +1,55 @@
 %% Load params
-%auxI=[];
-%loadEMGParams_controls
-error('Need to review loadEMGParams_controls to figure out what the proper way of aligning subjects is. Perhaps there is no good workaround')
-%Needed to bypass matlab error:
-auxII=auxI;
-auxI=auxII;
-clear auxII
+%error('Need to review loadEMGParams_controls to figure out what the proper way of aligning subjects is. Perhaps there is no good workaround') %I mean to align the trial ends every 300 strides during Adaptation
+groupName='controls';
+%allDataEMG=loadEMGParams_ForDynamics(groupName); %If ../data/dynamicsData.mat doesn't exist, this needs to be run. Alternatively, just load the file
+%load ../data/dynamicsData.mat
 
-%% Get subject(s) of interest
-%Mean subject:
-AAnorm1=nanmean(AAnorm,3); %Mean sub: the median sub is much worse in its reconstruction
+%% Some pre-proc
+B=nanmean(allDataEMG{1}(end-45:end-5,:,:)); %Baseline: last 40, exempting 5
+clear data dataSym
+for i=1:3 %B,A,P
+    %Remove baseline
+    data{i}=allDataEMG{i}-B;
 
-%% Define epochs
-yM=AAnorm1(auxI(1)+1:auxI(2),:,:,:);
-yS=AAnorm1(auxI(2)+1:auxI(3),:,:,:);
-yB=AAnorm1(auxI(3)+1:auxI(4),:,:,:);
-yA=AAnorm1(auxI(4)+1:auxI(5),:,:,:);
-yP=AAnorm1(auxI(5)+1:auxI(6),:,:,:);
-
-ayM=AAnorm(auxI(1)+1:auxI(2),:,:,:);
-ayS=AAnorm(auxI(2)+1:auxI(3),:,:,:);
-ayB=AAnorm(auxI(3)+1:auxI(4),:,:,:);
-ayA=AAnorm(auxI(4)+1:auxI(5),:,:,:);
-ayP=AAnorm(auxI(5)+1:auxI(6),:,:,:);
-
-%% Defining some important values:
-earlyStrides=5;
-lateStrides=40;
-exempt=5; %Only for purposes of estimating baseline
-BB=nanmean(yB(end-exempt-[lateStrides:-1:1],:),1); %Baseline estimate
-aBB=nanmean(ayB(end-exempt-[lateStrides:-1:1],:,:),1); %Baseline estimate
-
-YallB=[yM; yS; yB; yA; yP]-BB;
-aYallB=[ayM; ayS; ayB; ayA; ayP]-aBB;
-Yall=YallB(:,1:Nn*(Nm/2))-YallB(:,Nn*(Nm/2)+[1:Nn*(Nm/2)]);
-aYall=aYallB(:,1:Nn*(Nm/2),:)-aYallB(:,Nn*(Nm/2)+[1:Nn*(Nm/2)],:);
-Uall=[zeros(size(yM,1),1);ones(size(yS,1),1);zeros(size(yB,1),1);ones(size(yA,1),1);zeros(size(yP,1),1)];
+    %Interpolate over NaNs
+    for j=1:size(data{i},3) %each subj
+    t=1:size(data{i},1); nanidx=any(isnan(data{i}(:,:,j)),2); %Any muscle missing
+    data{i}(:,:,j)=interp1(t(~nanidx),data{i}(~nanidx,:,j),t,'linear','extrap'); %Substitute nans
+    end
+    
+    %Compute asymmetry component
+    aux=data{i}-fftshift(data{i},2);
+    dataSym{i}=aux(:,1:size(aux,2)/2,:);
+end
 
 %% Generate models
-%Get adapt and post data:
-Ya=[yA(1:end-3,:)]-BB; Ya=Ya(:,1:Nn*(Nm/2))-Ya(:,Nn*(Nm/2)+[1:Nn*(Nm/2)]);
-ta=1:size(Ya,1); nanidx=any(isnan(Ya),2);
-Ya=interp1(ta(~nanidx),Ya(~nanidx,:),ta,'linear','extrap')'; %Substitute nans
 
-Yp=[yP(1:end-10,:)]-BB; Yp=Yp(:,[1:Nn*(Nm/2)])-Yp(:,Nn*(Nm/2)+[1:Nn*(Nm/2)]);
-tp=1:size(Yp,1); nanidx=any(isnan(Yp),2);
-Yp=interp1(tp(~nanidx),Yp(~nanidx,:),tp,'linear','extrap')';
-
-Ys=yS-BB; Ys=Ys(:,1:Nn*(Nm/2))'-Ys(:,Nn*(Nm/2)+[1:Nn*(Nm/2)])';
-
-%cross-validated model fitting:
 forcePCS=false;
 model={};
 outputUnderRank=[];
 for dataSet=1:2%3
     switch dataSet
-        case 1
-            data=Ya';
+        case 1 %Using adaptation data to fit model
+            data=median(dataSym{2},3); %Median across subjs
             nn='Adapt';
             nullBD=false;
-        case 2
-            data=Yp';
+        case 2 %Using post-adaptation data to fit model
+            data=median(dataSym{3},3); %Median across subjs
             nn='Post';
-            nullBD=true;
-        case 3
-            data=Yp';
+            nullBD=true; %This means B & D are not fitted, because the input is null. Instead, we fit the initial state to a non-zero value. 
+            %Notice that not fitting B implies no loss of generality, as B and x(0)
+            %can be, in general, interchanged for one another (if all
+            %states are reachable). Not fitting D does imply loss of
+            %generality: means that the steady-state HAS TO BE 0. [in
+            %practice if the steady-state is non-zero, a very slow changing
+            %state will be found, such that after any finite number of steps
+            %the state will be non-zero]
+        case 3 %Using post-adaption, but fitting B,D. See above.
+            median(dataSym{3},3); %Median across subjs
             nn='Post*';
             nullBD=false;
     end
-    for Nfolds=1:3
+    for Nfolds=1:2 %Doing 1,2-fold cross-validation 
         for order=1:4
             model(end+[1:Nfolds]) = CVsPCA(data,order,forcePCS,nullBD,outputUnderRank,Nfolds);
             for j=1:Nfolds %Setting names
@@ -86,10 +67,12 @@ for dataSet=1:2%3
 end
 
 %Add the baseline model:
-model{end+1}.J=0; model{end}.C=zeros(size(Ya,1),1); model{end}.D=0;
-model{end}.X=zeros(1,size(Yall,2)); model{end}.name='Baseline [0]'; model{end}.B=0;
+model{end+1}.J=0; model{end}.C=zeros(size(data,2),1); model{end}.D=0;
+model{end}.X=zeros(1,size(dataSym{1},1)); model{end}.name='Baseline [0]'; model{end}.B=0;
 
 % Simulate models forward & get residuals
+Uall=[zeros(size(dataSym{1},1),1); ones(size(dataSym{2},1),1); zeros(size(dataSym{3},1),1)];
+Yall=median(cell2mat(dataSym'),3);
 for k=1:length(model)
     model{k}.Xproj=model{k}.C\(Yall'-model{k}.D*Uall'); %Projecting data onto C's span
     model{k}.Xsim=zeros(size(model{k}.C,2),size(Yall,2));
@@ -101,7 +84,7 @@ for k=1:length(model)
     model{k}.r2sim=(sum((model{k}.res).^2));   
 end
 
-save dynamicsModeling_noC07C09_randInit10.mat model Yall YallB Uall aYall aYallB muscleList
+%save dynamicsModeling_noC07C09_randInit10.mat model Yall YallB Uall aYall aYallB muscleList
 %%
 figure; 
 subplot(2,1,1) %Plot states
@@ -111,7 +94,7 @@ models=[1:length(model)];
 models=[1:2,5:7,3,8:9,14:15,18:19,16,20:21,17,26]; %With CV models
 models=[1:3,14:17,26]; %No CV
 pX=nan(size(model));
-models=[2,26]; %G's request
+models=[3,16]; %G's request
 for k=models
     aux=plot(model{k}.Xsim','LineWidth',2,'DisplayName',[model{k}.name ' \tau=' num2str(-1./log(eig(model{k}.J))',3)]);
     set(aux,'Color',get(aux(1),'Color'));
@@ -119,24 +102,24 @@ for k=models
 end
 mrk={'.','x','o','d'};
 pX1=nan(size(model));
-for k=2;%1:3%models
+for k=models(1) %Only for first model
     for j=1:size(model{k}.C,2)
-        pX1(k)=plot(model{k}.Xproj(j,:),mrk{j},'Color',get(pX(k),'Color'),'DisplayName',[model{k}.name ', state ' num2str(j)]);
+        pX1(k)=scatter([1:size(model{k}.Xproj,2)]',model{k}.Xproj(j,:),20,get(pX(k),'Color'),'filled','MarkerEdgeColor','none','MarkerFaceAlpha',1-(j-1)/(size(model{k}.C,2)),'DisplayName',[model{k}.name ', state ' num2str(j)]);
+        %pX1(k)=plot(model{k}.Xproj(j,:),mrk{j},'Color',get(pX(k),'Color'),'DisplayName',[model{k}.name ', state ' num2str(j)]);
     end
 end
 grid on; axis tight; aa=axis; axis([aa(1:2) -.8 3.5]); 
-pp=patch([40.5 48.5 48.5 40.5],3*[-2 -2 2 2],.3*ones(1,3),'EdgeColor','None','FaceAlpha',.3);uistack(pp,'bottom')
-pp=patch(198+[.5 900.5 900.5 .5],3*[-2 -2 2 2],.3*ones(1,3),'EdgeColor','None','FaceAlpha',.3);uistack(pp,'bottom')
+%pp=patch([40.5 48.5 48.5 40.5],3*[-2 -2 2 2],.3*ones(1,3),'EdgeColor','None','FaceAlpha',.3);uistack(pp,'bottom')
+pp=patch(50+[.5 900.5 900.5 .5],3*[-2 -2 2 2],.3*ones(1,3),'EdgeColor','None','FaceAlpha',.3);uistack(pp,'bottom')
 legend([pX(models)],'Location','Best');xlabel('Strides');ylabel('a.u.');set(gca,'FontSize',20)
 title(['States'])
 
 subplot(2,1,2) %Plot residuals
 hold on
-models1=[1:3,14:17,22,23,26]; %No CV
-models1=[2,15,26]; %G's request
+
 pXr=nan(size(model));
 cca=get(gca,'ColorOrder');
-for k=models1
+for k=models
     ii=1:length(model{k}.r2sim);
     try
         cc=get(pX(k),'Color');
@@ -145,12 +128,10 @@ for k=models1
     end
     pXr(k)=plot(ii,sqrt(model{k}.r2sim(ii)),'LineWidth',1,'DisplayName',[model{k}.name],'Color',cc);
 end
-grid on; axis tight; aa=axis; axis([aa(1:2) 0 .65]); 
-pp=patch([40.5 48.5 48.5 40.5],[-2 -2 2 2],.3*ones(1,3),'EdgeColor','None','FaceAlpha',.3);
+grid on; axis tight; %aa=axis; axis([aa(1:2) 0 .65]); 
+pp=patch(50+[.5 900.5 900.5 .5],[-2 -2 2 2],.3*ones(1,3),'EdgeColor','None','FaceAlpha',.3);
 uistack(pp,'bottom')
-pp=patch(198+[.5 900.5 900.5 .5],[-2 -2 2 2],.3*ones(1,3),'EdgeColor','None','FaceAlpha',.3);
-uistack(pp,'bottom')
-lg=legend([pXr(models1)],'Location','Best');
+lg=legend([pXr(models)],'Location','Best');
 lg.FontSize=14;
 Nstrides=[100,290, 590]; %First 100,290, first 590 strides
 title(['Residuals: ||Y-Y*||'])
@@ -159,9 +140,9 @@ xlabel('Strides')
 ylabel('% Base')
 
 %% Visualize and save each model
-for i=1:length(model)
+for i=[2,3,15,16]
 fh=assessModel(model{i},Yall',Uall');
-saveFig(fh,'../fig/all/dyn/',model{i}.name);
+%saveFig(fh,'../fig/all/dyn/',model{i}.name);
 end
 %% Subspace projection view
 %Subspace where most of the short-split variance resides
