@@ -2,7 +2,10 @@
 %error('Need to review loadEMGParams_controls to figure out what the proper way of aligning subjects is. Perhaps there is no good workaround') %I mean to align the trial ends every 300 strides during Adaptation
 groupName='controls';
 %allDataEMG=loadEMGParams_ForDynamics(groupName); %If ../data/dynamicsData.mat doesn't exist, this needs to be run. Alternatively, just load the file
-%load ../data/dynamicsData.mat
+load ../data/dynamicsData.mat
+
+%%
+saveFlag=false;
 
 %% Some pre-proc
 B=nanmean(allDataEMG{1}(end-45:end-5,:,:)); %Baseline: last 40, exempting 5
@@ -24,18 +27,18 @@ end
 
 % dataSym=data; %Bilateral models
 %% Generate models
-
+summaryFunction=@(x) median(x,3); %Using mean or median
 forcePCS=false;
 model={};
 outputUnderRank=[];
 for dataSet=1%:2%3
     switch dataSet
         case 1 %Using adaptation data to fit model
-            data=median(dataSym{2},3); %Median across subjs
+            data=summaryFunction(dataSym{2});
             nn='Adapt';
             nullBD=false;
         case 2 %Using post-adaptation data to fit model
-            data=median(dataSym{3},3); %Median across subjs
+            data=summaryFunction(dataSym{3}); %Careful with this: C07,C09 need to be excluded, since they dont have 600 strides, or the data needs to be cropped to include only 400 strides
             nn='Post';
             nullBD=true; %This means B & D are not fitted, because the input is null. Instead, we fit the initial state to a non-zero value. 
             %Notice that not fitting B implies no loss of generality, as B and x(0)
@@ -46,7 +49,7 @@ for dataSet=1%:2%3
             %state will be found, such that after any finite number of steps
             %the state will be non-zero]
         case 3 %Using post-adaption, but fitting B,D. See above.
-            data=median(dataSym{3},3); %Median across subjs
+            data=summaryFunction(dataSym{3}); %Median across subjs
             nn='Post*';
             nullBD=false;
     end
@@ -54,7 +57,8 @@ for dataSet=1%:2%3
         for order=1:5
             model(end+[1:Nfolds]) = CVsPCA(data,order,forcePCS,nullBD,outputUnderRank,Nfolds);
             for j=1:Nfolds %Setting names
-                model{end-Nfolds+j}.name=[nn '[' num2str(order) '.' num2str(j) '/' num2str(Nfolds) ']'];
+                aux=func2str(summaryFunction);
+                model{end-Nfolds+j}.name=[nn '[' num2str(order) '.' num2str(j) '/' num2str(Nfolds) ']_' aux(5:end-5)];
                 if dataSet==2
                     m=model{end-Nfolds+j};
                     I=eye(size(m.J));
@@ -73,7 +77,7 @@ model{end}.X=zeros(1,size(dataSym{1},1)); model{end}.name='Baseline [0]'; model{
 
 % Simulate models forward & get residuals
 Uall=[zeros(size(dataSym{1},1),1); ones(size(dataSym{2},1),1); zeros(size(dataSym{3},1),1)];
-Yall=median(cell2mat(dataSym'),3);
+Yall=summaryFunction(cell2mat(dataSym'));
 for k=1:length(model)
     model{k}.Xproj=model{k}.C\(Yall'-model{k}.D*Uall'); %Projecting data onto C's span
     model{k}.Xsim=zeros(size(model{k}.C,2),size(Yall,2));
@@ -84,13 +88,21 @@ for k=1:length(model)
     model{k}.res=Yall'-model{k}.Ysim;
     model{k}.r2sim=(sum((model{k}.res).^2));   
     model{k}.r2Adapt=(sum((model{k}.res(:,51:950)).^2)); 
-    model{k}.r2Post=(sum((model{k}.res(:,951:end)).^2));  
+    model{k}.r2Post=(sum((model{k}.res(:,951:1350)).^2));  %Using only 400 strides to assess, since C07,C09 dont have 600 strides
+    model{k}.r2EarlyPost=(sum((model{k}.res(:,951:965)).^2)); 
     model{k}.r2AdaptOdd=(sum((model{k}.res(:,51:2:950)).^2));   
     model{k}.r2AdaptEven=(sum((model{k}.res(:,52:2:950)).^2)); 
+    model{k}.r2Base=(sum((model{k}.res(:,1:50)).^2)); 
 end
-
-%save ../data/dynamicsModelingResultsALL.mat model Yall Uall model dataSym
+if saveFlag
+    aux=func2str(summaryFunction);
+    save(['../data/dynamicsModelingResultsALL_' aux(5:end-5) '.mat'], 'model', 'Yall', 'Uall', 'model', 'dataSym', 'summaryFunction');
+end
 %% Plot basic model performance
+%If the previous cell was not run, load:
+%aux=func2str(summaryFunction);
+%load(['../data/dynamicsModelingResultsALL_' aux(5:end-5) '.mat'])
+[p,c,a]=pca(Yall(51:950,:),'Centered',true);
 for i=1:5 %Model orders tried
     rAllAll(i)=mean(model{i}.r2Adapt);
     rAllOdd(i)=mean(model{i}.r2AdaptOdd);
@@ -100,16 +112,24 @@ for i=1:5 %Model orders tried
     r2Odd(i)=mean(model{5+2*i}.r2AdaptOdd); %Trained on even data
     r2Even(i)=mean(model{5+2*i}.r2AdaptEven);
     rAllPost(i)=mean(model{i}.r2Post);
+    rAllEarlyPost(i)=mean(model{i}.r2EarlyPost);
+    rAllBase(i)=mean(model{i}.r2Base);
+    rPCA(i)=mean(sum(((Yall(51:950,:)-mean(Yall(51:950,:)))'-p(:,1:i)*c(:,1:i)').^2));
 end
 fh=figure('Units','Normalized','OuterPosition',[0 0 .5 .7]);
 subplot(2,2,1) %Cross-validation of adaptation-fitted models to Post-data
 hold on
 p0=plot(rAllAll,'DisplayName','Train: adapt, Test: adapt');
-p1=plot(rAllPost,'DisplayName','Train: adapt, Test: post');
+p1=plot(rAllPost,'DisplayName','Test: post');
+p2=plot(rAllEarlyPost,'DisplayName','Test: early post');
+p3=plot(rAllBase,'DisplayName','Test: base');
+p4=plot(rPCA,'DisplayName','PCA, Test: adapt')
 xlabel('Model order')
-legend([p0 p1])
+legend([p0 p1 p2 p3 p4])
 ylabel('Squared residuals (a.u.)')
 grid on
+axis([1 5 .5 10])
+set(gca,'YScale','log')
 
 subplot(2,2,2) %Cross-validation of adapt-fitted models to unused(2-fold) adapt data
 hold on
@@ -136,7 +156,10 @@ set(gca,'YScale','log')
 grid on
 title('Decay rates (fitted)')
 ylabel('Time-constants (strides)')
-saveFig(fh,'../intfig/all/dyn/','modelOrderAssessment',0)
+if saveFlag
+    aux=func2str(summaryFunction);
+    saveFig(fh,'../intfig/all/dyn/',['modelOrderAssessment_' aux(5:end-5)],0)
+end
 
 %%
 figure; 
@@ -202,8 +225,11 @@ for i=[1,2,3,4,5]%15,16]
         m.Ysim(:,postOffset:end)=m.Ysim(:,postOffset:end) - switchFactor* m.C(:,idx) * m.Xsim(idx,postOffset:end); %Removing some percentage of the slowest state only
         m.Xsim(idx,postOffset:end)=(1-switchFactor)*m.Xsim(idx,postOffset:end);
     end
-    fh=assessModel(m,Yall',Uall');
-    %saveFig(fh,'../intfig/all/dyn/',[regexprep(model{i}.name,'/','_')]);
+    fh=assessModel(m,Yall(1:end-200,:)',Uall(1:end-200)'); %Not including last 200 strides for assessment: C07 and C09 dont have those.
+    if saveFlag
+        aux=func2str(summaryFunction);
+        saveFig(fh,'../intfig/all/dyn/',[regexprep(model{i}.name,'/','_') aux(5:end-5)]);
+    end
 end
 %% Subspace projection view
 %Subspace where most of the short-split variance resides

@@ -40,15 +40,20 @@ end
 %Plot model matrices C and D
 N=size(model.C,2);
 [~,ind]=sort(diag(model.J),'ascend');
+if N>3
+    widthAlt=width*3/N;
+else
+    widthAlt=width;
+end
 for i=1:N %States
    ax=axes();
-   ax.Position=[(i+1)*margin*width+.03 margin*height*3+.05 width .8*height];
+   ax.Position=[((i-1)*(widthAlt/width)+2)*margin*width+.03 margin*height*3+.05 widthAlt .8*height];
    imagesc(model.Xsim(ind(i),postOffset-1)*reshape(model.C(:,ind(i)),12,M1)')
    %title(['C_' num2str(i) ', \tau = ' num2str(-1./log(model.J(ind(i),ind(i))),3)])
    caxis(cl*[-1 1])
    set(gca,'XTick','','YTick','')
    ax=axes();
-   ax.Position=[(i+1)*margin*width+.03 margin*height*3.8+.05 width .25*height];
+   ax.Position=[((i-1)*(widthAlt/width)+2)*margin*width+.03 margin*height*3.8+.05 widthAlt .25*height];
    plot(model.Xsim(ind(i),:)/model.Xsim(ind(i),postOffset-1),'LineWidth',3)
    axis tight
    set(gca,'XTick','','YTick','')
@@ -100,14 +105,15 @@ set(gca,'XTick','','YTick','')
 %Add performance:
 ax=axes();
 ax.Position=[7*margin*width+.03 margin*height*3+.05 width+3*margin*width .8*height];
-plot((model.Xsim./ model.Xsim(:,postOffset-1))','LineWidth',3)
+plot((model.Xsim./ model.Xsim(:,postOffset-1))','LineWidth',3)% Normalizing states for visualization purposes only
 hold on
 set(ax,'ColorOrderIndex',1)
-plot((trainingData-model.D*trainingU)'/(model.C' .* model.Xsim(:,postOffset-1)),'.')
+plot((trainingData-model.D*trainingU)'/(model.C' .* model.Xsim(:,postOffset-1)),'.') %Projection onto normalized states
 %plot((model.Xproj./ model.Xsim(:,postOffset-1))','.')
 %plot(sum((model.Ysim-trainingData).^2,1) ./nanmean(sum(trainingData.^2,1)),'k')
 axis tight
-set(gca,'XTick','','YTick','')
+set(gca,'XTickLabel','','YTickLabel','')
+grid on
 
 %Add data & simulation
 auxStride=[1 4 10 85 40];
