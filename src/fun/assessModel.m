@@ -19,6 +19,7 @@ cl=1;
     postOffset=951;
 
 %
+M1=size(model.C,1)/12;
 if size(trainingData,1)==2*size(model.C,1)
    bilatFlag=1;
    cl=.5;
@@ -39,10 +40,10 @@ end
 %Plot model matrices C and D
 N=size(model.C,2);
 [~,ind]=sort(diag(model.J),'ascend');
-for i=1:N
+for i=1:N %States
    ax=axes();
    ax.Position=[(i+1)*margin*width+.03 margin*height*3+.05 width .8*height];
-   imagesc(model.Xsim(ind(i),postOffset-1)*reshape(model.C(:,ind(i)),12,15*(bilatFlag+1))')
+   imagesc(model.Xsim(ind(i),postOffset-1)*reshape(model.C(:,ind(i)),12,M1)')
    %title(['C_' num2str(i) ', \tau = ' num2str(-1./log(model.J(ind(i),ind(i))),3)])
    caxis(cl*[-1 1])
    set(gca,'XTick','','YTick','')
@@ -68,7 +69,7 @@ else %Models fitted to post-adapt data
     model.D=nanmean(yA-hatYA,2);
     model.Ysim=model.C*model.Xsim+model.D*trainingU;
 end
-imagesc(reshape(model.D,12,15*(bilatFlag+1))')
+imagesc(reshape(model.D,12,M1)')
 caxis(cl*[-1 1])
 set(gca,'XTick','','YTick',1:length(muscleList),'YTickLabel',muscleList)
 ax=axes();
@@ -83,7 +84,7 @@ set(gca,'XTick','','YTick','')
 ax=axes();
 ax.Position=[5*margin*width+.03 margin*height*3+.05 width .8*height];
 model.Yinf=model.D+model.C * model.Xsim(:,postOffset-1);
-imagesc(reshape(model.Yinf,12,15*(bilatFlag+1))')
+imagesc(reshape(model.Yinf,12,M1)')
 title('Y_\infty ')
 caxis(cl*[-1 1])
 set(gca,'XTick','','YTick','')
@@ -91,7 +92,7 @@ set(gca,'XTick','','YTick','')
 %Add total change:
 ax=axes();
 ax.Position=[6*margin*width+.03 margin*height*3+.05 width .8*height];
-imagesc(reshape(model.C * model.Xsim(:,postOffset-1),12,15*(bilatFlag+1))')
+imagesc(reshape(model.C * model.Xsim(:,postOffset-1),12,M1)')
 title('\Delta Y_{adapt}')
 caxis(cl*[-1 1])
 set(gca,'XTick','','YTick','')
@@ -120,7 +121,7 @@ for i=1:length(strideNo)
     %Plot actual time-course
    ax=axes();
    ax.Position=[(i-1)*margin*width+.03 margin*height*2+.03 width height];
-   imagesc(reshape(mean(trainingData(:,strides),2),12,15*(bilatFlag+1))')
+   imagesc(reshape(mean(trainingData(:,strides),2),12,M1)')
    caxis(cl*[-1 1])
    set(gca,'XTick','')
    if i==1
@@ -141,7 +142,7 @@ for i=1:length(strideNo)
    ax=axes();
    ax.Position=[(i-1)*margin*width+.03 margin*height+.03 width height];
    simData=model.Ysim;
-   imagesc(reshape(mean(simData(:,strides),2),12,15*(bilatFlag+1))')
+   imagesc(reshape(mean(simData(:,strides),2),12,M1)')
    caxis(cl*[-1 1])
    set(gca,'XTick','')
    if i==1
@@ -155,7 +156,7 @@ for i=1:length(strideNo)
    %PLot residuals:
    ax=axes();
    ax.Position=[(i-1)*margin*width+.03 .03 width height];
-   imagesc(reshape(mean(simData(:,strides)-trainingData(:,strides),2),12,15*(bilatFlag+1))')
+   imagesc(reshape(mean(simData(:,strides)-trainingData(:,strides),2),12,M1)')
    caxis(cl*[-1 1])
    if i==1
    ylabel(['residual'])

@@ -22,12 +22,13 @@ for i=1:3 %B,A,P
     dataSym{i}=aux(:,1:size(aux,2)/2,:);
 end
 
+% dataSym=data; %Bilateral models
 %% Generate models
 
 forcePCS=false;
 model={};
 outputUnderRank=[];
-for dataSet=1:2%3
+for dataSet=1%:2%3
     switch dataSet
         case 1 %Using adaptation data to fit model
             data=median(dataSym{2},3); %Median across subjs
@@ -45,12 +46,12 @@ for dataSet=1:2%3
             %state will be found, such that after any finite number of steps
             %the state will be non-zero]
         case 3 %Using post-adaption, but fitting B,D. See above.
-            median(dataSym{3},3); %Median across subjs
+            data=median(dataSym{3},3); %Median across subjs
             nn='Post*';
             nullBD=false;
     end
     for Nfolds=1:2 %Doing 1,2-fold cross-validation 
-        for order=1:4
+        for order=1:5
             model(end+[1:Nfolds]) = CVsPCA(data,order,forcePCS,nullBD,outputUnderRank,Nfolds);
             for j=1:Nfolds %Setting names
                 model{end-Nfolds+j}.name=[nn '[' num2str(order) '.' num2str(j) '/' num2str(Nfolds) ']'];
@@ -82,9 +83,61 @@ for k=1:length(model)
     model{k}.Ysim=model{k}.C * model{k}.Xsim + model{k}.D * Uall';  
     model{k}.res=Yall'-model{k}.Ysim;
     model{k}.r2sim=(sum((model{k}.res).^2));   
+    model{k}.r2Adapt=(sum((model{k}.res(:,51:950)).^2)); 
+    model{k}.r2Post=(sum((model{k}.res(:,951:end)).^2));  
+    model{k}.r2AdaptOdd=(sum((model{k}.res(:,51:2:950)).^2));   
+    model{k}.r2AdaptEven=(sum((model{k}.res(:,52:2:950)).^2)); 
 end
 
-%save dynamicsModeling_noC07C09_randInit10.mat model Yall YallB Uall aYall aYallB muscleList
+%save ../data/dynamicsModelingResultsALL.mat model Yall Uall model dataSym
+%% Plot basic model performance
+for i=1:5 %Model orders tried
+    rAllAll(i)=mean(model{i}.r2Adapt);
+    rAllOdd(i)=mean(model{i}.r2AdaptOdd);
+    rAllEven(i)=mean(model{i}.r2AdaptEven);
+    r1Odd(i)=mean(model{4+2*i}.r2AdaptOdd); %Trained on odd data
+    r1Even(i)=mean(model{4+2*i}.r2AdaptEven);
+    r2Odd(i)=mean(model{5+2*i}.r2AdaptOdd); %Trained on even data
+    r2Even(i)=mean(model{5+2*i}.r2AdaptEven);
+    rAllPost(i)=mean(model{i}.r2Post);
+end
+fh=figure('Units','Normalized','OuterPosition',[0 0 .5 .7]);
+subplot(2,2,1) %Cross-validation of adaptation-fitted models to Post-data
+hold on
+p0=plot(rAllAll,'DisplayName','Train: adapt, Test: adapt');
+p1=plot(rAllPost,'DisplayName','Train: adapt, Test: post');
+xlabel('Model order')
+legend([p0 p1])
+ylabel('Squared residuals (a.u.)')
+grid on
+
+subplot(2,2,2) %Cross-validation of adapt-fitted models to unused(2-fold) adapt data
+hold on
+p0=plot(rAllOdd,'k','DisplayName','Train: all data, Test: odd strides');
+p1=plot(rAllEven,'k--','DisplayName','Test: even strides');
+p2=plot(r1Odd,'DisplayName','Train: odd data, Test: odd data');
+plot(r1Even,'--','Color',p2.Color);
+p3=plot(r2Odd,'DisplayName','Train: even data, Test: odd data');
+plot(r2Even,'--','Color',p3.Color)
+xlabel('Model order')
+ylabel('Squared residuals (a.u.)')
+legend([p0 p1 p2 p3])
+grid on
+
+subplot(2,2,4) %Plotting decay rates
+hold on
+for i=1:5
+    plot(i+.1*randn(i,1),-1./log(diag(model{i}.J)),'ko','MarkerFaceColor','k') 
+   plot(i+.1*randn(i,1),-1./log(diag(model{4+2*i}.J)),'o','Color',p2.Color,'MarkerFaceColor',p2.Color) 
+   plot(i+.1*randn(i,1),-1./log(diag(model{5+2*i}.J)),'o','Color',p3.Color,'MarkerFaceColor',p3.Color) 
+end
+xlabel('Model order')
+set(gca,'YScale','log')
+grid on
+title('Decay rates (fitted)')
+ylabel('Time-constants (strides)')
+saveFig(fh,'../intfig/all/dyn/','modelOrderAssessment',0)
+
 %%
 figure; 
 subplot(2,1,1) %Plot states
@@ -140,9 +193,17 @@ xlabel('Strides')
 ylabel('% Base')
 
 %% Visualize and save each model
-for i=[2,3,15,16]
-fh=assessModel(model{i},Yall',Uall');
-%saveFig(fh,'../fig/all/dyn/',model{i}.name);
+switchFactor=0; %LTI model prediction as is
+postOffset=951;
+for i=[1,2,3,4,5]%15,16]
+    m=model{i};
+    if i<=8 %Fitted to adapt data
+        [~,idx]=max(diag(model{i}.J)); %Find slowest state
+        m.Ysim(:,postOffset:end)=m.Ysim(:,postOffset:end) - switchFactor* m.C(:,idx) * m.Xsim(idx,postOffset:end); %Removing some percentage of the slowest state only
+        m.Xsim(idx,postOffset:end)=(1-switchFactor)*m.Xsim(idx,postOffset:end);
+    end
+    fh=assessModel(m,Yall',Uall');
+    %saveFig(fh,'../intfig/all/dyn/',[regexprep(model{i}.name,'/','_')]);
 end
 %% Subspace projection view
 %Subspace where most of the short-split variance resides
