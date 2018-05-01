@@ -1,5 +1,11 @@
 %% Assuming that the variables groups() exists (From N19_loadGroupedData)
 
+%If not loaded:
+if ~exist('controls','var')
+    fprintf('Data not found on workspace. Loading from file...')
+    load ../../data/HPF30/groupedParams_wMissingParameters.mat
+    fprintf('...done!\n')
+end
 %% Directory to save figs
 figDir='../../intfig';
 dirStr=[figDir '/all/emg/'];
@@ -9,7 +15,13 @@ end
 %% Aux vars:
 patientFastList=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
 controlsSlowList=strcat('C00',{'01','02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-
+addpath(genpath('../fun/'))
+if ~exist('useLateAdapBase','var')
+    useLateAdapBase=false;
+end
+if ~exist('plotSym','var')
+    plotSym=false;
+end
 %%
 figuresColorMap
 cc=condColors;
@@ -26,11 +38,11 @@ groups{2}=patients.getSubGroup(patientList);
 %end
 
 %% Define epochs:
-baseEp=getBaseEpoch; %defines baseEp
+%baseEp=getBaseEpoch; %defines baseEp
 ep=getEpochs(); %Defines other epochs
 
 if ~useLateAdapBase
-    refEp=baseEp;
+    refEp=ep(strcmp(ep.Properties.ObsNames,'Base'),:); 
 else
     refEp=ep(strcmp(ep.Properties.ObsNames,'late A'),:); 
 end
@@ -44,7 +56,7 @@ type='s';
 labelPrefix=([strcat('f',mOrder) strcat('s',mOrder)]); %To display
 labelPrefixLong= strcat(labelPrefix,['_' type]); %Actual names
 normString='^Norm';
-baseEp=getBaseEpoch;
+%baseEp=getBaseEpoch;
 
 %Renaming normalized parameters, for convenience:
 for k=1:length(groups)
@@ -99,9 +111,9 @@ axes(ph(1,end))
 colorbar
 set(ph(1,end),'Position',pos);
 %% Do stats.plotCheckerboard
-minEffectSize=0;%At least 5% increase over max baseline activity
+%minEffectSize=0;%At least 5% increase over max baseline activity
 minEffectSize2=0.1;
-fdr=.05;
+fdr=.1;
 for k=1:length(groups)
     for i=1:length(ep)+1
         if i>1
@@ -117,7 +129,7 @@ for k=1:length(groups)
         for j=1:size(dd,1)
            %[pR(j)]=signrank(dd(j,:),minEffectSize,'tail','right','method','exact');
            %[pL(j)]=signrank(dd(j,:),-minEffectSize,'tail','left','method','exact');
-           [p2(j)]=signrank(dd(j,:));
+           [p2(j)]=signrank(dd(j,:),0,'method','exact');
         end
         %p=2*min(pR,pL); %Two-tailed test for effect larger than MES: taking twice the minimum of the two p-values
         p=p2;
@@ -135,7 +147,8 @@ for k=1:length(groups)
             ph(k,i).Title.String=[{ph(k,i).Title.String}; {['p=' aux(2:end)]}];
         else
             aux2=num2str(round(1e2*fdr)/1e2,2);
-            ph(k,i).Title.String=[{ph(k,i).Title.String}; {['FDR=' aux2]}];
+            aux3=num2str(round(1e2*minEffectSize2)/1e2,2);
+            ph(k,i).Title.String=[{ph(k,i).Title.String}; {['FDR=' aux2 '; min Eff.=' aux3]}];
         end
     end
 end
