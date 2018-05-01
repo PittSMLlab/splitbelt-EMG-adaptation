@@ -1,9 +1,7 @@
 %From makeN19DPrettyAgain
 saveDir='./';
-name='allChangesEMG.fig';
-name2='allChangesEMG_lateAdapBase.fig';
-desiredPlotDescription={'early','A[15]'};
-desiredPlotDescription2={'early','P[15]'};
+name={'allChangesEMG.fig','allChangesEMG_lateAdapBase.fig'};
+desiredPlotDescription={'early','A[15]';'early','P[15]'};
 plotTitles={'Tied-to-split transition','    Split-to-tied transition'};
 saveName='Fig4A';
 lineFlag=0;
