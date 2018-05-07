@@ -1,0 +1,62 @@
+-----------------------------WHAT EXPLAINS SLA?-----------------------------
+age, norm_S2T, norm_T2S, norm_lA, norm_eP
+Initial columns included: none
+Step 1, added column 2, p=0.00584642
+Step 2, added column 4, p=0.0155545
+Final columns included:  2 4 
+    'Coeff'      'Std.Err.'    'Status'    'P'         
+    [ 0.0012]    [  0.0014]    'Out'       [    0.4242]
+    [ 0.0207]    [  0.0044]    'In'        [4.2561e-04]
+    [-0.0018]    [  0.0053]    'Out'       [    0.7357]
+    [-0.0310]    [  0.0111]    'In'        [    0.0156]
+    [ 0.0057]    [  0.0156]    'Out'       [    0.7188]
+
+
+ans =
+
+    0.0012
+    0.0207
+   -0.0018
+   -0.0310
+    0.0057
+
+
+ans = 
+
+
+Linear regression model:
+    SLA_eP = 1 + norm_lA + norm_eP
+
+Estimated Coefficients:
+                   Estimate        SE         tStat       pValue  
+                   _________    _________    _______    __________
+
+    (Intercept)      0.17595     0.052866     3.3281     0.0054448
+    norm_lA        -0.038259     0.012097    -3.1628     0.0074851
+    norm_eP         0.018492    0.0040991     4.5113    0.00058503
+
+
+Number of observations: 16, Error degrees of freedom: 13
+Root Mean Squared Error: 0.0461
+R-squared: 0.625,  Adjusted R-Squared 0.568
+F-statistic vs. constant model: 10.8, p-value = 0.0017
+
+ans = 
+
+
+Linear regression model:
+    SLA_eP = 1 + norm_S2T + norm_lA
+
+Estimated Coefficients:
+                   Estimate        SE         tStat       pValue  
+                   _________    _________    _______    __________
+
+    (Intercept)      0.12484     0.053015     2.3547      0.034916
+    norm_S2T          0.0207    0.0044171     4.6863    0.00042561
+    norm_lA        -0.030961     0.011129    -2.7821      0.015555
+
+
+Number of observations: 16, Error degrees of freedom: 13
+Root Mean Squared Error: 0.045
+R-squared: 0.642,  Adjusted R-Squared 0.587
+F-statistic vs. constant model: 11.7, p-value = 0.00125

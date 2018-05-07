@@ -1,0 +1,99 @@
+----------------------THE EFFECTS OF AGE ON RESPONSE SIZES--------------------------
+
+S2TvsAge = 
+
+
+Linear regression model (robust fit):
+    norm_S2T = 1 + age
+
+Estimated Coefficients:
+                   Estimate       SE        tStat      pValue 
+                   _________    _______    ________    _______
+
+    (Intercept)       8.6184     7.7901      1.1063    0.29027
+    age            -0.026315    0.12891    -0.20413    0.84167
+
+
+Number of observations: 14, Error degrees of freedom: 12
+Root Mean Squared Error: 3.76
+R-squared: 0.22,  Adjusted R-Squared 0.155
+F-statistic vs. constant model: 3.38, p-value = 0.0907
+Spearman correlation: r=0.01978, p=0.95168
+
+AEvsAge = 
+
+
+Linear regression model (robust fit):
+    norm_eP = 1 + age
+
+Estimated Coefficients:
+                   Estimate       SE       tStat      pValue 
+                   _________    ______    ________    _______
+
+    (Intercept)       10.633    15.742     0.67545     0.5122
+    age            -0.077181    0.2605    -0.29628    0.77208
+
+
+Number of observations: 14, Error degrees of freedom: 12
+Root Mean Squared Error: 7.6
+R-squared: 0.401,  Adjusted R-Squared 0.351
+F-statistic vs. constant model: 8.04, p-value = 0.015
+Spearman correlation: r=-0.16044, p=0.58383
+
+AEvsAge_SLA = 
+
+
+Linear regression model (robust fit):
+    norm_eP = 1 + age + SLA_eP
+
+Estimated Coefficients:
+                   Estimate      SE         tStat      pValue 
+                   ________    _______    _________    _______
+
+    (Intercept)      10.321     21.429      0.48162    0.63951
+    age            -0.06819    0.35786     -0.19055    0.85235
+    SLA_eP          -2.5612     38.037    -0.067335    0.94752
+
+
+Number of observations: 14, Error degrees of freedom: 11
+Root Mean Squared Error: 10.3
+R-squared: 0.282,  Adjusted R-Squared 0.152
+F-statistic vs. constant model: 2.16, p-value = 0.161
+
+T2SvsAge = 
+
+
+Linear regression model (robust fit):
+    norm_T2S = 1 + age
+
+Estimated Coefficients:
+                   Estimate        SE        tStat      pValue  
+                   _________    ________    _______    _________
+
+    (Intercept)       10.003      3.1094     3.2171    0.0073941
+    age            -0.063529    0.051455    -1.2346      0.24059
+
+
+Number of observations: 14, Error degrees of freedom: 12
+Root Mean Squared Error: 1.5
+R-squared: 0.208,  Adjusted R-Squared 0.142
+F-statistic vs. constant model: 3.15, p-value = 0.101
+
+FFvsAge = 
+
+
+Linear regression model (robust fit):
+    norm_lA = 1 + age
+
+Estimated Coefficients:
+                   Estimate       SE        tStat      pValue 
+                   _________    _______    ________    _______
+
+    (Intercept)       10.942     19.002     0.57585    0.57536
+    age            -0.098313    0.31445    -0.31265    0.75992
+
+
+Number of observations: 14, Error degrees of freedom: 12
+Root Mean Squared Error: 9.18
+R-squared: 0.442,  Adjusted R-Squared 0.395
+F-statistic vs. constant model: 9.5, p-value = 0.00951

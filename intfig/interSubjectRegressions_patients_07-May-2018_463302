@@ -1,0 +1,137 @@
+----------------------\beta_M VS. AGE and SLA---------------------
+
+learnVsAge = 
+
+
+Linear regression model (robust fit):
+    beta_M = 1 + age
+
+Estimated Coefficients:
+                    Estimate        SE         tStat      pValue 
+                   __________    _________    ________    _______
+
+    (Intercept)       0.50037      0.48708      1.0273    0.32455
+    age            -0.0024212    0.0080603    -0.30039    0.76902
+
+
+Number of observations: 14, Error degrees of freedom: 12
+Root Mean Squared Error: 0.235
+R-squared: 0.00755,  Adjusted R-Squared -0.0752
+F-statistic vs. constant model: 0.0913, p-value = 0.768
+
+learnVsBoth1 = 
+
+
+Linear regression model (robust fit):
+    beta_M = 1 + age + norm_eP
+
+Estimated Coefficients:
+                    Estimate        SE         tStat      pValue 
+                   __________    _________    ________    _______
+
+    (Intercept)        0.4919      0.50354     0.97688    0.34962
+    age            -0.0023124    0.0082224    -0.28123    0.78375
+    norm_eP        4.6105e-05    0.0044291    0.010409    0.99188
+
+
+Number of observations: 14, Error degrees of freedom: 11
+Root Mean Squared Error: 0.239
+R-squared: 0.00724,  Adjusted R-Squared -0.173
+F-statistic vs. constant model: 0.0401, p-value = 0.961
+
+learnVsSLA = 
+
+
+Linear regression model (robust fit):
+    beta_M = 1 + SLA_eP
+
+Estimated Coefficients:
+                   Estimate       SE       tStat      pValue 
+                   ________    ________    ______    ________
+
+    (Intercept)    0.28357     0.088932    3.1887    0.007795
+    SLA_eP         0.92974      0.79084    1.1756     0.26254
+
+
+Number of observations: 14, Error degrees of freedom: 12
+Root Mean Squared Error: 0.217
+R-squared: 0.105,  Adjusted R-Squared 0.0305
+F-statistic vs. constant model: 1.41, p-value = 0.258
+
+learnVsBoth = 
+
+
+Linear regression model (robust fit):
+    beta_M = 1 + age + SLA_eP
+
+Estimated Coefficients:
+                    Estimate        SE         tStat     pValue 
+                   __________    _________    _______    _______
+
+    (Intercept)       0.46196      0.46957    0.98379    0.34636
+    age            -0.0030175    0.0078418    -0.3848    0.70772
+    SLA_eP            0.90855      0.83349     1.0901    0.29899
+
+
+Number of observations: 14, Error degrees of freedom: 11
+Root Mean Squared Error: 0.227
+R-squared: 0.102,  Adjusted R-Squared -0.061
+F-statistic vs. constant model: 0.627, p-value = 0.552
+
+staticVsAge = 
+
+
+Linear regression model (robust fit):
+    beta_S = 1 + age
+
+Estimated Coefficients:
+                   Estimate        SE        tStat      pValue 
+                   _________    ________    ________    _______
+
+    (Intercept)     -0.24836     0.82369    -0.30152    0.76818
+    age            0.0070924    0.013631     0.52033     0.6123
+
+
+Number of observations: 14, Error degrees of freedom: 12
+Root Mean Squared Error: 0.398
+R-squared: 0.167,  Adjusted R-Squared 0.097
+F-statistic vs. constant model: 2.4, p-value = 0.148
+
+staticVsBoth2 = 
+
+
+Linear regression model (robust fit):
+    beta_S = 1 + age + norm_eP
+
+Estimated Coefficients:
+                   Estimate        SE        tStat      pValue 
+                   _________    ________    ________    _______
+
+    (Intercept)     -0.34709     0.95441    -0.36367      0.723
+    age            0.0080285    0.015585     0.51515    0.61664
+    norm_eP        0.0035966    0.008395     0.42842    0.67661
+
+
+Number of observations: 14, Error degrees of freedom: 11
+Root Mean Squared Error: 0.453
+R-squared: 0.157,  Adjusted R-Squared 0.00345
+F-statistic vs. constant model: 1.02, p-value = 0.391
+
+ffVsAge = 
+
+
+Linear regression model (robust fit):
+    beta_FF = 1 + age
+
+Estimated Coefficients:
+                   Estimate        SE        tStat     pValue 
+                   _________    ________    _______    _______
+
+    (Intercept)      0.26025      1.0404    0.25014    0.80671
+    age            0.0054824    0.017217    0.31843    0.75563
+
+
+Number of observations: 14, Error degrees of freedom: 12
+Root Mean Squared Error: 0.502
+R-squared: 0.0086,  Adjusted R-Squared -0.074
+F-statistic vs. constant model: 0.104, p-value = 0.753
