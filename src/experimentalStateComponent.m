@@ -19,6 +19,10 @@ load ../data/bioData.mat
 %Model: eA=FB + ST (feedback + speed/state dependent factor)
 %lA=FF +ST (feedforward + state-dep)
 %eP=FF +FB^T
+%This implies:
+%eP-lA-eA^T = -(ST +ST^T); %Notice this is symmetric
+%eP-lA+eA   = FB+FB^T %Notice this is symmetric only
+%eP+lA^T-eA^T = FF +FF^T %This is also symmetric only
 %Notice that this model:
 %1) is 3x3, so given FF, FB and ST we recover eA, eP, lA. Further, because
 %it is 3x3 it offers no predictions: we need all three observations to
@@ -43,7 +47,16 @@ FFs=.5*(ePs+lAs-eAs);
 STs=.5*(eAs+lAs-ePs);
 
 %Computing asym part of FB, FF and ST
-off=zeros(size(eAa));
+off=zeros(size(eAa)); % %This is an arbitrary offset, we can define any asymmetric component we want here, and the model still holds
+%Assigning off=lAa means saying there is no asymmetric component to learned FF behavior, just the disappearance of the asymmetric omponent of FB
+%Assigning off=0 means saying the state-dep component is purely symmetric
+%assigning off=eAa means saying the FB component is symmetric. This seems
+%the most parsimonious of the three. However, it has weird results, like
+%saying sTA activity immediately after the tied-to-split transition is the
+%superposition of two things, and in fTA these two things are present but
+%just happen to cancel each other.
+%A fourth option is to find offset that minimizes something, like minimum
+%norms of FBa +FFa +STa. 
 FBa=eAa-off;
 FFa=lAa-off;
 STa=off;

@@ -4,8 +4,8 @@ addpath(genpath('../pubfig/auxFun/'))
 %% Define data from params if necessary
 groupName='patients';
 idx=[1:6,8:10,12:16]; %Excluding 7 and 11 which dont have short exp
-%groupName='controls';
-%idx=1:16;
+groupName='controls';
+idx=1:16;
 %loadEMGParams_controls(groupName)
 
 %% Get all needed vars
