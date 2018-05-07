@@ -37,3 +37,9 @@ intfig/interSubjectSLA_controls_30-Mar-2018_797556
 intfig/interSubjectSLA_patients_13-Mar-2018_706294
 
 pubfig/svg/
+
+ext/colorspace/
+
+ext/cbrewer2/
+
+*.png
