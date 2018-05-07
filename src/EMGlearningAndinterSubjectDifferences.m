@@ -4,15 +4,15 @@ addpath(genpath('../pubfig/auxFun/'))
 %% Define data from params if necessary
 groupName='patients';
 idx=[1:6,8:10,12:16]; %Excluding 7 and 11 which dont have short exp
-groupName='controls';
-idx=1:16;
+%groupName='controls';
+%idx=1:16;
 %loadEMGParams_controls(groupName)
 
 %% Get all needed vars
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
 write=true;
-write=false;
+%write=false;
 %% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
@@ -24,6 +24,7 @@ ttS=table(-mean(eA(:,idx),2), mean(eAT(:,idx),2), -mean(lS(:,idx),2), mean(ePS(:
 ttSb=table(-mean(eA(:,idx),2), mean(eAT(:,idx),2), -mean(lS(:,idx),2), mean(ePS(:,idx),2),'VariableNames',{'eA','eAT','lS','ePS'});
 ttS1=table(-mean(veA(:,idx),2), mean(veAT(:,idx),2), -mean(veS(:,idx),2), mean(vePS(:,idx),2)-mean(lS(:,idx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
 %Model:
+
 modelFitS2a=fitlm(ttS,'ePS_lS~eA+eAT-1','RobustOpts',rob)
 learnS2a=modelFitS2a.Coefficients.Estimate;
 learnS2aCI=modelFitS2a.coefCI;
@@ -58,6 +59,14 @@ ttAlt=table( mean(eP(:,idx),2)-mean(lA(:,idx),2)-mean(eAT(:,idx),2),mean(eP(:,id
 ttb=table(-mean(eA(:,idx),2), mean(eAT(:,idx),2), -mean(lA(:,idx),2),mean(eP(:,idx),2),'VariableNames',{'eA','eAT','lA','eP'});
 tt1=table(-mean(veA(:,idx),2), mean(veAT(:,idx),2), -mean(lA(:,idx),2),mean(eP(:,idx),2), mean(eP(:,idx),2)-mean(lA(:,idx),2),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});
 ttAlt1=table( mean(eP(:,idx),2)-mean(lA(:,idx),2)-mean(veAT(:,idx),2),mean(eP(:,idx),2)-mean(lA(:,idx),2)-mean(veA(:,idx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
+
+%1 regressor:
+modelFit1a=fitlm(tt,'eP_lA~eAT-1','RobustOpts',rob)
+learn1a=modelFit1a.Coefficients.Estimate;
+learn1aCI=modelFit1a.coefCI;
+r21a=uncenteredRsquared(modelFit1a);
+r21a=r21a.uncentered;
+disp(['Uncentered R^2=' num2str(r21a,3)])
 
 %2 regressors:
 modelFit2a=fitlm(tt,'eP_lA~eA+eAT-1','RobustOpts',rob)
@@ -109,6 +118,12 @@ for i=1:size(eA,2)
     ttAllb=table(-eA(:,i), eAT(:,i), -lA(:,i),eP(:,i),'VariableNames',{'eA','eAT','lA','eP'}); 
     ttAll1=table(-veA(:,i), veAT(:,i), -lA(:,i),veP(:,i),  veP(:,i)-lA(:,i),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});    
 
+    %Model 1a: eP-lA regressed over eAT
+    modelFitAll1a{i}=fitlm(ttAll,'eP_lA~eAT-1','RobustOpts',rob);
+    learnAll1a(i,:)=modelFitAll1a{i}.Coefficients.Estimate;
+    aux=uncenteredRsquared(modelFitAll1a{i});
+    r2All1a(i)=aux.uncentered;
+    
     %Model 2a: eP-lA regressed over eA and eAT
     modelFitAll2a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
     learnAll2a(i,:)=modelFitAll2a{i}.Coefficients.Estimate;
@@ -167,8 +182,8 @@ diary(['../intfig/FBmodeling_' groupName '_' date '_' num2str(round(1e6*(now-tod
 end
 disp(' ')
 disp('%%%%%%%%%%%%%%%%%')
-modNames={'2a','S2a','3b','2c'};
-modDesc={'LE','SE','LE3new','LEwoBetaS'};
+modNames={'1a','2a','S2a','3b','2c'};
+modDesc={'LE:\beta_M only','LE','SE','LE3new','LEwoBetaS'};
 for i=1:length(modNames)
     disp(' ')
     eval(['mod=modelFit' modNames{i} ';' ]);
@@ -193,12 +208,13 @@ end
 %Define EMG learning:
 betaM=learnAll2a(:,2); 
 betaS=learnAll2a(:,1);
-betaM=learnAll2c(:,1); %This is the regressor for eA* in the 2-regressor model that offers the best fit: same results.
+%betaM=learnAll2c(:,1); %This is the regressor for eA* in the 2-regressor model that offers the best fit: same results.
 betaFF=learnAll2c(:,2);
+%betaM=learnAll1a(:,1); 
 %FFamount=1+learnAll2c(:,2);
-betaM=learnAll3(:,2);
-betaS=-learnAll3(:,1);
-betaFF=learnAll3(:,3);
+%betaM=learnAll3(:,2);
+%betaS=-learnAll3(:,1);
+%betaFF=learnAll3(:,3);
 
 %Some auxiliary measures to confirm our results on age:
 BB=reshape(lB,360,16);
@@ -311,8 +327,8 @@ end
 fh=figure('Units','Normalized','OuterPosition',[0 .2 .65 .5*16/10]);
 figuresColorMap
 modelNames={'2a','3b','2c'};
-idxY=age<57.3; %Youngest 6
-idxO=age>63; %Oldest 6
+idxY=age(idx)<57.3; %Youngest 6
+idxO=age(idx)>63; %Oldest 6
 for i=1:3 %Three models
     for j=1:2 %Exposure length OR age comparison
             eval(['data1=learnAllS' modelNames{i} ';']);
@@ -362,7 +378,7 @@ for i=1:3 %Three models
     ss=[];
     for k=1:size(data2,2)
     [rs,ps]=corr(age',data2(:,k),'Type','Pearson');
-    ss(k)=scatter(age,data2(:,k),50,condColors(3,:),'filled','MarkerFaceAlpha',1/k,'DisplayName',[mod.CoefficientNames{k} ' rs=' num2str(rs,3) ', ps= ' num2str(ps,3)]);;
+    ss(k)=scatter(age,data2(:,k),50,condColors(3,:),'filled','MarkerFaceAlpha',1/k,'DisplayName',[mod.CoefficientNames{k} ' rs=' num2str(rs,3) ', ps= ' num2str(ps,3)]);
     xlabel('Age (y.o.)')
     ylabel('Regressors')
     pp=polyfit1PCA(age,data2(:,k),1);
@@ -378,8 +394,6 @@ end
 
 %% Age and speed effects
 mod=modelFit2a;
-idx=2:16;
-idx=1:16;
 fh=figure('Units','Normalized','OuterPosition',[0 .2 .8 .5*16/10]);
 for i=1:2
     switch i

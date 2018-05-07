@@ -1,16 +1,17 @@
 %% 
 %This script generates the FEEDBACK activity figure
-
+addpath(genpath('./auxFun/'))
 %% Run scripts for each panel (if needed):
 %run ./F2A.m
 %run ./F2B.m
 
 %% Arrange panels in single fig:
 close all
+figSize
 fA=openfig('./fig/Fig2A.fig');
 axA=findobj(fA,'Type','Axes');
 
-fh=figure('Units','Normalized','OuterPosition',[0 0 .53 .9],'Color','None');
+fh=figure('Units',figUnits,'OuterPosition',figPos,'Color','None');
 condColors=[.6,.6,.6; 0,.5,.4; .5,0,.6];
 figuresColorMap
 colormap(flipud(map))
@@ -23,6 +24,7 @@ for i=1:length(pA)
     for j=1:length(tt)
         set(tt(j),'FontSize',16,'Position',get(tt(j),'Position')-[0 0 0])
     end
+    pA.Position=[colWidth+leftMarg+btwMarg bottomMarg colWidth colHeight];
     %set(pA(i),'Position',get(pA(i),'Position').*[1.05 .3 1 .26] + [.03 .71 0 0]);
     pA(i).YLabel.FontWeight='bold';
     caxis(Clim*[-1 1])
@@ -49,17 +51,17 @@ for i=1:length(ax.YTickLabel)
     end
 end
 text(-.2, 32.5,'C','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.9, 32.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.9, 13,'B','FontSize',24,'FontWeight','bold','Clipping','off')
-ax.Position(1)=ax.Position(1)+.5;
+text(-1.8, 32.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-1.8, 13,'B','FontSize',24,'FontWeight','bold','Clipping','off')
+%ax.Position(1)=ax.Position(1)+.5;
 
 tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
 tt.String='NON-DOMINANT (SLOW)';
-tt.Position=tt.Position+[0 -2.75 0];
+tt.Position=tt.Position+[0 -2 0];
 tt.FontWeight='bold';
 tt=findobj(gca,'Type','Text','String','FAST/DOMINANT');
 tt.String='DOMINANT (FAST)';
-tt.Position=tt.Position+[0 0 0];
+tt.Position=tt.Position+[0 -.1 0];
 tt.FontWeight='bold';
 legend off
 
@@ -73,9 +75,9 @@ hold on
 ll=findobj(pB,'Type','Line');
 pp=pB.YLim;
 plot([.01 .49]*240,100*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
-text(.08*240,110,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
+text(.05*240,110,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
 plot((.5+[0.01 .49])*240,100*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
-text(.57*240,110,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
+text(.54*240,110,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
 pB.YLim=pp;
 pB.FontSize=14;
 pB.FontWeight='bold';
@@ -90,6 +92,7 @@ pB.YTickLabel={'80','40','0','-40','-80'};
 title('HIP A-P POSITION (WRT ANKLE)')
 ll=findobj(gca,'Type','Line');
 legend(ll(end-1:end),{'eA','B'})
+pB.Position=[leftMarg bottomMarg+midColHeight+midColMargin colWidth midColHeight];
 
 %% Panel C: little dude
 fC=imread('../intfig/littleGuy.png');
@@ -100,7 +103,9 @@ N=N-1;
 end
 fC=cat(2,fC(1:N/2,:,:),255*ones(N/2,50,3),fC(N/2+1:N,:,:));
 pC=axes();
-pC.Position=[.06 .07 .4 .45];
+%pC.Position=[.06 .07 .4 .45];
+pC.Position=[leftMarg/1.6 bottomMarg/3 1.1*colWidth 1.5*midColHeight];
+%Trimming figure:
 image(fC)
 axis equal
 pC.Box='off';
