@@ -6,6 +6,8 @@ groupName='patients';
 idx=[1:6,8:10,12:16]; %Excluding 7 and 11 which dont have short exp
 groupName='controls';
 idx=1:16;
+
+%% If EMGsummary file does not exist, run this:
 %loadEMGParams_controls(groupName)
 
 %% Get all needed vars
@@ -238,10 +240,16 @@ rob='on'; %These models CAN be fit robustly
 display('----------------------\beta_M VS. AGE and SLA---------------------')
 tt2=table(age(idx)', SLA_eP(idx),betaM(idx),betaS(idx),betaFF(idx),norm_eP(idx),norm_S2T(idx),'VariableNames',{'age','SLA_eP','beta_M','beta_S','beta_FF','norm_eP','norm_S2T'}); %Taking SLA in eP minus lA makes SLA coefficients much less predictive (which is even better for making our point!)
 learnVsAge=fitlm(tt2,'beta_M~age','RobustOpts',rob)
+[r,p]=corr(betaM(idx),age(idx)','Type','Spearman');
+disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 learnVsBoth1=fitlm(tt2,'beta_M~age+norm_eP','RobustOpts',rob) %After accounting for aftereffect in EMG space, age explains nothing
 learnVsSLA=fitlm(tt2,'beta_M~SLA_eP','RobustOpts',rob) 
+[r,p]=corr(betaM(idx),SLA_eP(idx),'Type','Spearman');
+disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 learnVsBoth=fitlm(tt2,'beta_M~age+SLA_eP','RobustOpts',rob) 
 staticVsAge=fitlm(tt2,'beta_S~age','RobustOpts',rob)
+[r,p]=corr(betaS(idx),age(idx)','Type','Spearman');
+disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 staticVsBoth2=fitlm(tt2,'beta_S~age+norm_eP','RobustOpts',rob) %Doesn't affect it
 ffVsAge=fitlm(tt2,'beta_FF~age','RobustOpts',rob)
 %learnVsVel=fitlm(tt2,'beta_M~vel') %Sanity check: not correlated
@@ -281,6 +289,11 @@ FFvsAge=fitlm(ttA,'norm_lA~age','RobustOpts',rob)     %Learned response, also no
 %response? Or both? How to tell?
 %FF3vsAge=fitlm(age(idx),FFasym(idx))    %Symmetry of learned response NOT correlated with age either
 FF2vsAge=fitlm(ttA,'beta_FF~age');  %Slight (pos) (strong if C01 excluded) correlation: they may be carrying over more (.01/year of age) 
+
+SLAvsAge=fitlm(ttA,'SLA_eP~age')
+[rs,ps]=corr(SLA_eP(idx),age(idx)','Type','Spearman');
+disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
+
 if write
 diary off
 txt=fileread(logFile);
@@ -297,6 +310,10 @@ display('-----------------------------WHAT EXPLAINS SLA?------------------------
 ttB=table(SLA_eP(idx),age(idx)',norm_S2T(idx),norm_T2S(idx),norm_lA(idx),norm_eP(idx),'VariableNames',{'SLA_eP','age','norm_S2T','norm_T2S','norm_lA','norm_eP'});
 disp('age, norm_S2T, norm_T2S, norm_lA, norm_eP')
 stepwisefit([age(idx)',norm_S2T(idx),norm_T2S(idx),norm_lA(idx),norm_eP(idx)],SLA_eP(idx))
+fitlm(ttB,'SLA_eP~norm_eP','RobustOpts',rob)
+[rs,ps]=corr(SLA_eP(idx),norm_eP(idx),'Type','Spearman');
+disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
+fitlm(ttB,'norm_eP~SLA_eP+age','RobustOpts',rob)
 fitlm(ttB,'SLA_eP~norm_eP+norm_lA')
 fitlm(ttB,'SLA_eP~norm_S2T+norm_lA')
 %FF2vsBoth=fitlm(ttA,'FFamount~age+SLA_eP') 
@@ -466,75 +483,31 @@ c1=[1,0,0]*.9;
 c2=(condColors(3,:));
 c1=condColors(1,:)*1.8;
 normAge=(age-min(age))/(max(age)-min(age));
-scatter(data2(:,1),data2(:,2),60,normAge','filled')
-colormap((c1.*[0:.01:1]'+c2.*[1:-.01:0]').^.5)
-cc=colorbar;
+%scatter(data2(:,1),data2(:,2),60,normAge','filled')
+%scatter(data2(:,1),data2(:,2),20,c2,'filled')
+data3=learnAllS2a;
+hold on
+%scatter(data3(:,1),data3(:,2),20,normAge','filled')
+%colormap((c1.*[0:.01:1]'+c2.*[1:-.01:0]').^.5)
+%cc=colorbar;
 xlabel('\beta_S')
 ylabel('\beta_M')
-set(cc,'Ticks',[0:.2:1],'TickLabels',num2str((max(age)-min(age))*[0:.2:1]' +min(age),2))
+%set(cc,'Ticks',[0:.2:1],'TickLabels',num2str((max(age)-min(age))*[0:.2:1]' +min(age),2))
 rL=modelFit2a.Coefficients.Estimate;
 rS=modelFitS2a.Coefficients.Estimate;
 hold on
 scatter(rS(1),rS(2),150,condColors(1,:),'filled')
-text(rS(1)-.15,rS(2)-.1,{'   Short','exposure'})
+text(rS(1)-.15,rS(2)+.1,{'   Short','exposure'},'Color',c1/1.5,'FontWeight','bold')
 scatter(rL(1),rL(2),150,condColors(3,:),'filled')
-text(rL(1)+.05,rL(2),{'   Long','exposure'})
+text(rL(1)+.05,rL(2),{'   Long','exposure'},'Color',c2,'FontWeight','bold')
 scatter(1,0,100,'k','filled')
 scatter(0,1,100,'k','filled')
-text(.8,.1,{'   H2: No','Adaptation'})
-text(-.4,.99,{' H3: Ideal'; 'Adaptation'})
+text(.7,0,{'   H2: No','Adaptation'})
+text(.05,.99,{' H3: Ideal'; 'Adaptation'})
 %TO DO: add expected split-to-tied and tied-to-split
-axis([-.5 1.35 -.2 1.1])
+axis([-.1 1.35 -.1 1.1])
 title('Projection of split-to-tied changes in muscle activity')
     %Save fig:
     if write
         saveFig(fh,'../intfig/intersubj/',['RegressorSpace_' groupName],0)
     end
-%%
-% figuresColorMap
-% %First: eAT regressor vs age
-% fh1=figure('Units','Normalized','OuterPosition',[0 .2 .5 .5*16/10]);
-% subplot(2,2,1)
-% model=learnVsAge;
-% model.plotPartialDependence('age')
-% ylabel('FB learning (\beta_M)')
-% xlabel('Age (y.o.)')
-% hold on
-% p2=plot(age,betaM,'o','MarkerFaceColor',condColors(3,:),'Color','none');
-% ax=gca;
-% ax.Title.String=['FB learning vs. age, p=' num2str(model.Coefficients.pValue(2)) ', BF=' num2str(BayesFactor(learnVsAge),3)];
-% txt = evalc('model.disp');
-% warning('off','MATLAB:handle_graphics:exceptions:SceneNode')
-% text(40,-.5,removeTags(txt(2:end-1)),'Fontsize',6)
-% txt = evalc('learnVsBoth.disp');
-% text(40,-1.2,removeTags(txt(2:end-1)),'Fontsize',6)
-% %warning('on','MATLAB:handle_graphics:exceptions:SceneNode') %Turning
-% %warnings on BEFORE the cell is done makes the warning visible for the
-% %whole cell (!)
-% text(40,-1.55,['BF both vs. age=' num2str(BayesFactor(learnVsBoth)./BayesFactor(learnVsAge),3)],'FontSize',6)
-% text(40,-1.6,['BF both vs. SLA=' num2str(BayesFactor(learnVsBoth)./BayesFactor(learnVsSLA),3)],'FontSize',6)
-% set(gca,'YLim',[0 1])
-% 
-% %Second: lA regressor vs age
-% subplot(2,2,2)
-% model=FF2vsAge;
-% model.plotPartialDependence('age')
-% ylabel('Feedforward carryover (\beta_{FF})')
-% xlabel('Age (y.o.)')
-% hold on
-% plot(age,betaFF,'o','MarkerFaceColor',p2.MarkerFaceColor,'Color','none')
-% ax=gca;
-% ax.Title.String=['FF carryover vs. age, p=' num2str(model.Coefficients.pValue(2)) ', BF=' num2str(BayesFactor(FF2vsAge),3)];
-% txt = evalc('model.disp');
-% warning('off','MATLAB:handle_graphics:exceptions:SceneNode')
-% text(40,-.5,removeTags(txt(2:end-1)),'Fontsize',6)
-% %txt = evalc('FF2vsBoth.disp');
-% %text(40,-1.2,removeTags(txt(2:end-1)),'Fontsize',6)
-% %warning('on','MATLAB:handle_graphics:exceptions:SceneNode')
-% %text(40,-1.55,['BF both vs. age=' num2str(BayesFactor(FF2vsBoth)./BayesFactor(FF2vsAge),3)],'FontSize',6)
-% %text(40,-1.6,['BF both vs. SLA=' num2str(BayesFactor(FF2vsBoth)./BayesFactor(FF2vsSLA),3)],'FontSize',6)
-% set(gca,'YLim',[0 1])
-% if write
-% saveFig(fh1,'../intfig/',['AgeVsFBmirroring_' groupName],0)
-% end
-% 

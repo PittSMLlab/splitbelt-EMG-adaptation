@@ -117,9 +117,11 @@ grid on
 
 %Add data & simulation
 auxStride=[1 4 10 85 40];
+%auxStride=[1 15 10 85 40];
 strideNo=[40 auxStride auxStride];
 MM=size(trainingData,2);
 offset=[adaptOffset+[-45 0 1 5 15 855] postOffset+[0 1 5 15 (MM-postOffset)-44]];
+%offset=[adaptOffset+[-45 0 1 1 15 855] postOffset+[0 1 1 15 (MM-postOffset)-44]];
 normFactor=nanmean(sqrt(sum(trainingData(:,offset(1)+[0:strideNo(1)-1]).^2,1)),2);
 for i=1:length(strideNo)
     strides=offset(i)+[0:strideNo(i)-1];

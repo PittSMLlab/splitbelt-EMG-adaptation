@@ -1,6 +1,6 @@
 %% Run scripts for each panel (if needed):
 addpath(genpath('./auxFun/'))
-%run ./F4A.m
+run ./F4A.m
 fName='Arial';
 set(0,'defaultAxesFontName',fName,'defaultTextFontName',fName);
 %% Arrange panels in single fig:

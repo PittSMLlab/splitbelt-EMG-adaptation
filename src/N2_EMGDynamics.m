@@ -3,9 +3,9 @@
 groupName='controls';
 %allDataEMG=loadEMGParams_ForDynamics(groupName); %If ../data/dynamicsData.mat doesn't exist, this needs to be run. Alternatively, just load the file
 load ../data/dynamicsData.mat
-
+addpath(genPath('./fun/'))
 %%
-saveFlag=false;
+saveFlag=true;
 
 %% Some pre-proc
 B=nanmean(allDataEMG{1}(end-45:end-5,:,:)); %Baseline: last 40, exempting 5
@@ -100,8 +100,9 @@ if saveFlag
 end
 %% Plot basic model performance
 %If the previous cell was not run, load:
-%aux=func2str(summaryFunction);
-%load(['../data/dynamicsModelingResultsALL_' aux(5:end-5) '.mat'])
+summaryFunction=@(x) median(x,3); %Using mean or median
+aux=func2str(summaryFunction);
+load(['../data/dynamicsModelingResultsALL_' aux(5:end-5) '.mat'])
 [p,c,a]=pca(Yall(51:950,:),'Centered',true);
 for i=1:5 %Model orders tried
     rAllAll(i)=mean(model{i}.r2Adapt);
@@ -218,17 +219,18 @@ ylabel('% Base')
 %% Visualize and save each model
 switchFactor=0; %LTI model prediction as is
 postOffset=951;
-for i=[1,2,3,4,5]%15,16]
+for i=2%[1,2,3,4,5]%15,16]
     m=model{i};
     if i<=8 %Fitted to adapt data
         [~,idx]=max(diag(model{i}.J)); %Find slowest state
         m.Ysim(:,postOffset:end)=m.Ysim(:,postOffset:end) - switchFactor* m.C(:,idx) * m.Xsim(idx,postOffset:end); %Removing some percentage of the slowest state only
         m.Xsim(idx,postOffset:end)=(1-switchFactor)*m.Xsim(idx,postOffset:end);
     end
-    fh=assessModel(m,Yall(1:end-200,:)',Uall(1:end-200)'); %Not including last 200 strides for assessment: C07 and C09 dont have those.
+    fh=assessModel(m,Yall(1:1350,:)',Uall(1:1350)'); %Not including last 200 strides for assessment: C07 and C09 dont have those.
     if saveFlag
         aux=func2str(summaryFunction);
-        saveFig(fh,'../intfig/all/dyn/',[regexprep(model{i}.name,'/','_') aux(5:end-5)]);
+        %aux='Bilat';
+        saveFig(fh,'../intfig/all/dyn/',[regexprep(model{i}.name,'/','_') aux(5:end-5) 'ALT']);
     end
 end
 %% Subspace projection view

@@ -22,13 +22,21 @@ end
 if ~exist('plotSym','var')
     plotSym=false;
 end
+if ~exist('removeP07Flag','var')
+    removeP07Flag=false;
+end
 %%
 figuresColorMap
 cc=condColors;
 
 %% Define groups from lists:
-controlList=controls.ID;
-patientList=patients.removeSubs({'P0007'}).ID;
+if ~removeP07Flag
+    controlList=controls.ID;
+    patientList=patients.ID;
+else
+    controlList=controls.removeSubs({'C0007'}).ID;
+    patientList=patients.removeSubs({'P0007'}).ID; 
+end
 groups{1}=controls.getSubGroup(controlList);
 groups{2}=patients.getSubGroup(patientList);
 
@@ -163,9 +171,9 @@ saveName=['allChangesEMG'];
 % elseif matchSpeedFlag==2
 %     saveName=[saveName '_uphill'];
 % end
-% if removeP07Flag
-%     saveName=[saveName '_noP07'];
-% end
+if removeP07Flag
+    saveName=[saveName '_noP07'];
+end
 % if subCountFlag==1
 %     saveName=[saveName '_subjCount_05pp'];
 % end
@@ -175,4 +183,4 @@ end
 if plotSym
     saveName=[saveName '_sym'];
 end
-%saveFig(fh,dirStr,[saveName],0);
+saveFig(fh,dirStr,[saveName],0);

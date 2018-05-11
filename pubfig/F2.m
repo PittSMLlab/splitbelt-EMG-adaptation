@@ -2,7 +2,7 @@
 %This script generates the FEEDBACK activity figure
 addpath(genpath('./auxFun/'))
 %% Run scripts for each panel (if needed):
-%run ./F2A.m
+run ./F2A.m
 %run ./F2B.m
 
 %% Arrange panels in single fig:
