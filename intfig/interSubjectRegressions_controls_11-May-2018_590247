@@ -18,6 +18,7 @@ Number of observations: 16, Error degrees of freedom: 14
 Root Mean Squared Error: 0.123
 R-squared: 0.327,  Adjusted R-Squared 0.279
 F-statistic vs. constant model: 6.81, p-value = 0.0206
+Spearman's r:-0.63529, p=0.0097883
 
 learnVsBoth1 = 
 
@@ -57,6 +58,7 @@ Number of observations: 16, Error degrees of freedom: 14
 Root Mean Squared Error: 0.131
 R-squared: 0.195,  Adjusted R-Squared 0.138
 F-statistic vs. constant model: 3.4, p-value = 0.0864
+Spearman's r:0.43235, p=0.096063
 
 learnVsBoth = 
 
@@ -96,6 +98,7 @@ Number of observations: 16, Error degrees of freedom: 14
 Root Mean Squared Error: 0.204
 R-squared: 0.285,  Adjusted R-Squared 0.233
 F-statistic vs. constant model: 5.57, p-value = 0.0333
+Spearman's r:0.59412, p=0.017247
 
 staticVsBoth2 = 
 

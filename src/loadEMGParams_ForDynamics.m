@@ -31,7 +31,7 @@ group=group.renameParams(ll,l2);
 newLabelPrefix=strcat(labelPrefix,'s');
 
 %% Define epochs & get data:
-baseEp=getBaseEpoch;
+%baseEp=getBaseEpoch;
 %Adaptation epochs
 strides=[-50 900 600];exemptFirst=[0];exemptLast=[0];
 names={};
@@ -47,9 +47,8 @@ for i=1:length(allDataEMG)
     allDataEMG{i}=reshape(flipEMGdata(aux,2,3),size(aux,1),numel(labels),size(aux,4));
 end
 
-%[dataContribs]=group.getEpochData(ep,{'netContributionNorm2'},padWithNaNFlag);
-%dataContribs=dataContribs-dataContribs(:,strcmp(ep.Properties.ObsNames,'Base'),:); %Removing base
+[~,~,dataContribs]=group.getEpochData(ep,{'netContributionNorm2'},padWithNaNFlag);
 
 %% 
-save ../data/dynamicsData.mat allDataEMG
+save ../data/dynamicsData.mat allDataEMG dataContribs
 end

@@ -1,9 +1,9 @@
 %% Load params
 %error('Need to review loadEMGParams_controls to figure out what the proper way of aligning subjects is. Perhaps there is no good workaround') %I mean to align the trial ends every 300 strides during Adaptation
 groupName='controls';
-%allDataEMG=loadEMGParams_ForDynamics(groupName); %If ../data/dynamicsData.mat doesn't exist, this needs to be run. Alternatively, just load the file
+allDataEMG=loadEMGParams_ForDynamics(groupName); %If ../data/dynamicsData.mat doesn't exist, this needs to be run. Alternatively, just load the file
 load ../data/dynamicsData.mat
-addpath(genPath('./fun/'))
+addpath(genpath('./fun/'))
 %%
 saveFlag=true;
 

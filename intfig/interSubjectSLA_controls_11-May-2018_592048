@@ -25,6 +25,26 @@ ans =
 
 
 Linear regression model:
+    SLA_eP = 1 + norm_eP
+
+Estimated Coefficients:
+                   Estimate       SE        tStat      pValue 
+                   ________    ________    _______    ________
+
+    (Intercept)    0.034296    0.036006    0.95253     0.35699
+    norm_eP        0.012322    0.004621     2.6665    0.018427
+
+
+Number of observations: 16, Error degrees of freedom: 14
+Root Mean Squared Error: 0.0591
+R-squared: 0.337,  Adjusted R-Squared 0.289
+F-statistic vs. constant model: 7.11, p-value = 0.0184
+Spearman correlation: r=0.37647, p=0.15135
+
+ans = 
+
+
+Linear regression model:
     SLA_eP = 1 + norm_lA + norm_eP
 
 Estimated Coefficients:

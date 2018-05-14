@@ -6,8 +6,11 @@
 %run ./F1D.m
 %Requires F1C.m and F1D.m to be run BEFORE
 %%
+addpath(genpath('./auxFun/'));
+figSize
 name='Fig1';
-fh=figure('Name',name,'Units','Normalized','OuterPosition',[0 0 .45 1]);
+fh=figure('Name',name,'Units',figUnits,'OuterPosition',figPos);
+fh.OuterPosition(4)=fh.OuterPosition(4)*1.1; %taller
 figuresColorMap
 %% Panel A: protocol
 conditionOffset=[1 41 61 201 801 1101];
@@ -18,18 +21,20 @@ end
 v0=1;
 V=v0+.333*[1;-1]*dV +[.01;-.01];
 ph=subplot(5,1,1);
-set(ph,'Position',[.15 .78 .8 .2],'FontSize',16)
+set(ph,'Position',[leftMarg+.4*btwMarg .78 2*colWidth+1*btwMarg .2],'FontSize',16)
 ll=plot(V','LineWidth',4);
 xlabel('STRIDE CYCLES')
-ylabel('BELT SPEED')
+ylabel({'BELT'; 'SPEED'})
 ph.XLabel.FontWeight='bold';
-ph.YTickLabel={'-33%','select','Self','+33%'};
-ph.YTick=[.667 .95 1.05 1.333]*v0;
-ph.YTickLabelRotation=0;
+ph.YTickLabel={'-33%','Mid','+33%'};
+ph.YTick=[.667 1 1.333]*v0;
+ph.YTickLabelRotation=00;
 ph.FontSize=16;
 ph.YLabel.FontWeight='bold';
+ph.YAxis.FontSize=16;
+ph.YLabel.FontSize=18;
 
-text(-170, 1.55*v0,'A','FontSize',24,'FontWeight','bold','Clipping','off')
+%text(-170, 1.55*v0,'A','FontSize',24,'FontWeight','bold','Clipping','off')
 
 %ptc=patch([200 1100 1100 200],[.5 .5 1.5 1.5],.6*ones(1,3),'FaceAlpha',.4,'EdgeColor','None');
 %uistack(ptc,'bottom')
@@ -47,7 +52,7 @@ text(345,textY+.4,'(900 STRIDES)','FontSize',16,'Clipping','off','Color',condCol
 ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(1,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
 uistack(ptc,'bottom')
 text(135,textY+.03,'B','FontSize',20,'FontWeight','bold','Color',condColors(1,:))
-text(70,textY+.58,'BASE.','FontSize',20,'Clipping','off','Color',condColors(1,:),'FontWeight','bold')
+text(100,textY+.58,'BASE.','FontSize',20,'Clipping','off','Color',condColors(1,:),'FontWeight','bold')
 ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(5),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
 uistack(ptc,'bottom')
 text(conditionOffset(5)-70,textY+.03,'lA','FontSize',20,'FontWeight','bold','Color',condColors(2,:))
@@ -62,7 +67,8 @@ lg.Position=lg.Position-[.03 .005 0 0];
 set(ph,'XTick','')
 %ph.XLabel.Position=ph.XLabel.Position-[300 0 0];
 axis([1 conditionOffset(end) .5 1.55])
-saveFig(fh,'./','Fig1A',0)
+ph.Box='off';
+%saveFig(fh,'./','Fig1A',0)
 %% Panel B: EMG samples
 for k=1:2
 f1d=open(['./fig/Fig1B_' num2str(k) '.fig']);
@@ -74,7 +80,7 @@ end
 figuresColorMap
 scale=.2;
 for i=1:length(p1d)
-    p1d(i).Position=p1d(i).Position.*[1 scale 1 scale]+[.02 (k-1)*.2+.32 0 0];
+    p1d(i).Position=p1d(i).Position.*[0 scale 0 scale]+[leftMarg (k-1)*.2+.32 1.1*colWidth 0];
 end
 axes(p1d(1))
 ax=gca;
@@ -82,6 +88,7 @@ if k==2
     ll=findobj(gca,'Type','text');
 delete(ll)
 text(-.2*p1d(1).XAxis.Limits(2), 1.3*p1d(1).YAxis.Limits(2),'B','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-.2*p1d(1).XAxis.Limits(2), 1.3*p1d(1).YAxis.Limits(2)+4e-4,'A','FontSize',24,'FontWeight','bold','Clipping','off')
 text(-.2*p1d(1).XAxis.Limits(2), 1.3*p1d(1).YAxis.Limits(2)-7.3e-4,'C','FontSize',24,'FontWeight','bold','Clipping','off')
 ax.Title.String='SINGLE MUSCLE';
 
@@ -108,14 +115,14 @@ axes(p1c)
 figuresColorMap
 %map=repmat(mean(map,2),1,3);
 set(p1c,'Colormap',flipud(niceMap(condColors(1,:))),'Clim',[0 1])
-p1c.Position=p1c.Position + [.48 -.1 0.02 -.1];
+p1c.Position=p1c.Position.*[0 1 0 1] + [leftMarg+colWidth+btwMarg -.1 colWidth -.1];
 
 cc=colorbar('southoutside');
 set(cc,'Ticks',[0 .5 1],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'0%','50%','100%'});
 set(gcf,'Color',ones(1,3))
 cc.Limits=[0 1];
-cc.Position=cc.Position+[.08 .01 -.02 0];
+cc.Position=cc.Position+[.05 .01 -.02 0];
 title('BASELINE ACTIVITY')
 ax=gca;
 %ax.Title.Color=condColors(1,:);
@@ -174,14 +181,14 @@ tt2='-eA_B';
 tt2='eA_B^*';
     end
 ax=axes;
-ax.Position=[.02+(k-1)*.075+(k>1)*.06 .03 .2 .1];
+ax.Position=[.2*leftMarg+(k-1)*.04+(k>1)*.04 .03 1.1*colWidth .1];
 I=imshow(size(map,1)*(aux1+.5),flipud(map),'Border','tight');
 rectangle('Position',[.5 .5 1 3],'EdgeColor','k')
 %%Add arrows
 hold on
 quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux1),zeros(size(aux1)),-.7*sign(aux1),0,'Color','k','LineWidth',2,'MaxHeadSize',.5)
 ax=axes;
-ax.Position=[.02+(k-1)*.075+(k>1)*.06 .14 .2 .1];
+ax.Position=[.2*leftMarg+(k-1)*.04+(k>1)*.04 .14 1.1*colWidth .1];
 I=imshow(size(map,1)*(aux2+.5),flipud(map),'Border','tight');
 rectangle('Position',[.5 .5 1 3],'EdgeColor','k')
 %%Add arrows
@@ -208,10 +215,10 @@ plot([-3.5 1.5],-.6*[1 1],'k','LineWidth',2,'Clipping','off')
 
 %Add lines on fast/slow:
 ccc=get(gca,'ColorOrder');
-plot(-7.5*[1 1],[.5 3.5],'LineWidth',4,'Color',ccc(2,:),'Clipping','off')
-text(-8,3.55,'NON-DOM','Color',ccc(2,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
-plot(-7.5*[1 1],3.3+[.5 3.5],'LineWidth',4,'Color',ccc(1,:),'Clipping','off')
-text(-8,6.25,'DOM','Color',ccc(1,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
+plot(-8.*[1 1],[.5 3.5],'LineWidth',4,'Color',ccc(2,:),'Clipping','off')
+text(-8.5,3.7,'NON-DOM','Color',ccc(2,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
+plot(-8*[1 1],3.3+[.5 3.5],'LineWidth',4,'Color',ccc(1,:),'Clipping','off')
+text(-8.5,6.25,'DOM','Color',ccc(1,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
 
 
 %% Save fig
