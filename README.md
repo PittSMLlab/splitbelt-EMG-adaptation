@@ -1,5 +1,5 @@
 # splitbelt-EMG-adaptation
-
+This is the code for the project referred in https://figshare.com/account/home#/projects/28071 
 The data is NOT stored in this repository. It needs to be retrieved from: https://figshare.com/s/5fb036061f14cb571837 or by running ./data/getDataHPF30.m
 
 UPDATE: data is not currently available in the provided link. Need to sanitize. 
