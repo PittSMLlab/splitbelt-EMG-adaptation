@@ -117,7 +117,7 @@ grid on
 
 %Add data & simulation
 auxStride=[1 4 10 85 40];
-%auxStride=[1 15 10 85 40];
+auxStride=[1 15 10 85 40];
 strideNo=[40 auxStride auxStride];
 MM=size(trainingData,2);
 offset=[adaptOffset+[-45 0 1 5 15 855] postOffset+[0 1 5 15 (MM-postOffset)-44]];
@@ -129,7 +129,8 @@ for i=1:length(strideNo)
     %Plot actual time-course
    ax=axes();
    ax.Position=[(i-1)*margin*width+.03 margin*height*2+.03 width height];
-   imagesc(reshape(mean(trainingData(:,strides),2),12,M1)')
+   auxData=mean(trainingData(:,strides),2);
+   imagesc(reshape(auxData,12,M1)')
    caxis(cl*[-1 1])
    set(gca,'XTick','')
    if i==1
@@ -145,6 +146,8 @@ for i=1:length(strideNo)
        case {7,8,9,10,11}
            title(['Post ' num2str(strides(1)-postOffset+1) ':' num2str(strides(end)-postOffset +1)])
    end
+   res=nanmean(sqrt(sum((auxData-trainingData(:,strides)).^2,1)),2); %Error norm (L2, euclidean), averaged over strides
+   text(4,M1*1.08,['e = ' num2str(round(100*res/normFactor)/100)],'FontSize',8,'Clipping','off','FontWeight','bold')
    
    %Plot simulated time-course
    ax=axes();
@@ -159,7 +162,7 @@ for i=1:length(strideNo)
        set(gca,'YTick','')
    end
    res=nanmean(sqrt(sum((simData(:,strides)-trainingData(:,strides)).^2,1)),2); %Error norm (L2, euclidean), averaged over strides
-   text(4,0,['e = ' num2str(round(100*res/normFactor)/100)],'FontSize',8,'Clipping','off','FontWeight','bold')
+   text(4,M1*1.08,['e = ' num2str(round(100*res/normFactor)/100)],'FontSize',8,'Clipping','off','FontWeight','bold')
    
    %PLot residuals:
    ax=axes();
