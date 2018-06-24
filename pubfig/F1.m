@@ -20,9 +20,10 @@ for i=1:length(conditionOffset)-1
 end
 v0=1;
 V=v0+.333*[1;-1]*dV +[.01;-.01];
+V=[.67*[ones(1,50)*1.015;ones(1,50)*.985] V];
 ph=subplot(5,1,1);
 set(ph,'Position',[leftMarg+.4*btwMarg .78 2*colWidth+1*btwMarg .2],'FontSize',16)
-ll=plot(V','LineWidth',4);
+ll=plot([1:size(V,2)]-50,V','LineWidth',4);
 xlabel('STRIDE CYCLES')
 ylabel({'BELT'; 'SPEED'})
 ph.XLabel.FontWeight='bold';
@@ -47,8 +48,8 @@ ptWidth=80;
 ptc=patch(+[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
 uistack(ptc,'bottom')
 text(207,textY+.03,'eA','FontSize',20,'FontWeight','bold','Color',condColors(2,:))
-text(330,textY+.58,'ADAPTATION','FontSize',20,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
-text(345,textY+.4,'(900 STRIDES)','FontSize',16,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+text(345,textY+.58,'ADAPTATION','FontSize',20,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+text(360,textY+.4,'(900 STRIDES)','FontSize',16,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
 ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(1,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
 uistack(ptc,'bottom')
 text(135,textY+.03,'B','FontSize',20,'FontWeight','bold','Color',condColors(1,:))
@@ -63,10 +64,10 @@ text(810,textY+.58,'POST-ADAP.','FontSize',20,'Clipping','off','Color',condColor
 text(815,textY+.4,'(600 STRIDES)','FontSize',16,'Clipping','off','Color',condColors(3,:),'FontWeight','bold')
 
 lg=legend(ll,{'DOMINANT (FAST) BELT','NON-DOM. (SLOW) BELT'},'FontSize',12,'FontWeight','bold','Location','South');
-lg.Position=lg.Position-[.03 .005 0 0];
+lg.Position=lg.Position-[.01 .005 0 0];
 set(ph,'XTick','')
 %ph.XLabel.Position=ph.XLabel.Position-[300 0 0];
-axis([1 conditionOffset(end) .5 1.55])
+axis([-50 conditionOffset(end) .5 1.55])
 ph.Box='off';
 %saveFig(fh,'./','Fig1A',0)
 %% Panel B: EMG samples
