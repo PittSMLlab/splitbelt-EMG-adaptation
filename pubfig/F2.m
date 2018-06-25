@@ -2,7 +2,7 @@
 %This script generates the FEEDBACK activity figure
 addpath(genpath('./auxFun/'))
 %% Run scripts for each panel (if needed):
-run ./F2A.m
+%run ./F2A.m
 %run ./F2B.m
 
 %% Arrange panels in single fig:
@@ -40,7 +40,7 @@ set(cc,'Ticks',[-.5 0 .5],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'-50%','0%','50%'});
 set(gcf,'Color',ones(1,3))
 %cc.Position=cc.Position+[.08 .01 -.02 0];
-title('EMG CHANGE: eA - B')
+title('\Delta EMG_{tied-to-split}: eA - B')
 ax=gca;
 %ax.Title.Color=condColors(1,:);
 for i=1:length(ax.YTickLabel)
@@ -86,13 +86,24 @@ pB.YAxis.FontSize=10;
 pB.XAxis.FontSize=12;
 drawnow
 pause(1)
-pB.Position(1)=.11;
+pB.Position(1)=.07;
 pB.YTick=[-80:40:80];
 pB.YTickLabel={'80','40','0','-40','-80'};
-title('HIP A-P POSITION (WRT ANKLE)')
+pB.YAxis.Label.String='HIP A-P position [mm]';
+title('\Delta HIP POSITION')
 ll=findobj(gca,'Type','Line');
-legend(ll(end-1:end),{'eA','B'})
+
 pB.Position=[leftMarg bottomMarg+midColHeight+midColMargin colWidth midColHeight];
+
+%Add arrows and fwd/bwd text
+aa=axis;
+text(260,50,'BACK','Rotation',90,'Clipping','off','FontWeight','bold','FontSize',12);
+quiver(250,5,0,70,'Color','k','Clipping','off','LineWidth',3,'AutoScale','off','MarkerSize',5,'MaxHeadSize',.5)
+text(260,-20,'FRONT','Rotation',90,'Clipping','off','FontWeight','bold','FontSize',12);
+quiver(250,-10,0,-70,'Color','k','Clipping','off','LineWidth',3,'AutoScale','off','MarkerSize',5,'MaxHeadSize',.5)
+axis(aa)
+
+legend(ll(end-1:end),{'eA','B'})
 
 %% Panel C: little dude
 fC=imread('../intfig/littleGuy.png');
