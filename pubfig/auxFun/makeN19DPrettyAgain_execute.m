@@ -160,8 +160,8 @@ for i=1:Npanels
         plot(xOff*[1 1]/12,0*[1 1]+[5.6 8.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
         plot(xOff*[1 1]/12,0*[1 1]+[8.5 11.4]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
         text((xOff-.8)/12,7+yyOff,'KNEE','FontSize',16,'Rotation',90)
-        plot(xOff*[1 1]/12,0*[1 1]+[11.6 13.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
-        plot(xOff*[1 1]/12,0*[1 1]+[13.5 15.4]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
+        plot(xOff*[1 1]/12,0*[1 1]+[11.6 14.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
+        plot(xOff*[1 1]/12,0*[1 1]+[14.5 15.4]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
         text((xOff-.8)/12,12.5+yyOff,'HIP','FontSize',16,'Rotation',90)
     end
         %Fix some stuff for symmetry plots:

@@ -1,6 +1,6 @@
 %% Run scripts for each panel (if needed):
 addpath(genpath('./auxFun/'))
-run ./F4A.m
+%run ./F4A.m
 fName='Arial';
 set(0,'defaultAxesFontName',fName,'defaultTextFontName',fName);
 %% Arrange panels in single fig:
@@ -42,10 +42,12 @@ else
         ll2=findobj(pB(i),'Type','line','LineWidth',10);
         xOff=1.28;
         yOff=2;
-    for j=[length(ll2)+[-1:0]];
+        if ~isempty(ll2) %Shouldn't be
+    for j=[length(ll2)+[-1:0]]
         ll2(j).XData=ll2(j).XData+xOff;
         ll2(j).YData=ll2(j).YData+yOff;
     end
+        end
     tt=findobj(pB(i),'Type','text','String','EXTENSORS');
     tt.Position=tt.Position+[xOff yOff 0];
     tt=findobj(pB(i),'Type','text','String','FLEXORS');

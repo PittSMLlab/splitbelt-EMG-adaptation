@@ -32,7 +32,7 @@ for i=1:2
                 set(gca,'YTick',[0:.1:.3])
             case 2 %Feedback
                 axis([45 80 2 18])
-                p.Position=p.Position+[-.3 0 0 0];
+                p.Position=p.Position+[0 .5 0 0];
                 ll2=findobj(gca,'Type','Scatter');
                 nn=get(ll2,'DisplayName');
                 cc=cell2mat(get(ll2,'CData'));
@@ -44,7 +44,7 @@ for i=1:2
                 text(57,15,nn,'FontSize',10,'FontWeight','bold')
                 
             case 3 %Adapt
-                p.Position=p.Position+[.3 .5 0 0];
+                p.Position=p.Position+[0 0 0 0];
                 axis([45 80 2 16])
                 ll2=findobj(gca,'Type','Scatter');
                 nn=get(ll2,'DisplayName');

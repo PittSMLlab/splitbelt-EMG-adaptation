@@ -23,8 +23,6 @@ Clim=.5;
 for i=1:length(axB)
     %Change positions slightly:
     set(axB(i),'Position',get(axB(i),'Position').*[1 1 1 .9/.8] + [0 -.1 0 0])
-
-
     if i==1
             %Fix colorbar:
         caxis(Clim*[-1 1])
@@ -56,30 +54,30 @@ for i=1:length(axB)
         end
 
         %Change contour colors for late adapt:
-        ll=findobj(gca,'type','contour');
+        ll=findobj(gca,'type','surface');
         if ~isempty(ll)
-        auxZ=ll.ZData;
-        auxZ(571:end,:)=0;
-        contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
-        auxZ=ll.ZData;
-        auxZ(1:570,:)=0;
-        auxZ(1649:end,:)=0;
-        contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
-        auxZ=ll.ZData;
-        auxZ(1:1649,:)=0;
-        auxZ(1649+571:end,:)=0;
-        contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
-        auxZ=ll.ZData;
-        auxZ(1:1649+570,:)=0;
-        contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
-        delete(ll)
-        ll=findobj(gca,'type','contour');
-        cc1=get(gca,'ColorOrder');
-        ll(2).Color=cc1(2,:);
-        ll(1).Color=cc1(1,:);
-        ll(3).Color=cc1(2,:);
-        ll(4).Color=cc1(1,:);
-        set(ll,'LineWidth',4)
+            auxZ=ll.ZData;
+            auxZ(571:end,:)=0;
+            contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
+            auxZ=ll.ZData;
+            auxZ(1:570,:)=0;
+            auxZ(1649:end,:)=0;
+            contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
+            auxZ=ll.ZData;
+            auxZ(1:1649,:)=0;
+            auxZ(1649+571:end,:)=0;
+            contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
+            auxZ=ll.ZData;
+            auxZ(1:1649+570,:)=0;
+            contour(ll.XData,ll.YData,auxZ,.5*[1 1]);
+            delete(ll)
+            ll=findobj(gca,'type','contour');
+            cc1=get(gca,'ColorOrder');
+            ll(2).Color=cc1(2,:);
+            ll(1).Color=cc1(1,:);
+            ll(3).Color=cc1(2,:);
+            ll(4).Color=cc1(1,:);
+            set(ll,'LineWidth',4)
         end
     end
 end
