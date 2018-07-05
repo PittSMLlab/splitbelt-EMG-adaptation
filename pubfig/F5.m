@@ -1,6 +1,7 @@
 %%
 fh=openfig('../intfig/intersubj/fig/AgeSpeedEffects_controls.fig');
-
+addpath(genpath('./auxFun/'))
+figSize
 %%
 f1=figure('Units',figUnits,'OuterPosition',figPos);
 ph=findobj(fh,'Type','Axes');

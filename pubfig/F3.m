@@ -12,8 +12,9 @@ makeN19DPrettyAgain_execute
 fB=gcf;
 
 %% Add some details:
+figSize
 axB=findobj(fB,'Type','Axes');
-set(fB,'Units','Normalized','OuterPosition',[0 0 .7 .8],'Renderer','opengl');
+set(fB,'Units','Pixels','OuterPosition',figPos,'Renderer','opengl');
 
 %Fix colormap: (not needed)
 %figuresColorMap
@@ -31,9 +32,9 @@ for i=1:length(axB)
         cc.TickLabels={'-50%','0%','+50%'};
         set(cc,'FontSize',16,'FontWeight','bold')
         cc.Position=cc.Position.*[1 1 1 .98] + [0 .02 0 0];
-        text(-2.3,32, 'A', 'FontSize',22,'FontWeight','bold','Clipping','off')
-        text(-1.2,32, 'B', 'FontSize',22,'FontWeight','bold','Clipping','off')
-        text(-.08,32, 'C', 'FontSize',22,'FontWeight','bold','Clipping','off')
+        text(-2.3,32, 'A', 'FontSize',20,'FontWeight','bold','Clipping','off')
+        text(-1.2,32, 'B', 'FontSize',20,'FontWeight','bold','Clipping','off')
+        text(-.08,32, 'C', 'FontSize',20,'FontWeight','bold','Clipping','off')
         %Delete contours for post-adap
         ll=findobj(gca,'type','contour');
         delete(ll)

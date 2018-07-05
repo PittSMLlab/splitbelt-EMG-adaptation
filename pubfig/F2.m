@@ -12,7 +12,6 @@ fA=openfig('./fig/Fig2A.fig');
 axA=findobj(fA,'Type','Axes');
 
 fh=figure('Units',figUnits,'OuterPosition',figPos,'Color','None');
-condColors=[.6,.6,.6; 0,.5,.4; .5,0,.6];
 figuresColorMap
 colormap(flipud(map))
 Clim=.5;
@@ -40,7 +39,7 @@ set(cc,'Ticks',[-.5 0 .5],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'-50%','0%','50%'});
 set(gcf,'Color',ones(1,3))
 %cc.Position=cc.Position+[.08 .01 -.02 0];
-title('\Delta EMG_{tied-to-split}: eA - B')
+title('\Delta EMG_{tied-to-split}  (eA-B)')
 ax=gca;
 %ax.Title.Color=condColors(1,:);
 for i=1:length(ax.YTickLabel)
@@ -50,9 +49,9 @@ for i=1:length(ax.YTickLabel)
         ax.YTickLabel{i}=['\color[rgb]{0.85,0.325,0.098} ' ax.YTickLabel{i}];
     end
 end
-text(-.2, 32.5,'C','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.8, 32.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.8, 13,'B','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-.2, 32.5,'C','FontSize',20,'FontWeight','bold','Clipping','off')
+text(-1.8, 32.5,'A','FontSize',20,'FontWeight','bold','Clipping','off')
+text(-1.8, 12,'B','FontSize',20,'FontWeight','bold','Clipping','off')
 %ax.Position(1)=ax.Position(1)+.5;
 
 tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
@@ -103,25 +102,29 @@ text(260,-20,'FRONT','Rotation',90,'Clipping','off','FontWeight','bold','FontSiz
 quiver(250,-10,0,-70,'Color','k','Clipping','off','LineWidth',3,'AutoScale','off','MarkerSize',5,'MaxHeadSize',.5)
 axis(aa)
 
-legend(ll(end-1:end),{'eA','B'})
+legend(ll(end-1),{'eA-B'})
+delete(ll(end))
 
 %% Panel C: little dude
-fC=imread('../intfig/littleGuy.png');
-N=size(fC,1);
-if mod(N,2)==1
-fC=fC(1:N-1,:,:);
-N=N-1;
-end
-fC=cat(2,fC(1:N/2,:,:),255*ones(N/2,50,3),fC(N/2+1:N,:,:));
+% fC=imread('../intfig/littleGuy.png');
+% N=size(fC,1);
+% if mod(N,2)==1
+% fC=fC(1:N-1,:,:);
+% N=N-1;
+% end
+% fC=cat(2,fC(1:N/2,:,:),255*ones(N/2,50,3),fC(N/2+1:N,:,:));
+[fC,alpha,beta]=imread('../intfig/littleGuys2.png');
+fC=fC(:,[1:1100,1300:end],:);
+%fC=cat(2,fC(1:N/2,:,:),255*ones(N/2,50,3),fC(N/2+1:N,:,:));
 pC=axes();
 %pC.Position=[.06 .07 .4 .45];
-pC.Position=[leftMarg/1.6 bottomMarg/3 1.1*colWidth 1.5*midColHeight];
+pC.Position=[leftMarg/1.5 bottomMarg/10 1.35*colWidth 2*midColHeight];
 %Trimming figure:
 image(fC)
 axis equal
 pC.Box='off';
 pC.Visible='off';
-text(300,1500,{'POSTURAL RESPONSES TO';' DISPLACEMENTS OF COM'},'Clipping','off','Fontsize',12,'FontWeight','bold')
+text(450,1500,{'DISPLACEMENT OF COM'},'Clipping','off','Fontsize',12,'FontWeight','bold')
 
 %%
 saveFig(fh,'./','Fig2',1)

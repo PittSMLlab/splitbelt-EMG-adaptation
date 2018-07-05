@@ -97,33 +97,27 @@ for i=1:length(pA)
 end
 
 %% Add regression to model comparison:
-f1=openfig('../intfig/intersubj/fig/RegressorSpace_controls.fig');
+f1=openfig('../intfig/intersubj/fig/modelComparison_controls.fig');
 p1=findobj(f1,'Type','Axes');
-pC=copyobj(p1,fh);
+pC=copyobj(p1(end),fh);
 pC.Colormap=f1.Colormap;
-cc=findobj(f1,'Type','colorbar');
-cl=cc.TickLabels;
-ct=cc.Ticks;
 close(f1);
-%
-c=colorbar(pC);
-c.Ticks=ct;
-c.TickLabels=cl;
-drawnow
-pause(2)
+axes(pC)
+legend('After SE','After LE')
 pC.Position=[.63 .55 .2 .35];
 pC.FontSize=16;
 pC.Title.String={'SPLIT-TO-TIED EMG';'REGRESSION'};
 pC.Title.FontSize=16;
 pC.YTick=[0 1];
 pC.FontWeight='bold';
-pC.YLabel.Position=[-.6 .4];
-pC.XLabel.Position=[.5 -.25];
-pC.XTick=[0 1];
 pC.YAxis.FontSize=12;
 pC.XAxis.FontSize=12;
+pC.YLim=[-.4 1.4];
+pC.Legend.FontSize=12;
+pC.XTickLabel={'\beta_S','\beta_M'};
 axes(pC)
-text(1.2,1.1,'Age','FontSize',12,'FontWeight','bold','Clipping','off')
+pC.Position=[.63 .55 .2 .35];
+
 %axes(pC)
 
 %% Add mid hip positions
@@ -149,7 +143,7 @@ close(f1);
 
 
 
-pD.Position=[.63 .07 .22 .35];
+pD.Position=[.63 .07 .2 .35];
 pD.FontSize=16;
 pD.FontWeight='bold';
 pD.Title.String={'\Delta HIP POSITION'};
@@ -182,4 +176,4 @@ legend([ll([2,4]); ln],{'eP-lA','eA-B','eP-B'},'Location','East')
 drawnow
 pD.Position=pp;
 %%
-saveFig(fh,'./','Fig4',1)
+saveFig(fh,'./','Fig4alt',1)

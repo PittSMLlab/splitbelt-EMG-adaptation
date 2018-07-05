@@ -218,10 +218,10 @@ ylabel('% Base')
 
 %% Visualize and save each model
 summaryFunction=@(x) median(x,3); %Using mean or median
-aux=func2str(summaryFunction);
-load(['../data/dynamicsModelingResultsALL_' aux(5:end-5) '.mat'])
-%aux='bilateral';
-%load(['../data/dynamicsModelingResultsALL_' aux '.mat'])
+%aux=func2str(summaryFunction);
+%load(['../data/dynamicsModelingResultsALL_' aux(5:end-5) '.mat'])
+aux='bilateral';
+load(['../data/dynamicsModelingResultsALL_' aux '.mat'])
 switchFactor=0; %LTI model prediction as is
 postOffset=951;
 saveFlag=true;

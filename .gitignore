@@ -43,3 +43,7 @@ ext/colorspace/
 ext/cbrewer2/
 
 *.png
+
+pubfig/auxFun/makeN19DPrettyAgain_execute_bak\.m
+
+*.svg
