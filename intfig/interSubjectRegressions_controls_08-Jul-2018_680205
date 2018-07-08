@@ -1,0 +1,27 @@
+----------------------\beta_M VS. AGE and SLA---------------------
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('tabular/verifyCountVars', '/opt/MATLAB/R2018a/toolbox/matlab/datatypes/@tabular/tabular.m', 339)" style="font-weight:bold">tabular/verifyCountVars</a> (<a href="matlab: opentoline('/opt/MATLAB/R2018a/toolbox/matlab/datatypes/@tabular/tabular.m',339,0)">line 339</a>)
+All variables must have the same number of rows.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('table', '/opt/MATLAB/R2018a/toolbox/matlab/datatypes/@table/table.m', 275)" style="font-weight:bold">table</a> (<a href="matlab: opentoline('/opt/MATLAB/R2018a/toolbox/matlab/datatypes/@table/table.m',275,0)">line 275</a>)
+                    numRows = tabular.verifyCountVars(vars);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('EMGlearningAndinterSubjectDifferences', '/home/pablo/Documents/PhD/splitbelt-EMG-adaptation/src/EMGlearningAndinterSubjectDifferences.m', 242)" style="font-weight:bold">EMGlearningAndinterSubjectDifferences</a> (<a href="matlab: opentoline('/home/pablo/Documents/PhD/splitbelt-EMG-adaptation/src/EMGlearningAndinterSubjectDifferences.m',242,0)">line 242</a>)
+tt2=table(age(idx)',
+SLA_eP(idx),betaM(idx),betaS(idx),betaFF(idx),norm_eP(idx),norm_S2T(idx),r2(idx),'VariableNames',{'age','SLA_eP','beta_M','beta_S','beta_FF','norm_eP','norm_S2T','r2'});
+%Taking SLA in eP minus lA makes SLA coefficients much less predictive (which is even better for making our
+point!)
+} 
+opentoline('/opt/MATLAB/R2018a/toolbox/matlab/datatypes/@tabular/tabular.m',339,0)
+opentoline('/home/pablo/Documents/PhD/splitbelt-EMG-adaptation/src/EMGlearningAndinterSubjectDifferences.m',242,0)
+r2
+
+r2 =
+
+  Columns 1 through 11
+
+    0.2476    0.7173    0.4586    0.2305    0.3933    0.2450    0.2253    0.5088    0.2188    0.4894    0.3026
+
+  Columns 12 through 16
+
+    0.5190    0.6746    0.2728    0.3389    0.2372
+
