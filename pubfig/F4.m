@@ -102,28 +102,33 @@ p1=findobj(f1,'Type','Axes');
 pC=copyobj(p1,fh);
 pC.Colormap=f1.Colormap;
 cc=findobj(f1,'Type','colorbar');
+if ~isempty(cc)
 cl=cc.TickLabels;
 ct=cc.Ticks;
+end
 close(f1);
 %
-c=colorbar(pC);
-c.Ticks=ct;
-c.TickLabels=cl;
-drawnow
-pause(2)
+%c=colorbar(pC);
+%c.Ticks=ct;
+%c.TickLabels=cl;
+%drawnow
+%pause(2)
 pC.Position=[.63 .55 .2 .35];
 pC.FontSize=16;
-pC.Title.String={'SPLIT-TO-TIED EMG';'REGRESSION'};
+pC.Title.String={'\Delta EMG_{split-to-tied}';'REGRESSION'};
 pC.Title.FontSize=16;
 pC.YTick=[0 1];
 pC.FontWeight='bold';
 pC.YLabel.Position=[-.6 .4];
-pC.XLabel.Position=[.5 -.25];
+pC.XLabel.Position=[.5 -.6];
 pC.XTick=[0 1];
 pC.YAxis.FontSize=12;
 pC.XAxis.FontSize=12;
 axes(pC)
-text(1.2,1.1,'Age','FontSize',12,'FontWeight','bold','Clipping','off')
+%text(1.2,1.1,'Age','FontSize',12,'FontWeight','bold','Clipping','off')
+%sc=findobj(pC,'Type','scatter');
+%sc(5).CData=condColors(3,:);
+%sc(5).MarkerFaceAlpha=.5;%condColors(3,:);
 %axes(pC)
 
 %% Add mid hip positions
@@ -149,7 +154,7 @@ close(f1);
 
 
 
-pD.Position=[.63 .07 .22 .35];
+pD.Position=[.63 .07 .2 .35];
 pD.FontSize=16;
 pD.FontWeight='bold';
 pD.Title.String={'\Delta HIP POSITION'};
@@ -179,6 +184,8 @@ drawnow
 axes(pD)
 pp=pD.Position;
 legend([ll([2,4]); ln],{'eP-lA','eA-B','eP-B'},'Location','East')
+delete(ln)
+delete(pn)
 drawnow
 pD.Position=pp;
 %%

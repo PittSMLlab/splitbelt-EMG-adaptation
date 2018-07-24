@@ -1,4 +1,5 @@
 %% Open relevant intfigs
+clearvars
 f(1)=openfig('/Datos/Documentos/code/splitbelt-EMG-adaptation/intfig/all/dyn/fig/Adapt[2.1_1]medianALT.fig');
 f(2)=openfig('/Datos/Documentos/code/splitbelt-EMG-adaptation/intfig/all/dyn/fig/Adapt[2.1_1]ALT.fig');
 p=findobj(f(2),'Type','Axes');
@@ -22,9 +23,11 @@ np1(5).Title.String='x_1';
 set(np1(2:2:6),{'Position'},cellfun(@(x) x+[0 -.01 0 0],get(np1(2:2:6),'Position'),'UniformOutput',false));
 %Change text:
 tt=findobj(np1(5),'Type','Text');
-tt.Position=tt.Position-[100 0 0];
+tt.Position=tt.Position-[180 0 0];
 tt=findobj(np1(1),'Type','Text');
 tt.String=tt.String(3:end);
+delete(tt);
+
 %Add panel letters
 if j==1
     axes(np1(1))
@@ -187,4 +190,4 @@ end
 set(ax,'GridLineStyle','none')
 end
 %%
-saveFig(fh,'./','F6',0)
+%saveFig(fh,'./','F6',0)

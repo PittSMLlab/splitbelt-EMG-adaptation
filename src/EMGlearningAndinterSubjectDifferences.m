@@ -14,7 +14,7 @@ idx=1:16;
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
 write=true;
-%write=false;
+write=false;
 %% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
@@ -484,11 +484,11 @@ c2=(condColors(3,:));
 c1=condColors(1,:)*1.8;
 normAge=(age-min(age))/(max(age)-min(age));
 %scatter(data2(:,1),data2(:,2),60,normAge','filled')
-%scatter(data2(:,1),data2(:,2),20,c2,'filled')
+scatter(data2(:,1),data2(:,2),60,c2,'filled','MarkerFaceAlpha',.7)
 data3=learnAllS2a;
 hold on
-%scatter(data3(:,1),data3(:,2),20,normAge','filled')
-%colormap((c1.*[0:.01:1]'+c2.*[1:-.01:0]').^.5)
+scatter(data3(:,1),data3(:,2),60,c1,'filled')
+colormap((c1.*[0:.01:1]'+c2.*[1:-.01:0]').^.5)
 %cc=colorbar;
 xlabel('\beta_S')
 ylabel('\beta_M')
@@ -496,17 +496,22 @@ ylabel('\beta_M')
 rL=modelFit2a.Coefficients.Estimate;
 rS=modelFitS2a.Coefficients.Estimate;
 hold on
-scatter(rS(1),rS(2),150,condColors(1,:),'filled')
-text(rS(1)-.15,rS(2)+.1,{'   Short','exposure'},'Color',c1/1.5,'FontWeight','bold')
+scatter(rS(1),rS(2),150,condColors(1,:)*1.2,'filled')
+text(rS(1),rS(2)+.12,{'   Short','exposure'},'Color',c1/2,'FontWeight','bold')
 scatter(rL(1),rL(2),150,condColors(3,:),'filled')
 text(rL(1)+.05,rL(2),{'   Long','exposure'},'Color',c2,'FontWeight','bold')
-scatter(1,0,100,'k','filled')
-scatter(0,1,100,'k','filled')
-text(.7,0,{'   H2: No','Adaptation'})
-text(.05,.99,{' H3: Ideal'; 'Adaptation'})
+scatter(1,0,80,'k','filled')
+scatter(0,1,80,'k','filled')
+text(.5,-.02,{'   H2: No','Adaptation'},'FontWeight','bold')
+text(.05,.99,{' H3: ''New normal'''},'FontWeight','bold')
 %TO DO: add expected split-to-tied and tied-to-split
-axis([-.1 1.35 -.1 1.1])
-title('Projection of split-to-tied changes in muscle activity')
+axis([-.45 1.55 -.5 1.05])
+title('Regression analysis of \Delta EMG_{split-to-tied}')
+ax=gca;
+ax.YLabel.FontWeight='bold';
+ax.XLabel.FontWeight='bold';
+ax.YLabel.FontSize=14;
+ax.XLabel.FontSize=14;
     %Save fig:
     if write
         saveFig(fh,'../intfig/intersubj/',['RegressorSpace_' groupName],0)
