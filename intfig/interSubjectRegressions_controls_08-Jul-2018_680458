@@ -1,0 +1,67 @@
+----------------------\beta_M VS. AGE and SLA---------------------
+
+learnVsAge = 
+
+
+Linear regression model (robust fit):
+    beta_M ~ 1 + age
+
+Estimated Coefficients:
+                    <strong>Estimate</strong>        <strong>SE</strong>         <strong>tStat</strong>       <strong>pValue</strong>  
+                   <strong>__________</strong>    <strong>_________</strong>    <strong>_______</strong>    <strong>__________</strong>
+
+    <strong>(Intercept)</strong>       0.96456      0.20146      4.788    0.00028904
+    <strong>age        </strong>    -0.0084507    0.0032588    -2.5932      0.021256
+
+
+Number of observations: 16, Error degrees of freedom: 14
+Root Mean Squared Error: 0.123
+R-squared: 0.327,  Adjusted R-Squared 0.279
+F-statistic vs. constant model: 6.81, p-value = 0.0206
+Spearman's r:-0.63529, p=0.0097883
+
+staticVsAge = 
+
+
+Linear regression model (robust fit):
+    beta_S ~ 1 + age
+
+Estimated Coefficients:
+                   <strong>Estimate</strong>       <strong>SE</strong>         <strong>tStat</strong>      <strong>pValue</strong> 
+                   <strong>________</strong>    <strong>_________</strong>    <strong>_______</strong>    <strong>________</strong>
+
+    <strong>(Intercept)</strong>    -0.66882      0.33411    -2.0018    0.065074
+    <strong>age        </strong>    0.012754    0.0054046     2.3599    0.033327
+
+
+Number of observations: 16, Error degrees of freedom: 14
+Root Mean Squared Error: 0.204
+R-squared: 0.285,  Adjusted R-Squared 0.233
+F-statistic vs. constant model: 5.57, p-value = 0.0333
+Spearman's r:0.59412, p=0.017247
+
+r2VsAge = 
+
+
+Linear regression model (robust fit):
+    r2 ~ 1 + age
+
+Estimated Coefficients:
+                    <strong>Estimate</strong>        <strong>SE</strong>         <strong>tStat</strong>      <strong>pValue</strong> 
+                   <strong>__________</strong>    <strong>_________</strong>    <strong>_______</strong>    <strong>________</strong>
+
+    <strong>(Intercept)</strong>        0.7705      0.28269     2.7256    0.016412
+    <strong>age        </strong>    -0.0064195    0.0045729    -1.4038     0.18216
+
+
+Number of observations: 16, Error degrees of freedom: 14
+Root Mean Squared Error: 0.172
+R-squared: 0.123,  Adjusted R-Squared 0.0609
+F-statistic vs. constant model: 1.97, p-value = 0.182
+Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('corr', '/opt/MATLAB/R2018a/toolbox/stats/stats/corr.p', 106)" style="font-weight:bold">corr</a> (<a href="matlab: opentoline('/opt/MATLAB/R2018a/toolbox/stats/stats/corr.p',106,0)">line 106</a>)
+X and Y must have the same number of rows.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('EMGlearningAndinterSubjectDifferences', '/home/pablo/Documents/PhD/splitbelt-EMG-adaptation/src/EMGlearningAndinterSubjectDifferences.m', 253)" style="font-weight:bold">EMGlearningAndinterSubjectDifferences</a> (<a href="matlab: opentoline('/home/pablo/Documents/PhD/splitbelt-EMG-adaptation/src/EMGlearningAndinterSubjectDifferences.m',253,0)">line 253</a>)
+[r,p]=corr(r2(idx),age(idx)','Type','Spearman');
+
+opentoline('/home/pablo/Documents/PhD/splitbelt-EMG-adaptation/src/EMGlearningAndinterSubjectDifferences.m',253,0)

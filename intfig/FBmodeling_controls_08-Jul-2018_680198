@@ -1,0 +1,67 @@
+ 
+%%%%%%%%%%%%%%%%%
+ 
+Model 1a (LE:\beta_M only):
+Avg. (uncent.) R^2=0.6986
+Indiv. \R^2=0.31 \pm 0.19, (mean \pm std)
+Indiv. \R^2=0.226 \pm 0.328, (median \pm iqr)
+Avg. \beta eAT CI=0.659     0.756, p=1.6083e-95
+Indiv. \beta=0.47 \pm 0.183, (mean \pm std)
+Indiv. \beta=0.434 \pm 0.215, (median \pm iqr)
+Bayes Factor over 2a model:4.71e-15
+Bayes Factor over 2c model:1.1e-26
+ 
+Model 2a (LE):
+Avg. (uncent.) R^2=0.7531
+Indiv. \R^2=0.38 \pm 0.164, (mean \pm std)
+Indiv. \R^2=0.321 \pm 0.258, (median \pm iqr)
+Avg. \beta eA CI=0.156     0.244, p=2.9648e-17
+Indiv. \beta=0.11 \pm 0.22, (mean \pm std)
+Indiv. \beta=0.193 \pm 0.396, (median \pm iqr)
+Avg. \beta eAT CI=0.693     0.782, p=6.1074e-110
+Indiv. \beta=0.457 \pm 0.153, (mean \pm std)
+Indiv. \beta=0.442 \pm 0.177, (median \pm iqr)
+Bayes Factor over 2a model:1
+Bayes Factor over 2c model:2.34e-12
+ 
+Model S2a (SE):
+Avg. (uncent.) R^2=0.8812
+Indiv. \R^2=0.563 \pm 0.143, (mean \pm std)
+Indiv. \R^2=0.612 \pm 0.102, (median \pm iqr)
+Avg. \beta eA CI=1.16      1.25, p=9.6875e-166
+Indiv. \beta=0.908 \pm 0.305, (mean \pm std)
+Indiv. \beta=0.911 \pm 0.471, (median \pm iqr)
+Avg. \beta eAT CI=-0.0671    0.0262, p=0.38908
+Indiv. \beta=0.0209 \pm 0.226, (mean \pm std)
+Indiv. \beta=0.0624 \pm 0.355, (median \pm iqr)
+Bayes Factor over 2a model:1.12e+41
+Bayes Factor over 2c model:2.62e+29
+ 
+Model 3b (LE3new):
+Avg. (uncent.) R^2=0.788
+Indiv. \R^2=0.496 \pm 0.154, (mean \pm std)
+Indiv. \R^2=0.497 \pm 0.184, (median \pm iqr)
+Avg. \beta eA CI=-0.0249    0.0933, p=0.25633
+Indiv. \beta=-0.0757 \pm 0.193, (mean \pm std)
+Indiv. \beta=-0.0688 \pm 0.231, (median \pm iqr)
+Avg. \beta eAT CI=0.605     0.698, p=2.7493e-90
+Indiv. \beta=0.408 \pm 0.138, (mean \pm std)
+Indiv. \beta=0.391 \pm 0.18, (median \pm iqr)
+Avg. \beta lA CI=0.331      0.56, p=1.6972e-13
+Indiv. \beta=0.55 \pm 0.227, (mean \pm std)
+Indiv. \beta=0.574 \pm 0.26, (median \pm iqr)
+Bayes Factor over 2a model:4.31e+10
+Bayes Factor over 2c model:0.101
+ 
+Model 2c (LEwoBetaS):
+Avg. (uncent.) R^2=0.7873
+Indiv. \R^2=0.47 \pm 0.142, (mean \pm std)
+Indiv. \R^2=0.485 \pm 0.162, (median \pm iqr)
+Avg. \beta eAT CI=0.598     0.682, p=1.1971e-99
+Indiv. \beta=0.449 \pm 0.184, (mean \pm std)
+Indiv. \beta=0.427 \pm 0.18, (median \pm iqr)
+Avg. \beta lA CI=0.414     0.573, p=6.3599e-29
+Indiv. \beta=0.463 \pm 0.229, (mean \pm std)
+Indiv. \beta=0.506 \pm 0.276, (median \pm iqr)
+Bayes Factor over 2a model:4.27e+11
+Bayes Factor over 2c model:1
