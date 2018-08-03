@@ -64,6 +64,7 @@ for i=1:Npanels
     catch
     end
     newAxes.FontSize=16;
+    newAxes.YAxis.FontSize=14;
     drawnow
     %pause(.5)
     newAxes.Title.String=plotTitles{i};
@@ -154,14 +155,14 @@ for i=1:Npanels
     end
     for j=1:maxI
         yyOff=yOff(j)-.5;
-        plot(xOff*[1 1]/12,0+[.6 1.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
-        plot(xOff*[1 1]/12,0*[1 1]+[1.5 5.4]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
+        plot(xOff*[1 1]/12,0+[.75 1.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
+        plot(xOff*[1 1]/12,0*[1 1]+[1.5 5.25]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
         text((xOff-.8)/12,1+yyOff,'ANKLE','FontSize',16,'Rotation',90)
-        plot(xOff*[1 1]/12,0*[1 1]+[5.6 8.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
-        plot(xOff*[1 1]/12,0*[1 1]+[8.5 11.4]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
+        plot(xOff*[1 1]/12,0*[1 1]+[5.75 8.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
+        plot(xOff*[1 1]/12,0*[1 1]+[8.5 11.25]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
         text((xOff-.8)/12,7+yyOff,'KNEE','FontSize',16,'Rotation',90)
-        plot(xOff*[1 1]/12,0*[1 1]+[11.6 14.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
-        plot(xOff*[1 1]/12,0*[1 1]+[14.5 15.4]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
+        plot(xOff*[1 1]/12,0*[1 1]+[11.75 14.5]+yyOff,'Color',.7*ones(1,3),'LineWidth',10,'Clipping','off')
+        plot(xOff*[1 1]/12,0*[1 1]+[14.5 15.25]+yyOff,'Color',0*ones(1,3),'LineWidth',10,'Clipping','off')
         text((xOff-.8)/12,12.5+yyOff,'HIP','FontSize',16,'Rotation',90)
     end
         %Fix some stuff for symmetry plots:

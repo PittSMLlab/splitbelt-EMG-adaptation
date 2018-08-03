@@ -59,5 +59,8 @@ set(gcf,'Position',[0 0 .5 .8])
     aux=ll2(end).Color;
     ll2(end).Color=ll2(end-1).Color;
     ll2(end-1).Color=aux;
+    
+    %% Add line between legs
+    plot3([-.1 1.2],[15 15],[1 1],'k','LineWidth',2,'Clipping','off')
 %%
 saveFig(newFig,saveDir,saveName,0)

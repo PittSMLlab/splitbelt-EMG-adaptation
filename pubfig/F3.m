@@ -5,7 +5,7 @@ addpath(genpath('./auxFun/'))
 saveDir='./';
 name='allChangesEMG.fig';
 desiredPlotDescription={'Slow';'late A'; 'early P[15]'};
-plotTitles={'Slow Tied','Late Adaptation','  Early Post-Adaptation'};
+plotTitles={'Slow Tied','Late Adaptation (LateA)','       Early Post-Adaptation (EarlyP)'};
 saveName='Fig3B';
 lineFlag=0;
 makeN19DPrettyAgain_execute
@@ -98,5 +98,8 @@ axes(axB(1))
 contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',3,'Clipping','off') 
 axes(axB(2)) 
 contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',3,'Clipping','off') 
+
+%%
+pl=plot3([-1.2 2.25],[15 15],[6 6],'k','LineWidth',2,'Clipping','off');
 %%
 saveFig(fB,'./','Fig3',1)

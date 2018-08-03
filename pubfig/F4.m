@@ -39,7 +39,7 @@ if i==1
     text(-.05,32, 'D', 'FontSize',20,'FontWeight','bold','Clipping','off')
     text(1.55,40, 'E', 'FontSize',20,'FontWeight','bold','Clipping','off')
     text(1.55,18, 'F', 'FontSize',20,'FontWeight','bold','Clipping','off')
-        title('\Delta EMG (eP - lA)')
+        title('FBK_{split-to-tied}')
 else
         ll2=findobj(pB(i),'Type','line','LineWidth',10);
         xOff=1.28;
@@ -54,7 +54,7 @@ else
     tt.Position=tt.Position+[xOff yOff 0];
     tt=findobj(pB(i),'Type','text','String','FLEXORS');
     tt.Position=tt.Position+[xOff yOff 0];
-    title('\Delta EMG (eA - B)')
+    title('FBK_{tied-to-split}')
 end
 hold on
 x=[0 2/12]; %roughly 50 to 200 ms
@@ -66,6 +66,8 @@ cc1=get(gca,'ColorOrder');
 %rectangle('Position',[x(1) 16+y(1) diff(x) diff(y)],'LineWidth',3,'EdgeColor',cc1(i,:));
 %plot3( [x(1) x(2) x(2) x(1) x(1)], 15+[y(1) y(1) y(2) y(2) y(1) ], [z z z z z],'LineWidth',3,'Color',cc1(i,:));
 end
+pl=plot3([-.1 2.3],[15 15],[6 6],'k','LineWidth',2,'Clipping','off');
+pB(1).YAxis.FontSize=13;
 
 pA(1)=copyobj(axA,fh);
 pA(2)=copyobj(axA,fh);
@@ -115,7 +117,7 @@ close(f1);
 %pause(2)
 pC.Position=[.63 .55 .2 .35];
 pC.FontSize=16;
-pC.Title.String={'\Delta EMG_{split-to-tied}';'REGRESSION'};
+pC.Title.String={'FBK_{split-to-tied}';'REGRESSION'};
 pC.Title.FontSize=16;
 pC.YTick=[0 1];
 pC.FontWeight='bold';
@@ -165,9 +167,9 @@ axes(pD)
 hold on
 
 plot([.12 .49]*240,110*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
-text(.13*240,120,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
+text(.1*240,120,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
 plot((.5+[0.12 .49])*240,110*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
-text(.63*240,120,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
+text(.6*240,120,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
 %legend(ll)
 pD.YAxis.FontSize=10;
 pD.XAxis.FontSize=12;
@@ -183,9 +185,10 @@ pD.XTickLabel='';
 drawnow
 axes(pD)
 pp=pD.Position;
-legend([ll([2,4]); ln],{'eP-lA','eA-B','eP-B'},'Location','East')
-delete(ln)
-delete(pn)
+lg=legend([ll([2,4]); ln],{'SPLIT-TO-TIED','TIED-TO-SPLIT','EarlyP_B'},'Location','East');
+lg.FontSize=10;
+%delete(ln)
+%delete(pn)
 drawnow
 pD.Position=pp;
 %%

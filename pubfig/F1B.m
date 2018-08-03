@@ -2,7 +2,7 @@
 %% Load data
 subj='C0014';
 load(['../data/HPF30/' subj '.mat']);
-
+figuresColorMap
 %% Align it
 conds={'TM Base','Adap'};
 events={'RHS','LTO','LHS','RTO'};
@@ -37,12 +37,12 @@ xt=[0:phaseSize:MM];
 %xt=[0:8:MM];
 fs=16; %FontSize
 
-    ph(i)=axes();
-    set(ph(i),'Position',[.07 .48 .35 .45]);
+    ph=axes();
+    set(ph,'Position',[.07 .48 .35 .45]);
     hold on
 
-    B.plot(fh,ph(i),condColors(1,:),[],0,[-49:0],prc,true);
-    A.plot(fh,ph(i),condColors(2,:),[],0,[-49:0],prc,true);
+    B.plot(fh,ph,condColors(1,:),[],0,[-49:0],prc,true);
+    A.plot(fh,ph,condColors(2,:),[],0,[-49:0],prc,true);
     axis tight
     ylabel('')
     ylabel(tit)
@@ -64,11 +64,11 @@ fs=16; %FontSize
             tt='B';
             case 2
             aux=nanmedian(A.Data,3)';
-            tt='lA';
+            tt='LateA';
             case 3
             aux=1*(nanmedian(A.Data,3)'-nanmedian(B.Data,3)') +.5*max(nanmedian(B.Data,3));
             figuresColorMap;
-            tt='lA_B';
+            tt='LateA_B';
         end
         clear aux2
         for k=1:length(xt)-1
@@ -78,16 +78,16 @@ fs=16; %FontSize
         I.Parent.Colormap=flipud(map);
         rectangle('Position',[.5 .5 12 1],'EdgeColor','k')
         set(ph1(j),'XTickLabel','','YTickLabel','','XTick','','YTick','')
-        text(-.4-.1*(j-1)^2.6,1,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
+        text(-.4-1*(j-1)+.7*(j>2),1,tt,'Clipping','off','FontSize',10,'FontWeight','bold')
     end
     drawnow
     %
 
 
-    axes(ph(i))
-    ll=findobj(ph(i),'Type','Line');
+    axes(ph)
+    ll=findobj(ph,'Type','Line');
     set(ll,'LineWidth',3)
-    set(ph(i),'FontSize',fs,'YTickLabel','','XTickLabel','','XTick',xt,'YTick','')
+    set(ph,'FontSize',fs,'YTickLabel','','XTickLabel','','XTick',xt,'YTick','')
     a=axis;
     yOff=a(3)-.2*(a(4)-a(3));
     %Add labels:

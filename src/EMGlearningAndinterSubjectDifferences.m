@@ -428,6 +428,7 @@ if write
 end
 
 
+
 %% Age and speed effects
 mod=modelFit2a;
 fh=figure('Units','Normalized','OuterPosition',[0 .2 .8 .5*16/10]);
@@ -440,9 +441,9 @@ for i=1:2
             x=velsC;
             xl='Mid walking speed (m/s)';
     end
-
+ 
     %Four panels:
-    for j=1:4
+    for j=1:5
         switch j
             case 1 %First panel: regressors vs. explanatory variable
                 data2=[learnAll2a r2All2a'];
@@ -452,43 +453,71 @@ for i=1:2
                 ci=[3,3,2];
                 ai=[1,.5,1];
             case 2 %Second panel: eP and lA sizes
-                data2=[norm_eP,norm_lA];
-                names={'||eP_B||','||lA_B||'};
+                data2=[norm_lA];
+                names={'||LateA_B||'};
                 yl='Response size (a.u.)';
-                tt='Adaptation transfer';
-                ci=[3,2];
-                ai=[1 1];
-            case 3 %Third panel: feedback response sizes
-                data2=[norm_T2S,norm_S2T];
-                names={'||eA_B||','||eP_B-lA_B||'};
+                tt='Late Adaptation';
+                ci=[2];
+                ai=[1];
+            case 3 %Third panel: feedback response sizes 
+                data2=[norm_T2S,norm_S2T]; 
+                names={'||FBK_{tied-to-split}||','||FBK_{split-to-tied}||'}; 
+                yl='Response size (a.u.)'; 
+                tt='Feedback responses'; 
+                ci=[2,3]; 
+                ai=[1 1];  
+            case 4 %Overlayed on 4, EMG aftereffects 
+                data2=[SLA_eP]; 
+                names={'SLA_{eP}'}; 
+                yl='Step-length asymmetry'; 
+                tt='Aftereffects'; 
+                ci=[3]; 
+                ai=.5; 
+            case 5 %Overlayed on 4, EMG aftereffects
+                data2=[norm_eP,norm_eP]; %Inelegant way to put legends for 4 and 5 together
+                names={'','||EarlyP||'};
                 yl='Response size (a.u.)';
-                tt='Feedback responses';
-                ci=[2,3];
-                ai=[1 1];
-            case 4 %Fourth: SLA_eP vs expl. variable
-                data2=[SLA_eP];
-                names={'SLA_{eP}'};
-                yl='Step-length asymmetry';
-                tt='Kinematic aftereffects';
-                ci=[3];
-                ai=1;
+                tt='Aftereffects';
+                ci=[3,3];
+                ai=[.5,1];
         end
-        subplot(2,4,j+(i-1)*4)
+        scf={'flat','flat'};
+        if j==5
+            delete(sp.Legend)
+            sc=findobj(sp,'Type','Scatter');
+            %sc.MarkerFaceColor='none';
+            ax=axes();
+            ax.Position=get(sp,'Position');
+            ax.YAxisLocation='right';
+            ax.XTick=[];
+            ax.XLabel =[];
+            ax.Color='none';
+            %ax.Color=condColors(ci(3),:);
+            %scf={'none','flat'};
+        else
+            sp=subplot(2,4,j+(i-1)*4);
+        end
         hold on
         ss=[];
         for k=1:min(2,length(names))
             [rs,ps]=corr(x(idx)',data2(idx,k),'Type','Spearman');
-            ss(k)=scatter(x(idx),data2(idx,k),50,condColors(ci(k),:),'filled','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);
+            ss(k)=scatter(x(idx),data2(idx,k),50,condColors(ci(k),:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);
             pp=polyfit1PCA(x(idx),data2(idx,k),1);
             pp=polyfit(x(idx)',data2(idx,k),1);
             if ps<.05
             plot([min(x) max(x)],[min(x) max(x)]*pp(1)+pp(2),'Color',(ai(k))*condColors(ci(k),:)+(1-ai(k))*ones(1,3),'LineWidth',2)
             end
         end
-        legend(ss)
         xlabel(xl)
         ylabel(yl)
         title(tt)
+        if j==5
+           set(ss(1),'DisplayName',sc.DisplayName); 
+           ax.XLabel=[];
+        end
+        lg=legend(ss);
+        lg.Color='w';
+
     end
 end
     %Save fig:
