@@ -3,9 +3,9 @@ addpath(genpath('./fun/'))
 addpath(genpath('../pubfig/auxFun/'))
 %% Define data from params if necessary
 groupName='patients';
-idx=[1:6,8:10,12:16]; %Excluding 7 and 11 which dont have short exp
+subjIdx=[1:6,8:10,12:16]; %Excluding 7 and 11 which dont have short exp
 groupName='controls';
-idx=1:16;
+subjIdx=1:16;
 
 %% If EMGsummary file does not exist, run this:
 %loadEMGParams_controls(groupName)
@@ -19,12 +19,47 @@ write=false;
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
 veAT=fftshift(veA,1);
+%% Select sub-sets of muscles to test for robustness
+muscleIdx=1:size(eA,1);
+%muscleIdx=[[49:180],180+[49:180]]; %Exclude hips
+%muscleIdx=[[61:96,109:180],180+[61:96,109:180]]; %Exclude hips, RF, SEMB
+%-> Most things remain the same. The most fragile result seems to be the
+%correlation of \beta_M to age.
+%% Shuffling test
+%eA=eA(randperm(360),randperm(16));
+%eAT=eA(randperm(360),randperm(16));
+%eAT=randn(size(eA));
+%eA=randn(size(eAT));
+%eA1=eA;
+%eA=-eAT;
+%eAT=-eA1;
+%lA=lA(randperm(360),:);
+%eP=eP(randperm(360),:);
+%WHAT I LEARNED FROM THIS:
+%sudden changes in speeds lead to most muscles increasing activity on
+%younger subjects, but not so (on average the change is 0) on older
+%subjects. This age trend is more pronounced in split-to-tied thant
+%tied-to-split transition.
+%Thus, even if we randomly permute muscles, the expected
+%regressor of (eP-lA) onto eAT is positive, and onto -eA is negative (most
+%elements of eP-lA are positive, so are most of eA and eAT). Further,
+%because of the age dependency, those regressors always have some trend
+%with age, as observed in the normal dataset.
+%Obviously, when shuffled like this, the R^2 values drop immensely, and so
+%do the regressors (they just dont have 0 as expected values).
+%All these things remain true if we remove all hip muscles 
+%Example code to observe these things:
+% [r,p]=corr(ageC',mean(eA(muscleIdx,:))','Type','Spearman')
+% [r,p]=corr(ageC',mean(eP(muscleIdx,:)-lA(muscleIdx,:))','Type','Spearman')
+% median(mean(eA(muscleIdx,:))
+% median(mean(eA(muscleIdx,:)))
+% median(mean(eP(muscleIdx,:)-lA(muscleIdx,:)))
 %% Do group analysis:
 rob='off';
 %%%Short-exposure(to compare):
-ttS=table(-mean(eA(:,idx),2), mean(eAT(:,idx),2), -mean(lS(:,idx),2), mean(ePS(:,idx),2)-mean(lS(:,idx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
-ttSb=table(-mean(eA(:,idx),2), mean(eAT(:,idx),2), -mean(lS(:,idx),2), mean(ePS(:,idx),2),'VariableNames',{'eA','eAT','lS','ePS'});
-ttS1=table(-mean(veA(:,idx),2), mean(veAT(:,idx),2), -mean(veS(:,idx),2), mean(vePS(:,idx),2)-mean(lS(:,idx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
+ttS=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lS(muscleIdx,subjIdx),2), mean(ePS(muscleIdx,subjIdx),2)-mean(lS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
+ttSb=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lS(muscleIdx,subjIdx),2), mean(ePS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS'});
+ttS1=table(-mean(veA(muscleIdx,subjIdx),2), mean(veAT(muscleIdx,subjIdx),2), -mean(veS(muscleIdx,subjIdx),2), mean(vePS(muscleIdx,subjIdx),2)-mean(lS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
 %Model:
 
 modelFitS2a=fitlm(ttS,'ePS_lS~eA+eAT-1','RobustOpts',rob)
@@ -56,11 +91,11 @@ r2S3b=r2S3b.uncentered;
 disp(['Uncentered R^2=' num2str(r2S3b,3)])
 
 %%% LONG EXPOSURE
-tt=table(-mean(eA(:,idx),2), mean(eAT(:,idx),2), -mean(lA(:,idx),2), mean(eP(:,idx),2)-mean(lA(:,idx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
-ttAlt=table( mean(eP(:,idx),2)-mean(lA(:,idx),2)-mean(eAT(:,idx),2),mean(eP(:,idx),2)-mean(lA(:,idx),2)-mean(eA(:,idx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
-ttb=table(-mean(eA(:,idx),2), mean(eAT(:,idx),2), -mean(lA(:,idx),2),mean(eP(:,idx),2),'VariableNames',{'eA','eAT','lA','eP'});
-tt1=table(-mean(veA(:,idx),2), mean(veAT(:,idx),2), -mean(lA(:,idx),2),mean(eP(:,idx),2), mean(eP(:,idx),2)-mean(lA(:,idx),2),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});
-ttAlt1=table( mean(eP(:,idx),2)-mean(lA(:,idx),2)-mean(veAT(:,idx),2),mean(eP(:,idx),2)-mean(lA(:,idx),2)-mean(veA(:,idx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
+tt=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2), mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+ttAlt=table( mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(eAT(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(eA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
+ttb=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP'});
+tt1=table(-mean(veA(muscleIdx,subjIdx),2), mean(veAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2), mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});
+ttAlt1=table( mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(veAT(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(veA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
 
 %1 regressor:
 modelFit1a=fitlm(tt,'eP_lA~eAT-1','RobustOpts',rob)
@@ -116,9 +151,9 @@ rob='off'; %These models can't be fit robustly (doesn't converge)
 %First: repeat the model(s) above on each subject:
 clear modelFitAll* learnAll* 
 for i=1:size(eA,2)
-    ttAll=table(-eA(:,i), eAT(:,i), -lA(:,i),eP(:,i), eP(:,i)-lA(:,i),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});  
-    ttAllb=table(-eA(:,i), eAT(:,i), -lA(:,i),eP(:,i),'VariableNames',{'eA','eAT','lA','eP'}); 
-    ttAll1=table(-veA(:,i), veAT(:,i), -lA(:,i),veP(:,i),  veP(:,i)-lA(:,i),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});    
+    ttAll=table(-eA(muscleIdx,i), eAT(muscleIdx,i), -lA(muscleIdx,i),eP(muscleIdx,i), eP(muscleIdx,i)-lA(muscleIdx,i),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});  
+    ttAllb=table(-eA(muscleIdx,i), eAT(muscleIdx,i), -lA(muscleIdx,i),eP(muscleIdx,i),'VariableNames',{'eA','eAT','lA','eP'}); 
+    ttAll1=table(-veA(muscleIdx,i), veAT(muscleIdx,i), -lA(muscleIdx,i),veP(muscleIdx,i),  veP(muscleIdx,i)-lA(muscleIdx,i),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});    
 
     %Model 1a: eP-lA regressed over eAT
     modelFitAll1a{i}=fitlm(ttAll,'eP_lA~eAT-1','RobustOpts',rob);
@@ -160,7 +195,7 @@ for i=1:size(eA,2)
     
     
     %Same models for short exposure:
-    ttS=table(-eA(:,i), eAT(:,i), -lS(:,i), ePS(:,i)-lS(:,i),'VariableNames',{'eA','eAT','lS','ePS_lS'});
+    ttS=table(-eA(muscleIdx,i), eAT(muscleIdx,i), -lS(muscleIdx,i), ePS(muscleIdx,i)-lS(muscleIdx,i),'VariableNames',{'eA','eAT','lS','ePS_lS'});
     %ttS1=table(-veA(:,i), veAT(:,i), veS(:,i), vePS(:,i)-lS(:,i),'VariableNames',{'eA','eAT','lS','ePS_lS'});
     
     modelFitAllS2a{i}=fitlm(ttS,'ePS_lS~eA+eAT-1','RobustOpts',rob);
@@ -222,14 +257,14 @@ betaFF=learnAll2c(:,2);
 %Some auxiliary measures to confirm our results on age:
 BB=reshape(lB,360,16);
 BB=1;
-norm_S2T=sqrt(sum((eP-lA).^2)')./sqrt(sum(BB.^2))'; 
-norm_T2S=sqrt(sum((eA).^2)')./sqrt(sum(BB.^2))';
-norm_lA=sqrt(sum(lA.^2,1))'./sqrt(sum(BB.^2))';
-norm_eP=sqrt(sum(eP.^2,1))'./sqrt(sum(BB.^2))';
-FFasym=sqrt(sum((lA-lAT).^2))'./sqrt(sum((lA).^2))';
+norm_S2T=sqrt(sum((eP(muscleIdx,:)-lA(muscleIdx,:)).^2)')./sqrt(sum(BB.^2))'; 
+norm_T2S=sqrt(sum((eA(muscleIdx,:)).^2)')./sqrt(sum(BB.^2))';
+norm_lA=sqrt(sum(lA(muscleIdx,:).^2,1))'./sqrt(sum(BB.^2))';
+norm_eP=sqrt(sum(eP(muscleIdx,:).^2,1))'./sqrt(sum(BB.^2))';
+FFasym=sqrt(sum((lA(muscleIdx,:)-lAT(muscleIdx,:)).^2))'./sqrt(sum((lA(muscleIdx,:)).^2))';
 ePT=fftshift(eP,1);
-AEasym=sqrt(sum((eP-ePT).^2))'./sqrt(sum((eP).^2))';
-EAasym=sqrt(sum((eA-eAT).^2))'./sqrt(sum((eA).^2))';
+AEasym=sqrt(sum((eP(muscleIdx,:)-ePT(muscleIdx,:)).^2))'./sqrt(sum((eP(muscleIdx,:)).^2))';
+EAasym=sqrt(sum((eA(muscleIdx,:)-eAT(muscleIdx,:)).^2))'./sqrt(sum((eA(muscleIdx,:)).^2))';
 
 %%%%%%%%%%%%%%%
 %Do fits (NOTE: stepLengthDiff is a slightly better predictor than SLA, but p-values change only slightly):
@@ -239,22 +274,22 @@ diary(logFile)
 end
 rob='on'; %These models CAN be fit robustly
 display('----------------------\beta_M VS. AGE and SLA---------------------')
-tt2=table(age(idx)', SLA_eP(idx),betaM(idx),betaS(idx),betaFF(idx),norm_eP(idx),norm_S2T(idx),r2(idx)','VariableNames',{'age','SLA_eP','beta_M','beta_S','beta_FF','norm_eP','norm_S2T','r2'}); %Taking SLA in eP minus lA makes SLA coefficients much less predictive (which is even better for making our point!)
+tt2=table(age(subjIdx)', SLA_eP(subjIdx),betaM(subjIdx),betaS(subjIdx),betaFF(subjIdx),norm_eP(subjIdx),norm_S2T(subjIdx),r2(subjIdx)','VariableNames',{'age','SLA_eP','beta_M','beta_S','beta_FF','norm_eP','norm_S2T','r2'}); %Taking SLA in eP minus lA makes SLA coefficients much less predictive (which is even better for making our point!)
 
 learnVsAge=fitlm(tt2,'beta_M~age','RobustOpts',rob)
-[r,p]=corr(betaM(idx),age(idx)','Type','Spearman');
+[r,p]=corr(betaM(subjIdx),age(subjIdx)','Type','Spearman');
 disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 
 staticVsAge=fitlm(tt2,'beta_S~age','RobustOpts',rob)
-[r,p]=corr(betaS(idx),age(idx)','Type','Spearman');
+[r,p]=corr(betaS(subjIdx),age(subjIdx)','Type','Spearman');
 disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 
 r2VsAge=fitlm(tt2,'r2~age','RobustOpts',rob)
-[r,p]=corr(r2(idx)',age(idx)','Type','Spearman');
+[r,p]=corr(r2(subjIdx)',age(subjIdx)','Type','Spearman');
 disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 
 learnVsSLA=fitlm(tt2,'beta_M~SLA_eP','RobustOpts',rob) 
-[r,p]=corr(betaM(idx),SLA_eP(idx),'Type','Spearman');
+[r,p]=corr(betaM(subjIdx),SLA_eP(subjIdx),'Type','Spearman');
 disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 
 learnVsBoth=fitlm(tt2,'beta_M~age+SLA_eP','RobustOpts',rob) 
@@ -283,18 +318,18 @@ diary(logFile)
 end
 display('----------------------THE EFFECTS OF AGE ON RESPONSE SIZES--------------------------')
 %Making sure that age is not a confound for sth. else: 
-ttA=table(age(idx)',norm_S2T(idx),r2All2c(idx)',norm_T2S(idx),norm_lA(idx),betaFF(idx),SLA_eP(idx),norm_eP(idx),'VariableNames',{'age','norm_S2T','res','norm_T2S','norm_lA','beta_FF','SLA_eP','norm_eP'});
+ttA=table(age(subjIdx)',norm_S2T(subjIdx),r2All2c(subjIdx)',norm_T2S(subjIdx),norm_lA(subjIdx),betaFF(subjIdx),SLA_eP(subjIdx),norm_eP(subjIdx),'VariableNames',{'age','norm_S2T','res','norm_T2S','norm_lA','beta_FF','SLA_eP','norm_eP'});
 
 S2TvsAge=fitlm(ttA,'norm_S2T~age','RobustOpts',rob)   %Slightly (strongly if we exclude C01) (negatively) correlated: older subjs. show less feedback responses (as expected)
-[rs,ps]=corr(norm_S2T(idx),age(idx)','Type','Spearman');
+[rs,ps]=corr(norm_S2T(subjIdx),age(subjIdx)','Type','Spearman');
 disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
 
 T2SvsAge=fitlm(ttA,'norm_T2S~age','RobustOpts',rob)   %NOT correlated -> Older subjects are not altogether weaker
-[rs,ps]=corr(norm_T2S(idx),age(idx)','Type','Spearman');
+[rs,ps]=corr(norm_T2S(subjIdx),age(subjIdx)','Type','Spearman');
 disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
 
 AEvsAge=fitlm(ttA,'norm_eP~age','RobustOpts',rob)
-[rs,ps]=corr(norm_eP(idx),age(idx)','Type','Spearman');
+[rs,ps]=corr(norm_eP(subjIdx),age(subjIdx)','Type','Spearman');
 disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
 
 %AEvsAge_SLA=fitlm(ttA,'norm_eP~age+SLA_eP','RobustOpts',rob)
@@ -308,7 +343,7 @@ disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
 %FF2vsAge=fitlm(ttA,'beta_FF~age');  %Slight (pos) (strong if C01 excluded) correlation: they may be carrying over more (.01/year of age) 
 
 SLAvsAge=fitlm(ttA,'SLA_eP~age')
-[rs,ps]=corr(SLA_eP(idx),age(idx)','Type','Spearman');
+[rs,ps]=corr(SLA_eP(subjIdx),age(subjIdx)','Type','Spearman');
 disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
 
 if write
@@ -324,12 +359,12 @@ logFile=['../intfig/interSubjectSLA_' groupName '_' date '_' num2str(round(1e6*(
 diary(logFile)
 end
 display('-----------------------------WHAT EXPLAINS SLA?-----------------------------')
-ttB=table(SLA_eP(idx),age(idx)',norm_S2T(idx),norm_T2S(idx),norm_lA(idx),norm_eP(idx),'VariableNames',{'SLA_eP','age','norm_S2T','norm_T2S','norm_lA','norm_eP'});
+ttB=table(SLA_eP(subjIdx),age(subjIdx)',norm_S2T(subjIdx),norm_T2S(subjIdx),norm_lA(subjIdx),norm_eP(subjIdx),'VariableNames',{'SLA_eP','age','norm_S2T','norm_T2S','norm_lA','norm_eP'});
 disp('age, norm_S2T, norm_T2S, norm_lA, norm_eP')
-stepwisefit([age(idx)',norm_S2T(idx),norm_T2S(idx),norm_lA(idx),norm_eP(idx)],SLA_eP(idx))
+stepwisefit([age(subjIdx)',norm_S2T(subjIdx),norm_T2S(subjIdx),norm_lA(subjIdx),norm_eP(subjIdx)],SLA_eP(subjIdx))
 
 fitlm(ttB,'SLA_eP~norm_eP','RobustOpts',rob)
-[rs,ps]=corr(SLA_eP(idx),norm_eP(idx),'Type','Spearman');
+[rs,ps]=corr(SLA_eP(subjIdx),norm_eP(subjIdx),'Type','Spearman');
 disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
 
 fitlm(ttB,'norm_eP~SLA_eP+age','RobustOpts',rob)
@@ -363,8 +398,8 @@ end
 fh=figure('Units','Normalized','OuterPosition',[0 .2 .65 .5*16/10]);
 figuresColorMap
 modelNames={'2a','3b','2c'};
-idxY=age(idx)<57.3; %Youngest 6
-idxO=age(idx)>63; %Oldest 6
+idxY=age(subjIdx)<57.3; %Youngest 6
+idxO=age(subjIdx)>63; %Oldest 6
 for i=1:3 %Three models
     for j=1:2 %Exposure length OR age comparison
             eval(['data1=learnAllS' modelNames{i} ';']);
@@ -413,7 +448,8 @@ for i=1:3 %Three models
     hold on
     ss=[];
     for k=1:size(data2,2)
-    [rs,ps]=corr(age',data2(:,k),'Type','Pearson');
+    %[rs,ps]=corr(age',data2(:,k),'Type','Pearson');
+    [rs,ps]=corr(age',data2(:,k),'Type','Spearman');
     ss(k)=scatter(age,data2(:,k),50,condColors(3,:),'filled','MarkerFaceAlpha',1/k,'DisplayName',[mod.CoefficientNames{k} ' rs=' num2str(rs,3) ', ps= ' num2str(ps,3)]);
     xlabel('Age (y.o.)')
     ylabel('Regressors')
@@ -459,6 +495,10 @@ for i=1:2
                 tt='Late Adaptation';
                 ci=[2];
                 ai=[1];
+                data2=[r2All2a'];
+                names={'R^2'};
+                yl='Pearson''s R^2';
+                tt='Model goodness-of-fit';
             case 3 %Third panel: feedback response sizes 
                 data2=[norm_T2S,norm_S2T]; 
                 names={'||FBK_{tied-to-split}||','||FBK_{split-to-tied}||'}; 
@@ -466,44 +506,31 @@ for i=1:2
                 tt='Feedback responses'; 
                 ci=[2,3]; 
                 ai=[1 1];  
-            case 4 %Overlayed on 4, EMG aftereffects 
+            case 4 %Kin aftereffects 
                 data2=[SLA_eP]; 
                 names={'SLA_{eP}'}; 
                 yl='Step-length asymmetry'; 
-                tt='Aftereffects'; 
+                tt='Kinematic Aftereffects'; 
                 ci=[3]; 
-                ai=.5; 
+                ai=1; 
             case 5 %Overlayed on 4, EMG aftereffects
-                data2=[norm_eP,norm_eP]; %Inelegant way to put legends for 4 and 5 together
-                names={'','||EarlyP||'};
+                data2=[norm_eP]; %Inelegant way to put legends for 4 and 5 together
+                names={'||EarlyP||'};
                 yl='Response size (a.u.)';
-                tt='Aftereffects';
-                ci=[3,3];
-                ai=[.5,1];
+                tt='EMG Aftereffects';
+                ci=[3];
+                ai=[1];
         end
         scf={'flat','flat'};
-        if j==5
-            delete(sp.Legend)
-            sc=findobj(sp,'Type','Scatter');
-            %sc.MarkerFaceColor='none';
-            ax=axes();
-            ax.Position=get(sp,'Position');
-            ax.YAxisLocation='right';
-            ax.XTick=[];
-            ax.XLabel =[];
-            ax.Color='none';
-            %ax.Color=condColors(ci(3),:);
-            %scf={'none','flat'};
-        else
-            sp=subplot(2,4,j+(i-1)*4);
-        end
+            sp=subplot(2,5,j+(i-1)*5);
         hold on
         ss=[];
         for k=1:min(2,length(names))
-            [rs,ps]=corr(x(idx)',data2(idx,k),'Type','Spearman');
-            ss(k)=scatter(x(idx),data2(idx,k),50,condColors(ci(k),:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);
-            pp=polyfit1PCA(x(idx),data2(idx,k),1);
-            pp=polyfit(x(idx)',data2(idx,k),1);
+            [rs,ps]=corr(x(subjIdx)',data2(subjIdx,k),'Type','Spearman');
+            %[rs,ps]=corr(x(idx)',data2(idx,k),'Type','Pearson');
+            ss(k)=scatter(x(subjIdx),data2(subjIdx,k),50,condColors(ci(k),:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);
+            pp=polyfit1PCA(x(subjIdx),data2(subjIdx,k),1);
+            pp=polyfit(x(subjIdx)',data2(subjIdx,k),1);
             if ps<.05
             plot([min(x) max(x)],[min(x) max(x)]*pp(1)+pp(2),'Color',(ai(k))*condColors(ci(k),:)+(1-ai(k))*ones(1,3),'LineWidth',2)
             end
@@ -511,10 +538,6 @@ for i=1:2
         xlabel(xl)
         ylabel(yl)
         title(tt)
-        if j==5
-           set(ss(1),'DisplayName',sc.DisplayName); 
-           ax.XLabel=[];
-        end
         lg=legend(ss);
         lg.Color='w';
 

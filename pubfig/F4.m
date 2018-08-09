@@ -66,7 +66,7 @@ cc1=get(gca,'ColorOrder');
 %rectangle('Position',[x(1) 16+y(1) diff(x) diff(y)],'LineWidth',3,'EdgeColor',cc1(i,:));
 %plot3( [x(1) x(2) x(2) x(1) x(1)], 15+[y(1) y(1) y(2) y(2) y(1) ], [z z z z z],'LineWidth',3,'Color',cc1(i,:));
 end
-pl=plot3([-.1 2.3],[15 15],[6 6],'k','LineWidth',2,'Clipping','off');
+pl=plot3([-.1 2.3],[15 15],[6 6],'k','LineWidth',1,'Clipping','off');
 pB(1).YAxis.FontSize=13;
 
 pA(1)=copyobj(axA,fh);
@@ -121,8 +121,8 @@ pC.Title.String={'FBK_{split-to-tied}';'REGRESSION'};
 pC.Title.FontSize=16;
 pC.YTick=[0 1];
 pC.FontWeight='bold';
-pC.YLabel.Position=[-.6 .4];
-pC.XLabel.Position=[.5 -.6];
+%pC.YLabel.Position=[-.6 .4];
+%pC.XLabel.Position=[.5 -.6];
 pC.XTick=[0 1];
 pC.YAxis.FontSize=12;
 pC.XAxis.FontSize=12;
@@ -132,6 +132,17 @@ axes(pC)
 %sc(5).CData=condColors(3,:);
 %sc(5).MarkerFaceAlpha=.5;%condColors(3,:);
 %axes(pC)
+
+sct=findobj(pC,'Type','scatter');
+delete(sct(5:6))
+txt=findobj(pC,'Type','text');
+txt(1).String='C3: Fully mirrored';
+txt(1).Position(1:2)=[-.15 1.08];
+txt(4).Position([1:2])=[1 .15];
+txt(2).String={'C2: Fully'; 'environment';'dependent'};
+txt(2).Position(1)=.4;
+aa=axis;
+axis([-.3 1.3 -.2 1.2])
 
 %% Add mid hip positions
 f1=openfig('../intfig/all/kin/fig/mHIP2ANK_all_15strides.fig');
@@ -166,10 +177,10 @@ pD.YLim=[-100 100];
 axes(pD)
 hold on
 
-plot([.12 .49]*240,110*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
-text(.1*240,120,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
-plot((.5+[0.12 .49])*240,110*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
-text(.6*240,120,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
+plot([.12 .49]*240,160*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
+text(.1*240,170,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
+plot((.5+[0.12 .49])*240,160*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
+text(.6*240,170,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
 %legend(ll)
 pD.YAxis.FontSize=10;
 pD.XAxis.FontSize=12;
@@ -185,11 +196,13 @@ pD.XTickLabel='';
 drawnow
 axes(pD)
 pp=pD.Position;
-lg=legend([ll([2,4]); ln],{'SPLIT-TO-TIED','TIED-TO-SPLIT','EarlyP_B'},'Location','East');
+lg=legend([ll([2,4]); ln],{'\Delta HIP SPLIT-TO-TIED','\Delta HIP TIED-TO-SPLIT','\Delta HIP EarlyP'},'Location','SouthEast');
 lg.FontSize=10;
 %delete(ln)
 %delete(pn)
 drawnow
 pD.Position=pp;
+aa=axis;
+axis([aa(1:3) 150])
 %%
 saveFig(fh,'./','Fig4',1)

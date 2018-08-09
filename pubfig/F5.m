@@ -6,8 +6,8 @@ figSize
 f1=figure('Units',figUnits,'OuterPosition',figPos);
 ph=findobj(fh,'Type','Axes');
 pa=copyobj(ph([7:10,6]),f1);
-mapI=[1,2,1,2,2];
-mapJ=[1,1,2,2,1];
+mapI=[1,2,3,1,2]; %Alignment along x-axis
+mapJ=[2,1,1,1,2]; %y-axis
 for k=1:5
 %for i=1:2
 %    for j=1:2
@@ -20,7 +20,7 @@ j=mapJ(k);
         %drawnow
         %pause(1)
         %ll.FontSize=10;
-        p.Position=[.05+.3*(2-j) .1+.5*((2-i)*(2-j)+(j-1)*(i-1)) .22 .35];
+        p.Position=[.05+.28*(i-1)+.15*(j>1) .1+.5*((2-j)) .22 .35];
         p.FontSize=14;
         drawnow
         ll2=findobj(gca,'Type','Scatter');
@@ -46,16 +46,13 @@ j=mapJ(k);
         switch k
             case 1 %aftereffects
                 axis([45 80 0 .35])
-                p.Position=p.Position+[0 -.5 0 0];
-               % text(62,.2,nn,'FontSize',10,'FontWeight','bold')
+                text(55,.33,nn,'FontSize',10,'FontWeight','bold')
                 set(gca,'YTick',[0:.1:.3])
             case 2 %Feedback
                 axis([45 80 2 18])
-                p.Position=p.Position+[0 .5 0 0];
                 text(54,16,nn,'FontSize',10,'FontWeight','bold')
                 
             case 3 %Late adapt
-                p.Position=p.Position+[0 0 0 0];
                 axis([45 80 2 9])
                 text(50,8.5,nn,'FontSize',10,'FontWeight','bold')
                 p.Title.String='Late Adaptation';
@@ -67,11 +64,12 @@ j=mapJ(k);
                 text(61,.8,nn,'FontSize',10,'FontWeight','bold')
                  %Add panel letters:
                 text(40,1.1,'A','FontWeight','Bold','FontSize',20)
-                text(83,1.1,'B','FontWeight','Bold','FontSize',20)
-                text(83,-.85,'D','FontWeight','Bold','FontSize',20)
-                text(40,-.85,'C','FontWeight','Bold','FontSize',20)
+                text(85,1.1,'B','FontWeight','Bold','FontSize',20)
+                text(130,1.1,'C','FontWeight','Bold','FontSize',20)
+                text(110,-.85,'E','FontWeight','Bold','FontSize',20)
+                text(65,-.85,'D','FontWeight','Bold','FontSize',20)
             case 5 %EMG aftereffects
-                axis([45 80 0 17])
+                axis([45 80 2 16])
                 text(55,15,nn,'FontSize',10,'FontWeight','bold')
                 set(gca,'YTick',[0:5:15])
                 

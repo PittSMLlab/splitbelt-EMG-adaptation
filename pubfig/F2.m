@@ -103,10 +103,10 @@ axes(pB)
 hold on
 ll=findobj(pB,'Type','Line');
 pp=pB.YLim;
-plot([.01 .49]*240,115*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
-text(.05*240,125,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
-plot((.5+[0.01 .49])*240,115*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
-text(.54*240,125,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
+plot([.01 .49]*240,155*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
+text(.05*240,168,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
+plot((.5+[0.01 .49])*240,155*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
+text(.54*240,168,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
 pB.YLim=pp;
 pB.FontSize=14;
 pB.FontWeight='bold';
@@ -129,10 +129,10 @@ text(265,60,'BACK','Rotation',90,'Clipping','off','FontWeight','bold','FontSize'
 quiver(250,5,0,70,'Color','k','Clipping','off','LineWidth',3,'AutoScale','off','MarkerSize',5,'MaxHeadSize',.5)
 text(265,-15,'FRONT','Rotation',90,'Clipping','off','FontWeight','bold','FontSize',12);
 quiver(250,-10,0,-70,'Color','k','Clipping','off','LineWidth',3,'AutoScale','off','MarkerSize',5,'MaxHeadSize',.5)
-axis(aa)
+axis([aa(1:2) -100 120])
 
-lg=legend(ll(end-1),{'eA-B'});
-delete(lg)
+lg=legend(ll(end-1),{'\Delta HIP TIED-TO-SPLIT'},'Location','South');
+%delete(lg)
 delete(ll(end))
 
 %% Panel C: little dude

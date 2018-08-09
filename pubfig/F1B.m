@@ -38,7 +38,7 @@ xt=[0:phaseSize:MM];
 fs=16; %FontSize
 
     ph=axes();
-    set(ph,'Position',[.07 .48 .35 .45]);
+    set(ph,'Position',[.085 .48 .35 .45]);
     hold on
 
     B.plot(fh,ph,condColors(1,:),[],0,[-49:0],prc,true);
@@ -51,7 +51,7 @@ fs=16; %FontSize
     %Add rectangles quantifying activity
     for j=1:3
         ph1(j)=axes;
-        set(ph1(j),'Position',[.07 .25+(j-1)*-.11 .35 .09]);  
+        set(ph1(j),'Position',[.085 .25+(j-1)*-.11 .35 .09]);  
         drawnow
         pause(1)
         da=randn(1,12);
@@ -61,14 +61,14 @@ fs=16; %FontSize
         switch j
             case 1
             aux=nanmedian(B.Data,3)';
-            tt='B';
+            tt='B_{raw}';
             case 2
             aux=nanmedian(A.Data,3)';
-            tt='LateA';
+            tt='LateA_{raw}';
             case 3
             aux=1*(nanmedian(A.Data,3)'-nanmedian(B.Data,3)') +.5*max(nanmedian(B.Data,3));
             figuresColorMap;
-            tt='LateA_B';
+            tt='LateA';
         end
         clear aux2
         for k=1:length(xt)-1
@@ -78,7 +78,7 @@ fs=16; %FontSize
         I.Parent.Colormap=flipud(map);
         rectangle('Position',[.5 .5 12 1],'EdgeColor','k')
         set(ph1(j),'XTickLabel','','YTickLabel','','XTick','','YTick','')
-        text(-.4-1*(j-1)+.7*(j>2),1,tt,'Clipping','off','FontSize',10,'FontWeight','bold')
+        text(-.9-1.3*(j-1)+2*(j>2),1,tt,'Clipping','off','FontSize',10,'FontWeight','bold')
     end
     drawnow
     %

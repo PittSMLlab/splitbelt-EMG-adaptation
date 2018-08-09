@@ -175,7 +175,7 @@ for k=1:4
             aux1=auxF;
             aux2=auxS;
             tt='';
-tt2='EarlyA_B';
+tt2='EarlyA';
         case 2
             tt='C1';
             aux1=zeros(size(auxF));
@@ -185,12 +185,12 @@ tt2='0';
             tt='C2';
             aux1=-auxF;
             aux2=-auxS;
-tt2='-EarlyA_B';
+tt2='-EarlyA';
         case 4
             tt='C3';
             aux1=auxS;
             aux2=auxF;
-tt2='EarlyA_B^*';
+tt2='EarlyA^*';
     end
 ax=axes;
 ax.Position=[.01*leftMarg+(k-1)*.05+(k>1)*.03 .03 1.1*colWidth .1];
