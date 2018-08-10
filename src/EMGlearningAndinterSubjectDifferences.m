@@ -54,6 +54,16 @@ muscleIdx=1:size(eA,1);
 % median(mean(eA(muscleIdx,:))
 % median(mean(eA(muscleIdx,:)))
 % median(mean(eP(muscleIdx,:)-lA(muscleIdx,:)))
+%% Clipping data (to avoid outliers, improves R^2 for a few subjects)
+% th=2;
+% eA(eA>th)=th;
+% eA(eA<-th)=-th;
+% eAT(eAT>th)=th;
+% eAT(eAT<-th)=-th;
+% lA(lA>th)=th;
+% lA(lA<-th)=-th;
+% eP(eP>th)=th;
+% eP(eP<-th)=-th;
 %% Do group analysis:
 rob='off';
 %%%Short-exposure(to compare):
@@ -94,8 +104,8 @@ disp(['Uncentered R^2=' num2str(r2S3b,3)])
 tt=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2), mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 ttAlt=table( mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(eAT(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(eA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
 ttb=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP'});
-tt1=table(-mean(veA(muscleIdx,subjIdx),2), mean(veAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2), mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});
-ttAlt1=table( mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(veAT(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(veA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
+tt1=table(-mean(veA(muscleIdx,subjIdx),2), mean(veAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2),mean(veP(muscleIdx,subjIdx),2), mean(veP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});
+ttAlt1=table( mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(veAT(muscleIdx,subjIdx),2),mean(veP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(veA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
 
 %1 regressor:
 modelFit1a=fitlm(tt,'eP_lA~eAT-1','RobustOpts',rob)

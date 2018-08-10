@@ -66,7 +66,7 @@ tt.String='DOMINANT (FAST)';
 tt.Position=tt.Position+[0 -.1 0];
 tt.FontWeight='bold';
 legend off
-pl=plot3([-.1 1.2],[15 15],[6 6],'k','LineWidth',2,'Clipping','off');
+pl=plot3([-.1 1.2],[15 15],[6 6],'k','LineWidth',1,'Clipping','off');
 
 %% Panel A:
 fB=openfig('./fig/Fig1A.fig');
