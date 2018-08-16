@@ -3,17 +3,17 @@ s=.23;
 m=.1; %Having a non-zero mean changes the theoretical predictions, need to work on that
 m=0;
 v1=s*randn(360,1)+m; %Represents avg data from eA, preserving mean, std
-betaM=.9; %Partial mirroring (90%)
+betaM=.8; %Partial mirroring (90%)
 betaS=1-betaM;
 
 %% Do regressions:
-n=.5; %Noise levels as percent of baseline variability
+n=.6; %Noise levels as percent of baseline variability
 rob='off';
 Nreps=1e2;
 Nsub=16;
 learnIndiv=nan(Nsub,2,Nreps);
 learnAll=nan(2,Nreps);
-f=.2; %Fraction of 'noise' variance that represents intersubject variability (with the rest being true noise/stochasticity within each subject/measurement)
+f=.5; %Fraction of 'noise' variance that represents intersubject variability (with the rest being true noise/stochasticity within each subject/measurement)
 for j=1:Nreps
     j
     %Generate noisy data:
