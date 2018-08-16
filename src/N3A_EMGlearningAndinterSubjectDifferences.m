@@ -500,15 +500,15 @@ for i=1:2
                 ai=[1,.5,1];
             case 2 %Second panel: eP and lA sizes
                 data2=[norm_lA];
-                names={'||LateA_B||'};
+                names={'||LateA||'};
                 yl='Response size (a.u.)';
                 tt='Late Adaptation';
                 ci=[2];
                 ai=[1];
-                data2=[r2All2a'];
-                names={'R^2'};
-                yl='Pearson''s R^2';
-                tt='Model goodness-of-fit';
+                %data2=[r2All2a'];
+                %names={'R^2'};
+                %yl='Pearson''s R^2';
+                %tt='Model goodness-of-fit';
             case 3 %Third panel: feedback response sizes 
                 data2=[norm_T2S,norm_S2T]; 
                 names={'||FBK_{tied-to-split}||','||FBK_{split-to-tied}||'}; 
@@ -557,6 +557,43 @@ end
     if write
         saveFig(fh,'../intfig/intersubj/',['AgeSpeedEffects_' groupName],0)
     end
+    %%
+    correctedBetas=learnAll2a.*(norm_T2S)./norm_S2T;
+    figure;
+    subplot(2,3,1)
+    %     scatter(r2All1a',learnAll1a(:,1))
+%     hold on
+%     scatter(r2All1a',sum(learnAll1a.^2,2).*(norm_T2S./norm_S2T).^2)
+    scatter(r2All2a',learnAll2a(:,2),'DisplayName','\beta_M')
+    hold on
+    scatter(r2All2a',learnAll2a(:,2)-learnAll2a(:,1),'DisplayName','\Delta \beta')
+    scatter(r2All2a',sum(learnAll2a.^2,2),'DisplayName','\sum \beta ^2')
+    scatter(r2All2a',sum(learnAll2a.^2,2).*(norm_T2S.^2)./norm_S2T.^2-2*prod(learnAll2a,2).*sum(eA.*eAT,1)'./norm_S2T.^2)
+    scatter(r2All2a',sum(learnAll2a.^2,2).*(norm_T2S.^2)./norm_S2T.^2)
+    xlabel('R^2')
+    legend('Location','SouthEast')
+    subplot(2,3,2)
+    scatter(ageC',learnAll2a(:,2),'DisplayName','\beta_M')
+    hold on
+    scatter(ageC',learnAll2a(:,2)-learnAll2a(:,1),'DisplayName','\Delta \beta')
+    %scatter(r2All2a',sum(learnAll2a.^2,2).*(norm_T2S.^2)./norm_S2T.^2-2*prod(learnAll2a,2).*sum(eA.*eAT,1)'./norm_S2T.^2)
+    %scatter(r2All2a',sum(learnAll2a.^2,2).*(norm_T2S.^2)./norm_S2T.^2)
+    scatter(ageC',sum(learnAll2a.^2,2),'DisplayName','\sum \beta ^2')
+    xlabel('age')
+    legend('Location','SouthEast')
+    subplot(2,3,3)
+    scatter(ageC',correctedBetas(:,2),'DisplayName','Corrected \beta_M')
+    hold on
+    scatter(ageC',correctedBetas(:,2)-correctedBetas(:,1),'DisplayName','Corrected \Delta \beta')
+    scatter(ageC',correctedBetas(:,1),'DisplayName','Corrected \beta_S')
+    xlabel('age')
+    legend('Location','SouthEast')
+    subplot(2,3,5)
+    scatter(ageC',(norm_S2T.^2)./norm_T2S.^2)
+    title('\|eP-lA\|/\|eA\|')
+    subplot(2,3,4)
+    scatter(ageC',(sum(eA.*eAT,1)')./norm_T2S.^2)
+    title('<eA,eA*>\|eA\|')
 %% Alternative figure
 fh=figure;
 data2=learnAll2a;
