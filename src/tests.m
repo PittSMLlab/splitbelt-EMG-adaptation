@@ -1,5 +1,5 @@
 %% Get all needed vars
-load(['../data/' groupName 'EMGsummary'])
+load(['../data/controlsEMGsummary'])
 load ../data/bioData.mat
 write=true;
 write=false;
