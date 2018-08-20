@@ -247,8 +247,17 @@ for i=1:length(modNames)
     disp(['Bayes Factor over 2a model:' num2str(BayesFactor(mod)./BayesFactor(modelFit2a),3)])
     disp(['Bayes Factor over 2c model:' num2str(BayesFactor(mod)./BayesFactor(modelFit2c),3)])
 end
+%Add explicit comparison between 2-factor models for LE and SE
+
+[~,p1]=ttest(learnAll2a(:,1),learnAllS2a(:,1)); %\beta_S
+p2=signrank(learnAll2a(:,1),learnAllS2a(:,1),'method','exact'); %\beta_S
+d=mean(learnAll2a-learnAllS2a)./std(learnAll2a-learnAllS2a); %Cohen's d to compute effect size
+disp(['\beta_S, paired t-test p=' num2str(p1) ', Cohen''s d=' num2str(d(1)) ', signrank p=' num2str(p2)])
+[~,p1]=ttest(learnAll2a(:,2),learnAllS2a(:,2)); %\beta_M
+p2=signrank(learnAll2a(:,2),learnAllS2a(:,2),'method','exact'); %\beta_M
+disp(['\beta_M, paired t-test p=' num2str(p1) ', Cohen''s d=' num2str(d(2)) ', signrank p=' num2str(p2)])
 if write
-diary off
+    diary off
 end
 
 %% learning vs. age
@@ -396,12 +405,12 @@ fitlm(ttB,'SLA_eP~norm_S2T+norm_lA')
 %AEasymvsAge=fitlm(age(idx),AEasym(idx)) %Very weakly (p=.049) negatively correlated with age, somwhat stronger (p=.016) if we exclude C01
 %EAasymvsSLA=fitlm(SLA_eP(idx),EAasym(idx)) %Not correlated
 if write
-diary off
-txt=fileread(logFile);
-txt=removeTags(txt);
-fid=fopen(logFile,'w');
-fwrite(fid,txt,'char');
-fclose(fid);
+    diary off
+    txt=fileread(logFile);
+    txt=removeTags(txt);
+    fid=fopen(logFile,'w');
+    fwrite(fid,txt,'char');
+    fclose(fid);
 end
 
 %% Do plots for model comparison
@@ -557,43 +566,6 @@ end
     if write
         saveFig(fh,'../intfig/intersubj/',['AgeSpeedEffects_' groupName],0)
     end
-    %%
-    correctedBetas=learnAll2a.*(norm_T2S)./norm_S2T;
-    figure;
-    subplot(2,3,1)
-    %     scatter(r2All1a',learnAll1a(:,1))
-%     hold on
-%     scatter(r2All1a',sum(learnAll1a.^2,2).*(norm_T2S./norm_S2T).^2)
-    scatter(r2All2a',learnAll2a(:,2),'DisplayName','\beta_M')
-    hold on
-    scatter(r2All2a',learnAll2a(:,2)-learnAll2a(:,1),'DisplayName','\Delta \beta')
-    scatter(r2All2a',sum(learnAll2a.^2,2),'DisplayName','\sum \beta ^2')
-    scatter(r2All2a',sum(learnAll2a.^2,2).*(norm_T2S.^2)./norm_S2T.^2-2*prod(learnAll2a,2).*sum(eA.*eAT,1)'./norm_S2T.^2)
-    scatter(r2All2a',sum(learnAll2a.^2,2).*(norm_T2S.^2)./norm_S2T.^2)
-    xlabel('R^2')
-    legend('Location','SouthEast')
-    subplot(2,3,2)
-    scatter(ageC',learnAll2a(:,2),'DisplayName','\beta_M')
-    hold on
-    scatter(ageC',learnAll2a(:,2)-learnAll2a(:,1),'DisplayName','\Delta \beta')
-    %scatter(r2All2a',sum(learnAll2a.^2,2).*(norm_T2S.^2)./norm_S2T.^2-2*prod(learnAll2a,2).*sum(eA.*eAT,1)'./norm_S2T.^2)
-    %scatter(r2All2a',sum(learnAll2a.^2,2).*(norm_T2S.^2)./norm_S2T.^2)
-    scatter(ageC',sum(learnAll2a.^2,2),'DisplayName','\sum \beta ^2')
-    xlabel('age')
-    legend('Location','SouthEast')
-    subplot(2,3,3)
-    scatter(ageC',correctedBetas(:,2),'DisplayName','Corrected \beta_M')
-    hold on
-    scatter(ageC',correctedBetas(:,2)-correctedBetas(:,1),'DisplayName','Corrected \Delta \beta')
-    scatter(ageC',correctedBetas(:,1),'DisplayName','Corrected \beta_S')
-    xlabel('age')
-    legend('Location','SouthEast')
-    subplot(2,3,5)
-    scatter(ageC',(norm_S2T.^2)./norm_T2S.^2)
-    title('\|eP-lA\|/\|eA\|')
-    subplot(2,3,4)
-    scatter(ageC',(sum(eA.*eAT,1)')./norm_T2S.^2)
-    title('<eA,eA*>\|eA\|')
 %% Alternative figure
 fh=figure;
 data2=learnAll2a;

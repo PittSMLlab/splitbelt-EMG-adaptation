@@ -187,3 +187,41 @@ subjIdx=2:16;
     end
     title('Angles')
     legend
+    
+%%
+c1=diag(cosine(eP-lA,-eA));
+c2=diag(cosine(eP-lA,eAT));
+c1s=diag(cosine(ePS-lS,-eA));
+c2s=diag(cosine(ePS-lS,eAT));
+c1g=(cosine(mean(eP-lA,2),-mean(eA,2)));
+c2g=(cosine(mean(eP-lA,2),mean(eAT,2)));
+c1gs=(cosine(mean(ePS-lS,2),-mean(eA,2)));
+c2gs=(cosine(mean(ePS-lS,2),mean(eAT,2)));
+if write
+diary(['../intfig/FBmodelingCosines_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
+end
+% Show cosine results
+disp('Group')
+disp(['cos(eP-lA,-eA) = ' num2str((c1g))])
+disp(['cos(eP-lA,eA*) = ' num2str((c2g))])
+disp(['cos(ePS-lS,-eA) = ' num2str((c1gs))])
+disp(['cos(ePS-lS,eA*) = ' num2str((c2gs))])
+disp('Indiv')
+disp(['cos(eP-lA,-eA), mean \pm std: ' num2str(mean(c1)) ' \pm ' num2str(std(c1)) '; median \pm iqr: ' num2str(median(c1)) ' \pm ' num2str(iqr(c1))])
+disp(['cos(eP-lA,eA*), mean \pm std: ' num2str(mean(c2)) ' \pm ' num2str(std(c2)) '; median \pm iqr: ' num2str(median(c2)) ' \pm ' num2str(iqr(c2))])
+disp(['cos(ePS-lS,-eA), mean \pm std: ' num2str(mean(c1s)) ' \pm ' num2str(std(c1s)) '; median \pm iqr: ' num2str(median(c1s)) ' \pm ' num2str(iqr(c1s))])
+disp(['cos(ePS-lS,eA*), mean \pm std: ' num2str(mean(c2s)) ' \pm ' num2str(std(c2s)) '; median \pm iqr: ' num2str(median(c2s)) ' \pm ' num2str(iqr(c2s))])
+
+%Add explicit comparison between 2-factor models for LE and SE
+disp('Comparison of individual results in SE vs LE')
+[~,p1]=ttest(c1,c1s); %\beta_S
+p2=signrank(c2,c2s,'method','exact'); %\beta_S
+d=mean(c1-c1s)./std(c1-c1s); %Cohen's d to compute effect size
+disp(['cos(POST,-eA), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c1-c1s)) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
+[~,p1]=ttest(c2,c2s); %\beta_M
+p2=signrank(c2,c2s,'method','exact'); %\beta_M
+d=mean(c2-c2s)./std(c2-c2s); %Cohen's d to compute effect size
+disp(['cos(POST,eA*), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c2-c2s)) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
+if write
+    diary off
+end

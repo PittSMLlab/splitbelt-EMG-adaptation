@@ -1,0 +1,13 @@
+Group
+cos(eP-lA,-eA) = 0.10443
+cos(eP-lA,eA*) = 0.83583
+cos(ePS-lS,-eA) = 0.9386
+cos(ePS-lS,eA*) = -0.15749
+Indiv
+cos(eP-lA,-eA), mean \pm std: 0.030472 \pm 0.34945; median \pm iqr: 0.14251 \pm 0.55676
+cos(eP-lA,eA*), mean \pm std: 0.53308 \pm 0.16645; median \pm iqr: 0.47505 \pm 0.29293
+cos(ePS-lS,-eA), mean \pm std: 0.71555 \pm 0.14786; median \pm iqr: 0.75779 \pm 0.080143
+cos(ePS-lS,eA*), mean \pm std: -0.065796 \pm 0.24663; median \pm iqr: -0.070006 \pm 0.36391
+Comparison of individual results in SE vs LE
+cos(POST,-eA), paired t-test p=2.748e-06, \Delta=-0.68508, Cohen's d=-1.8171, signrank p=3.0518e-05
+cos(POST,eA*), paired t-test p=1.3644e-05, \Delta=0.59887, Cohen's d=1.581, signrank p=3.0518e-05
