@@ -5,8 +5,8 @@ lateStrides=-40;
 vEarlyStrides=1;
 names={'Slow','vShort','Short',...
     'vEarly B','early B','Base',...
-    'vEarly A','early A','late A',...
-    'vEarly P','early P','late P'};
+    'vEarly A','early A5','early A','late A',...
+    'vEarly P','early P5','early P','late P'};
 names=names(1:end); %Excluding Slow
 conds=cell(size(names));
 exemptF=nan(size(names));
@@ -57,6 +57,12 @@ for i=1:length(names)
             s=earlyStrides;
             c='Adaptation';
             sN='eA';
+        case 'early A5'
+            eF=1;
+            eL=1;
+            s=5;
+            c='Adaptation';
+            sN='eA';
         case 'late A'
             eF=1;
             eL=1;
@@ -73,6 +79,12 @@ for i=1:length(names)
             eF=1;
             eL=1;
             s=earlyStrides;
+            c='Washout';
+            sN='eP';
+        case 'early P5'
+            eF=1;
+            eL=1;
+            s=5;
             c='Washout';
             sN='eP';
         case 'late P'
