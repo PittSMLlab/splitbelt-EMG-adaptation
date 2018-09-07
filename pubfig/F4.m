@@ -138,9 +138,9 @@ delete(sct(5:6))
 txt=findobj(pC,'Type','text');
 txt(1).String='C3: Fully mirrored';
 txt(1).Position(1:2)=[-.15 1.08];
-txt(4).Position([1:2])=[1 .15];
+txt(4).Position([1:2])=[1.1 .05];
 txt(2).String={'C2: Fully'; 'environment';'dependent'};
-txt(2).Position(1)=.4;
+txt(2).Position(1:2)=[.45 .1];
 aa=axis;
 axis([-.3 1.3 -.2 1.2])
 

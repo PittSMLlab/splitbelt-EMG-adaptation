@@ -43,8 +43,8 @@ dataEMG=reshape(flipEMGdata(reshape(dataEMG,size(labels,1),size(labels,2),size(d
 dataContribs=dataContribs-dataContribs(:,strcmp(ep.Properties.ObsNames,'Base'),:); %Removing base
 
 %% Get all the eA, lA, eP vectors
-shortNames={'lB','eA','lA','lS','eP','ePS','veA','veP','veS','vePS','lP','e5A','e5P'};
-longNames={'Base','early A','late A','Short','early P','early B','vEarly A','vEarly P','vShort','vEarly B','late P','early A5','early P5'};
+shortNames={'lB','eA','lA','lS','eP','ePS','veA','veP','veS','vePS','lP','e15A','e15P'};
+longNames={'Base','early A','late A','Short','early P','early B','vEarly A','vEarly P','vShort','vEarly B','late P','early A15','early P15'};
 for i=1:length(shortNames)
     aux=squeeze(dataEMG(:,strcmp(ep.Properties.ObsNames,longNames{i}),:));
     eval([shortNames{i} '=aux;']);

@@ -30,13 +30,11 @@ figuresColorMap
 cc=condColors;
 
 %% Define groups from lists:
-if ~removeP07Flag
-    controlList=controls.ID;
-    patientList=patients.ID;
-else
-    controlList=controls.removeSubs({'C0007'}).ID;
-    patientList=patients.removeSubs({'P0007'}).ID; 
-end
+%Excluding outliers:
+controlList=controls.removeSubs({'C0001'}).ID;
+patientList=patients.removeSubs({'P0007'}).ID; 
+
+%
 groups{1}=controls.getSubGroup(controlList);
 groups{2}=patients.getSubGroup(patientList);
 

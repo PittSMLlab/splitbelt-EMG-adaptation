@@ -3,7 +3,7 @@ addpath(genpath('./auxFun/'))
 %%
 saveDir='./';
 name='allChangesEMG.fig';
-desiredPlotDescription={'early','A[15]'};
+desiredPlotDescription={'early','A[5]'};
 desiredPlotDescription2={};
 plotTitles={'Tied-to-split transition'};
 saveName='Fig2A';

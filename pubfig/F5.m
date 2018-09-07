@@ -54,7 +54,7 @@ j=mapJ(k);
                 
             case 3 %Late adapt
                 axis([45 80 2 9])
-                text(50,8.5,nn,'FontSize',10,'FontWeight','bold')
+                text(50,7.5,nn,'FontSize',10,'FontWeight','bold')
                 p.Title.String='Late Adaptation';
                 set(gca,'YTick',3:4:15)
             case 4 %Regressors

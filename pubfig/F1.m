@@ -5,6 +5,8 @@
 %run ./F1C.m
 %run ./F1D.m
 %Requires F1C.m and F1D.m to be run BEFORE
+close all
+clear all
 %%
 addpath(genpath('./auxFun/'));
 figSize

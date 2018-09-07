@@ -1,0 +1,82 @@
+ 
+%%%%%%%%%%%%%%%%%
+ 
+Model 1a (LE:\beta_M only):
+Avg. (uncent.) R^2=0.5927
+Indiv. \R^2=0.284 \pm 0.159, (mean \pm std)
+Indiv. \R^2=0.276 \pm 0.262, (median \pm iqr)
+Avg. \beta eAT CI=0.579     0.688, p=5.2617e-72
+Indiv. \beta=0.437 \pm 0.146, (mean \pm std)
+Indiv. \beta=0.44 \pm 0.144, (median \pm iqr)
+Bayes Factor over 2a model:7.7e-11
+Bayes Factor over 2c model:8.22e-32
+ 
+Model 2a (LE):
+Avg. (uncent.) R^2=0.6479
+Indiv. \R^2=0.34 \pm 0.12, (mean \pm std)
+Indiv. \R^2=0.309 \pm 0.187, (median \pm iqr)
+Avg. \beta eA CI=0.144     0.246, p=5.2822e-13
+Indiv. \beta=0.0978 \pm 0.197, (mean \pm std)
+Indiv. \beta=0.13 \pm 0.289, (median \pm iqr)
+Avg. \beta eAT CI=0.554     0.657, p=1.6224e-73
+Indiv. \beta=0.429 \pm 0.113, (mean \pm std)
+Indiv. \beta=0.427 \pm 0.113, (median \pm iqr)
+Bayes Factor over 2a model:1
+Bayes Factor over 2c model:1.07e-21
+ 
+Model 2a15 (LE5):
+Avg. (uncent.) R^2=0.665
+Indiv. \R^2=0.364 \pm 0.153, (mean \pm std)
+Indiv. \R^2=0.308 \pm 0.213, (median \pm iqr)
+Avg. \beta e15A CI=0.222     0.329, p=2.155e-21
+Indiv. \beta=0.111 \pm 0.224, (mean \pm std)
+Indiv. \beta=0.14 \pm 0.377, (median \pm iqr)
+Avg. \beta e15AT CI=0.588     0.695, p=5.7757e-75
+Indiv. \beta=0.452 \pm 0.152, (mean \pm std)
+Indiv. \beta=0.435 \pm 0.152, (median \pm iqr)
+Bayes Factor over 2a model:6.46e+05
+Bayes Factor over 2c model:6.9e-16
+ 
+Model S2a (SE):
+Avg. (uncent.) R^2=0.8289
+Indiv. \R^2=0.462 \pm 0.151, (mean \pm std)
+Indiv. \R^2=0.469 \pm 0.171, (median \pm iqr)
+Avg. \beta eA CI=1.1      1.21, p=4.3188e-139
+Indiv. \beta=0.725 \pm 0.268, (mean \pm std)
+Indiv. \beta=0.728 \pm 0.442, (median \pm iqr)
+Avg. \beta eAT CI=-0.148   -0.0389, p=0.00084623
+Indiv. \beta=0.0875 \pm 0.193, (mean \pm std)
+Indiv. \beta=0.0807 \pm 0.297, (median \pm iqr)
+Bayes Factor over 2a model:4.32e+44
+Bayes Factor over 2c model:4.61e+23
+ 
+Model 3b (LE3new):
+Avg. (uncent.) R^2=0.7308
+Indiv. \R^2=0.471 \pm 0.0832, (mean \pm std)
+Indiv. \R^2=0.467 \pm 0.0989, (median \pm iqr)
+Avg. \beta eA CI=-0.0517    0.0628, p=0.84876
+Indiv. \beta=-0.0963 \pm 0.17, (mean \pm std)
+Indiv. \beta=-0.0593 \pm 0.177, (median \pm iqr)
+Avg. \beta eAT CI=0.445     0.544, p=8.57e-59
+Indiv. \beta=0.388 \pm 0.112, (mean \pm std)
+Indiv. \beta=0.391 \pm 0.147, (median \pm iqr)
+Avg. \beta lA CI=0.499     0.729, p=1.3512e-22
+Indiv. \beta=0.622 \pm 0.161, (mean \pm std)
+Indiv. \beta=0.657 \pm 0.198, (median \pm iqr)
+Bayes Factor over 2a model:5.03e+19
+Bayes Factor over 2c model:0.0537
+ 
+Model 2c (LEwoBetaS):
+Avg. (uncent.) R^2=0.7308
+Indiv. \R^2=0.449 \pm 0.0956, (mean \pm std)
+Indiv. \R^2=0.45 \pm 0.108, (median \pm iqr)
+Avg. \beta eAT CI=0.445     0.542, p=6.6731e-60
+Indiv. \beta=0.417 \pm 0.139, (mean \pm std)
+Indiv. \beta=0.433 \pm 0.129, (median \pm iqr)
+Avg. \beta lA CI=0.531     0.711, p=4.7176e-34
+Indiv. \beta=0.523 \pm 0.181, (mean \pm std)
+Indiv. \beta=0.527 \pm 0.309, (median \pm iqr)
+Bayes Factor over 2a model:9.37e+20
+Bayes Factor over 2c model:1
+\beta_S, paired t-test p=4.2357e-08, Cohen's d=-2.5316, signrank p=6.1035e-05
+\beta_M, paired t-test p=3.1786e-05, Cohen's d=1.4632, signrank p=0.00015259

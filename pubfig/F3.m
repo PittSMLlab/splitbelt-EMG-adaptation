@@ -4,7 +4,7 @@ addpath(genpath('./auxFun/'))
 %% Get panels from existing figure and make pretty:
 saveDir='./';
 name='allChangesEMG.fig';
-desiredPlotDescription={'Slow';'late A'; 'early P[15]'};
+desiredPlotDescription={'Slow';'late A'; 'early P[5]'};
 plotTitles={'Slow Tied','Late Adaptation (LateA)','       Early Post-Adaptation (EarlyP)'};
 saveName='Fig3B';
 lineFlag=0;

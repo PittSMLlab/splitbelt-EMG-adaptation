@@ -5,7 +5,7 @@ addpath(genpath('../pubfig/auxFun/'))
 groupName='patients';
 subjIdx=[1:6,8:10,12:16]; %Excluding 7 and 11 which dont have short exp
 groupName='controls';
-subjIdx=1:16;
+subjIdx=2:16; %Excluding C01
 
 %% If EMGsummary file does not exist, run this:
 %loadEMGParams_controls(groupName)
@@ -14,12 +14,12 @@ subjIdx=1:16;
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
 write=true;
-%write=false;
+write=false;
 %% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
 veAT=fftshift(veA,1);
-e5AT=fftshift(e5A,1);
+e15AT=fftshift(e15A,1);
 %% Select sub-sets of muscles to test for robustness
 muscleIdx=1:size(eA,1);
 %muscleIdx=[[49:180],180+[49:180]]; %Exclude hips
@@ -68,9 +68,9 @@ muscleIdx=1:size(eA,1);
 %% Do group analysis:
 rob='off';
 %%%Short-exposure(to compare):
-ttS=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lS(muscleIdx,subjIdx),2), mean(ePS(muscleIdx,subjIdx),2)-mean(lS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
-ttSb=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lS(muscleIdx,subjIdx),2), mean(ePS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS'});
-ttS1=table(-mean(veA(muscleIdx,subjIdx),2), mean(veAT(muscleIdx,subjIdx),2), -mean(veS(muscleIdx,subjIdx),2), mean(vePS(muscleIdx,subjIdx),2)-mean(lS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
+ttS=table(-median(eA(muscleIdx,subjIdx),2), median(eAT(muscleIdx,subjIdx),2), -median(lS(muscleIdx,subjIdx),2), median(ePS(muscleIdx,subjIdx),2)-median(lS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
+ttSb=table(-median(eA(muscleIdx,subjIdx),2), median(eAT(muscleIdx,subjIdx),2), -median(lS(muscleIdx,subjIdx),2), median(ePS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS'});
+ttS1=table(-median(veA(muscleIdx,subjIdx),2), median(veAT(muscleIdx,subjIdx),2), -median(veS(muscleIdx,subjIdx),2), median(vePS(muscleIdx,subjIdx),2)-median(lS(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lS','ePS_lS'});
 %Model:
 
 modelFitS2a=fitlm(ttS,'ePS_lS~eA+eAT-1','RobustOpts',rob)
@@ -102,12 +102,12 @@ r2S3b=r2S3b.uncentered;
 disp(['Uncentered R^2=' num2str(r2S3b,3)])
 
 %%% LONG EXPOSURE
-tt=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2), mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
-tt5=table(-mean(e5A(muscleIdx,subjIdx),2), mean(e5AT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2), mean(e5P(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2),'VariableNames',{'e5A','e5AT','lA','e5P_lA'});
-ttAlt=table( mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(eAT(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(eA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
-ttb=table(-mean(eA(muscleIdx,subjIdx),2), mean(eAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2),mean(eP(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP'});
-tt1=table(-mean(veA(muscleIdx,subjIdx),2), mean(veAT(muscleIdx,subjIdx),2), -mean(lA(muscleIdx,subjIdx),2),mean(veP(muscleIdx,subjIdx),2), mean(veP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});
-ttAlt1=table( mean(eP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(veAT(muscleIdx,subjIdx),2),mean(veP(muscleIdx,subjIdx),2)-mean(lA(muscleIdx,subjIdx),2)-mean(veA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
+tt=table(-median(eA(muscleIdx,subjIdx),2), median(eAT(muscleIdx,subjIdx),2), -median(lA(muscleIdx,subjIdx),2), median(eP(muscleIdx,subjIdx),2)-median(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+tt15=table(-median(e15A(muscleIdx,subjIdx),2), median(e15AT(muscleIdx,subjIdx),2), -median(lA(muscleIdx,subjIdx),2), median(e15P(muscleIdx,subjIdx),2)-median(lA(muscleIdx,subjIdx),2),'VariableNames',{'e15A','e15AT','lA','e15P_lA'});
+ttAlt=table( median(eP(muscleIdx,subjIdx),2)-median(lA(muscleIdx,subjIdx),2)-median(eAT(muscleIdx,subjIdx),2),median(eP(muscleIdx,subjIdx),2)-median(lA(muscleIdx,subjIdx),2)-median(eA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
+ttb=table(-median(eA(muscleIdx,subjIdx),2), median(eAT(muscleIdx,subjIdx),2), -median(lA(muscleIdx,subjIdx),2),median(eP(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP'});
+tt1=table(-median(veA(muscleIdx,subjIdx),2), median(veAT(muscleIdx,subjIdx),2), -median(lA(muscleIdx,subjIdx),2),median(veP(muscleIdx,subjIdx),2), median(veP(muscleIdx,subjIdx),2)-median(lA(muscleIdx,subjIdx),2),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});
+ttAlt1=table( median(eP(muscleIdx,subjIdx),2)-median(lA(muscleIdx,subjIdx),2)-median(veAT(muscleIdx,subjIdx),2),median(veP(muscleIdx,subjIdx),2)-median(lA(muscleIdx,subjIdx),2)-median(veA(muscleIdx,subjIdx),2),'VariableNames',{'eP_lA_eAT','eP_lA_eA'});
 
 %1 regressor:
 modelFit1a=fitlm(tt,'eP_lA~eAT-1','RobustOpts',rob)
@@ -125,12 +125,12 @@ r22a=uncenteredRsquared(modelFit2a);
 r22a=r22a.uncentered;
 disp(['Uncentered R^2=' num2str(r22a,3)])
 
-modelFit2a5=fitlm(tt5,'e5P_lA~e5A+e5AT-1','RobustOpts',rob)
-learn2a5=modelFit2a5.Coefficients.Estimate;
-learn2a5CI=modelFit2a5.coefCI;
-r22a5=uncenteredRsquared(modelFit2a5);
-r22a5=r22a5.uncentered;
-disp(['Uncentered R^2=' num2str(r22a5,3)])
+modelFit2a15=fitlm(tt15,'e15P_lA~e15A+e15AT-1','RobustOpts',rob)
+learn2a15=modelFit2a15.Coefficients.Estimate;
+learn2a15CI=modelFit2a15.coefCI;
+r22a15=uncenteredRsquared(modelFit2a15);
+r22a15=r22a15.uncentered;
+disp(['Uncentered R^2=' num2str(r22a15,3)])
 
 modelFit2c=fitlm(ttb,'eP~lA+eAT-1','RobustOpts',rob)
 learn2c=modelFit2c.Coefficients.Estimate;
@@ -171,7 +171,7 @@ rob='off'; %These models can't be fit robustly (doesn't converge)
 clear modelFitAll* learnAll* 
 for i=1:size(eA,2)
     ttAll=table(-eA(muscleIdx,i), eAT(muscleIdx,i), -lA(muscleIdx,i),eP(muscleIdx,i), eP(muscleIdx,i)-lA(muscleIdx,i),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});  
-    tt5All=table(-e5A(muscleIdx,i), e5AT(muscleIdx,i), -lA(muscleIdx,i),e5P(muscleIdx,i), e5P(muscleIdx,i)-lA(muscleIdx,i),'VariableNames',{'e5A','e5AT','lA','e5P','e5P_lA'}); 
+    tt15All=table(-e15A(muscleIdx,i), e15AT(muscleIdx,i), -lA(muscleIdx,i),e15P(muscleIdx,i), e15P(muscleIdx,i)-lA(muscleIdx,i),'VariableNames',{'e15A','e15AT','lA','e15P','e15P_lA'}); 
     ttAllb=table(-eA(muscleIdx,i), eAT(muscleIdx,i), -lA(muscleIdx,i),eP(muscleIdx,i),'VariableNames',{'eA','eAT','lA','eP'}); 
     ttAll1=table(-veA(muscleIdx,i), veAT(muscleIdx,i), -lA(muscleIdx,i),veP(muscleIdx,i),  veP(muscleIdx,i)-lA(muscleIdx,i),'VariableNames',{'eA','eAT','lA','eP','eP_lA'});    
 
@@ -188,10 +188,10 @@ for i=1:size(eA,2)
     r2All2a(i)=aux.uncentered;
     
         %Model 2a: eP-lA regressed over eA and eAT (5 strides)
-    modelFitAll2a5{i}=fitlm(tt5All,'e5P_lA~e5A+e5AT-1','RobustOpts',rob);
-    learnAll2a5(i,:)=modelFitAll2a5{i}.Coefficients.Estimate;
-    aux=uncenteredRsquared(modelFitAll2a5{i});
-    r2All2a5(i)=aux.uncentered;
+    modelFitAll2a15{i}=fitlm(tt15All,'e15P_lA~e15A+e15AT-1','RobustOpts',rob);
+    learnAll2a15(i,:)=modelFitAll2a15{i}.Coefficients.Estimate;
+    aux=uncenteredRsquared(modelFitAll2a15{i});
+    r2All2a15(i)=aux.uncentered;
     
     %Model 2c: eP regressed onto lA and eAT
 %     modelFitAll2c{i}=fitlm(ttAllb,'eP~lA+eAT-1');
@@ -245,7 +245,7 @@ diary(['../intfig/FBmodeling_' groupName '_' date '_' num2str(round(1e6*(now-tod
 end
 disp(' ')
 disp('%%%%%%%%%%%%%%%%%')
-modNames={'1a','2a','2a5','S2a','3b','2c'};
+modNames={'1a','2a','2a15','S2a','3b','2c'};
 modDesc={'LE:\beta_M only','LE','LE5','SE','LE3new','LEwoBetaS'};
 for i=1:length(modNames)
     disp(' ')
@@ -433,7 +433,7 @@ end
 fh=figure('Units','Normalized','OuterPosition',[0 .2 .65 .5*16/10]);
 figuresColorMap
 modelNames={'2a','3b','2c'};
-idxY=age(subjIdx)<57.3; %Youngest 6
+idxY=age(subjIdx)<58; %Youngest 6, if we exclude C01
 idxO=age(subjIdx)>63; %Oldest 6
 for i=1:3 %Three models
     for j=1:2 %Exposure length OR age comparison
@@ -502,9 +502,8 @@ end
 
 %% Age and speed effects
 mod=modelFit2a;
-%mod=modelFit2a5;
 fh=figure('Units','Normalized','OuterPosition',[0 .2 .8 .5*16/10]);
-%subjIdx=2:16; %To exclude subject 1, who is an outlier
+
 for i=1:2
     switch i
         case 1 %age
@@ -520,7 +519,6 @@ for i=1:2
         switch j
             case 1 %First panel: regressors vs. explanatory variable
                 data2=[learnAll2a r2All2a'];
-                %data2=[learnAll2a5 r2All2a5'];
                 names=[mod.CoefficientNames, {'R^2'}];
                 yl='Regressors';
                 tt='Model fit';
@@ -552,7 +550,7 @@ for i=1:2
                 ci=[3]; 
                 ai=1; 
             case 5 %Overlayed on 4, EMG aftereffects
-                data2=[norm_eP]; %Inelegant way to put legends for 4 and 5 together
+                data2=[norm_eP];
                 names={'||EarlyP||'};
                 yl='Response size (a.u.)';
                 tt='EMG Aftereffects';
@@ -565,8 +563,9 @@ for i=1:2
         ss=[];
         for k=1:min(2,length(names))
             [rs,ps]=corr(x(subjIdx)',data2(subjIdx,k),'Type','Spearman');
+            mdl=fitlm(x(subjIdx)',data2(subjIdx,k),'RobustOpts',rob);
             %[rs,ps]=corr(x(idx)',data2(idx,k),'Type','Pearson');
-            ss(k)=scatter(x(subjIdx),data2(subjIdx,k),50,condColors(ci(k),:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);
+            ss(k)=scatter(x(subjIdx),data2(subjIdx,k),50,condColors(ci(k),:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);% ', robR^2=' num2str(mdl.Rsquared.Ordinary,2) ', robP=' num2str(mdl.Coefficients.pValue(2),2)]);
             pp=polyfit1PCA(x(subjIdx),data2(subjIdx,k),1);
             pp=polyfit(x(subjIdx)',data2(subjIdx,k),1);
             if ps<.05
@@ -609,7 +608,7 @@ scatter(rS(1),rS(2),150,condColors(1,:)*1.2,'filled')
 text(rS(1),rS(2)+.12,{'   Short','exposure'},'Color',c1/2,'FontWeight','bold')
 scatter(rL(1),rL(2),150,condColors(3,:),'filled')
 %text(rL(1)+.05,rL(2),{'   Long','exposure'},'Color',c2,'FontWeight','bold')
-text(rL(1)+.05,rL(2),{'LE'},'Color',c2,'FontWeight','bold')
+text(rL(1)+.05,rL(2),{'Long','exposure'},'Color',c2,'FontWeight','bold')
 scatter(1,0,80,'k','filled')
 scatter(0,1,80,'k','filled')
 text(.5,-.02,{'   H2: No','Adaptation'},'FontWeight','bold')
@@ -623,12 +622,12 @@ ax.XLabel.FontWeight='bold';
 ax.YLabel.FontSize=14;
 ax.XLabel.FontSize=14;
 
-% Add 5 stride regressors:
-data2=learnAll2a5;
-scatter(data2(:,1),data2(:,2),60,c2,'filled','MarkerFaceAlpha',.3)
-rL=modelFit2a5.Coefficients.Estimate;
-scatter(rL(1),rL(2),150,condColors(3,:),'filled','MarkerFaceAlpha',.3)
-text(rL(1)+.05,rL(2),{'LE5'},'Color',c2,'FontWeight','bold')
+% Add 15 stride regressors:
+%data2=learnAll2a15;
+%scatter(data2(:,1),data2(:,2),60,c2,'filled','MarkerFaceAlpha',.3)
+%rL=modelFit2a15.Coefficients.Estimate;
+%scatter(rL(1),rL(2),150,condColors(3,:),'filled','MarkerFaceAlpha',.3)
+%text(rL(1)+.05,rL(2),{'LE15'},'Color',c2,'FontWeight','bold')
 
     %Save fig:
     if write
