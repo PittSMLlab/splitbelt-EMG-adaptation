@@ -78,5 +78,9 @@ Indiv. \beta=0.523 \pm 0.181, (mean \pm std)
 Indiv. \beta=0.527 \pm 0.309, (median \pm iqr)
 Bayes Factor over 2a model:9.37e+20
 Bayes Factor over 2c model:1
-\beta_S, paired t-test p=4.2357e-08, Cohen's d=-2.5316, signrank p=6.1035e-05
-\beta_M, paired t-test p=3.1786e-05, Cohen's d=1.4632, signrank p=0.00015259
+\beta_S, paired t-test p=3.5634e-10, Cohen's d=-2.7193, signrank p=6.1035e-05
+\beta_M, paired t-test p=3.0343e-06, Cohen's d=1.6107, signrank p=6.1035e-05
+15/15 subjects decreased their \beta_S
+Median change: -0.64851, mean: -0.67375
+15/15 subjects increased their \beta_M
+Median change: 0.41006, mean: 0.37629

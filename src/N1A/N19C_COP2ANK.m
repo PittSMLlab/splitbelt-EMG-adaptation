@@ -87,17 +87,19 @@
 
 %% Load previously computed data, if necessary
 if ~exist('allTS','var')
-    load allTS.mat
+    load ../../data/allKinTS.mat
 end
+
 %% Find derivatives, get events, compute stance ankle position
 clearvars -except all*
+subjectIdx=2:16; %Exclude S01
 alignLabels={['FHS'],['STO'],['SHS'],['FTO']};
 emgList={'TA','MG','LG'};
 discardStrides=1;
 Nstr=15;
 
 for i=1:size(allTS,2)
-    for sIdx=1:size(allTS,1)
+    for sIdx=subjectIdx%1:size(allTS,1)
         thisTS=allTS{sIdx,i};
         thisE=allEvents{sIdx,i};
         thisEMG=allEMG{sIdx,i};
@@ -157,7 +159,7 @@ for i=1:size(allTS,2)
         alignTS.Data(sum(NN(1:2))+[0:4]-3,:,:)=NaN;
         
         %Save subject
-        if sIdx==1 %First sub
+        if sIdx==subjectIdx(1) %First sub
             medianTS{i}=alignTS.median;
             %medianTS{i}=alignTS.mean;
             labelOrder=alignTS.labels;

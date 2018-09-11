@@ -3,29 +3,33 @@ load('../data/HPF30/groupedParams_wMissingParameters');
 
 %% Kinematic outlier
 fh=controls.plotAvgTimeCourse({'netContributionNorm2'},{'TM base','Adaptation','Washout'},31,[],1,[],[],[],[],[],1);
+set(fh,'Units','Normalized','Position',[0 .4 1 .6]);
 ll=findobj(fh,'Type','Line');
-set(ll,'Color','k');
+set(ll,'Color',.6*[1 1 1]);
 ll=findobj(fh,'Type','Line','Tag','C0001');
-set(ll,'Color','r')
+uistack(ll,'top')
+set(ll,'Color','r','LineWidth',1,'DisplayName','S01')
 legend(ll(1))
 ax=gca;
-ax.Position=[.1 .7 .8 .25];
+ax.Position=[.1 .1 .8 .8];
+ll=findobj(fh,'Type','Line','Marker','o');
+set(ll,'LineStyle','-','Marker','none','LineWidth',4,'Color',[0 0 0]);
+
+ax.YLabel.String='Step-length asymmetry';
+ax.YLabel.Position(1)=ax.YLabel.Position(1)-20;
+ax.XTickLabel={'Base','Adaptation','Post-Adaptation'};
+ax.FontName='Open Sans';
+ax.FontName='Helvetica';
+saveFig(fh,'./','FigS3red',1)
 
 %% EMG outlier: (for first 5, not so much in first 15)
+set(fh,'Units','Normalized','Position',[0 0 1 1]);
+ax.Position=[.1 .7 .8 .25];
 load(['../data/controlsEMGsummary']) 
 load ../data/bioData.mat
 write=true;
 
-%Take first 5:
-eA=e5A;
-eP=e5P;
 
-%Clipping:
-%th=prctile(eA(:),90); %Clipping 20% of samples in eA, probably less for eP
-%eA(eA>th)=th;
-%eA(eA<-th)=-th;
-%eP(eP>th)=th;
-%eP(eP<-th)=-th;
 %%
 meA=median(eA,2); %Average eA activity across subject
 meP=median(eP,2); %Average eA activity across subject

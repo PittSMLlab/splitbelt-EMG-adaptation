@@ -18,9 +18,9 @@ for i=1:length(axB)
         cc.TickLabels={'-50%','0%','+50%'};
         set(cc,'FontSize',16,'FontWeight','bold')
         cc.Position=cc.Position.*[1 1 1 .98] + [0 .02 0 0];
-        text(-2.3,32, 'A', 'FontSize',20,'FontWeight','bold','Clipping','off')
-        text(-1.2,32, 'B', 'FontSize',20,'FontWeight','bold','Clipping','off')
-        text(-.08,32, 'C', 'FontSize',20,'FontWeight','bold','Clipping','off')
+        text(-2.3,33.5, 'A', 'FontSize',20,'FontWeight','bold','Clipping','off')
+        text(-1.2,33.5, 'B', 'FontSize',20,'FontWeight','bold','Clipping','off')
+        text(-.08,33.5, 'C', 'FontSize',20,'FontWeight','bold','Clipping','off')
         %Delete contours for post-adap
         ll=findobj(gca,'type','contour');
         delete(ll)
@@ -70,3 +70,13 @@ for i=1:length(axB)
 end
 axes(axB(2))
 pl=plot3([-1.2 2.25],[15 15],[6 6],'k','LineWidth',1,'Clipping','off');
+
+%% Fix some stuff
+t1=findobj(axB(3),'Type','Text','String','FAST/DOMINANT');
+t1.String=['   ' t1.String];
+t1=findobj(axB(3),'Type','Text','String','SLOW/NON-DOM');
+t1.String=['   ' t1.String];
+t1=findobj(axB(3),'Type','Text','String','ANKLE');
+for i=1:length(t1)
+t1(i).String=[' ' t1(i).String];
+end

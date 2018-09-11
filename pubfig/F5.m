@@ -20,7 +20,7 @@ j=mapJ(k);
         %drawnow
         %pause(1)
         %ll.FontSize=10;
-        p.Position=[.05+.28*(i-1)+.15*(j>1) .1+.5*((2-j)) .22 .35];
+        p.Position=[.07+.3*(i-1)+.15*(j>1) .1+.5*((2-j)) .22 .35];
         p.FontSize=14;
         drawnow
         ll2=findobj(gca,'Type','Scatter');
@@ -43,38 +43,52 @@ j=mapJ(k);
                 cc=(cc.*aa +(1-aa)); 
                 nn = sprintf('\\color[rgb]{%f, %f, %f}%s', cc, nn);
         end
+        nn=regexprep(nn,'r=','r= ');
         switch k
-            case 1 %aftereffects
+            case 1 %SLA aftereffects
                 axis([45 80 0 .35])
-                text(55,.33,nn,'FontSize',10,'FontWeight','bold')
+                text(60,.27,nn([1:41,50:end]),'FontSize',13,'FontWeight','bold','FontName','Open Sans')
                 set(gca,'YTick',[0:.1:.3])
+                p.YLabel.String={'Step-length';'asymmetry'};
             case 2 %Feedback
-                axis([45 80 2 18])
-                text(54,16,nn,'FontSize',10,'FontWeight','bold')
-                
+                axis([45 80 2 14.8])
+                text(54,13,nn,'FontSize',11,'FontWeight','bold','FontName','Open Sans')
+                p.Title.String='Feedback responses';
+                p.YLabel.String='Magnitude (a.u.)';
             case 3 %Late adapt
                 axis([45 80 2 9])
-                text(50,7.5,nn,'FontSize',10,'FontWeight','bold')
-                p.Title.String='Late Adaptation';
+                text(50,7,nn([1:41,52:end]),'FontSize',13,'FontWeight','bold','FontName','Open Sans')
+                p.Title.String='Late Adaptation modulation';
                 set(gca,'YTick',3:4:15)
+                p.YLabel.String='Magnitude (a.u.)';
             case 4 %Regressors
-                axis([45 80 -.4 1])
+                axis([45 80 -.4 .8])
                 ll2=findobj(gca,'Type','Scatter');
                 set(gca,'YTick',[-.4:.4:.8])
-                text(61,.8,nn,'FontSize',10,'FontWeight','bold')
+                text(60,.68,nn{1},'FontSize',13,'FontWeight','bold','FontName','Open Sans')
+                text(60,-.3,nn{2},'FontSize',13,'FontWeight','bold','FontName','Open Sans')
                  %Add panel letters:
-                text(40,1.1,'A','FontWeight','Bold','FontSize',20)
-                text(85,1.1,'B','FontWeight','Bold','FontSize',20)
-                text(130,1.1,'C','FontWeight','Bold','FontSize',20)
+                text(37,.9,'A','FontWeight','Bold','FontSize',20)
+                text(85,.9,'B','FontWeight','Bold','FontSize',20)
+                text(133.5,.9,'C','FontWeight','Bold','FontSize',20)
                 text(110,-.85,'E','FontWeight','Bold','FontSize',20)
-                text(65,-.85,'D','FontWeight','Bold','FontSize',20)
-            case 5 %EMG aftereffects
-                axis([45 80 2 16])
-                text(55,15,nn,'FontSize',10,'FontWeight','bold')
-                set(gca,'YTick',[0:5:15])
-                
+                text(61,-.85,'D','FontWeight','Bold','FontSize',20)
+                ax=gca; ax.YLabel.String='Coefficients';
                
+                p.Title.String='Regression model';
+            case 5 %EMG aftereffects
+                axis([45 80 2 14])
+                text(59,12,nn([1:41,52:end]),'FontSize',13,'FontWeight','bold','FontName','Open Sans')
+                set(gca,'YTick',[0:5:15])
+                p.YLabel.String='Magnitude (a.u.)';
         end
+        ax=gca;
+        ax.YLabel.Position(1)=ax.YLabel.Position(1)-1;
+        ax.FontName='Helvetica';
+        ax.Title.String=upper(ax.Title.String);
+         %p.YLabel.FontWeight='bold';
+         %p.XLabel.FontWeight='bold';
 end
 %%
+set(findobj(f1,'Type','Axes'),'FontName','Helvetica')
 saveFig(f1,'./','Fig5',0)

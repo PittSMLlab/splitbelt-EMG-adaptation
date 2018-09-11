@@ -117,7 +117,7 @@ close(f1);
 %pause(2)
 pC.Position=[.63 .55 .2 .35];
 pC.FontSize=16;
-pC.Title.String={'FBK_{split-to-tied}';'REGRESSION'};
+pC.Title.String={'REGRESSION';'FBK_{split-to-tied}'};
 pC.Title.FontSize=16;
 pC.YTick=[0 1];
 pC.FontWeight='bold';
@@ -138,9 +138,10 @@ delete(sct(5:6))
 txt=findobj(pC,'Type','text');
 txt(1).String='C3: Fully mirrored';
 txt(1).Position(1:2)=[-.15 1.08];
-txt(4).Position([1:2])=[1.1 .05];
+txt(4).Position([1:2])=[.47 -.1];
+txt(4).String='Short exposure';
 txt(2).String={'C2: Fully'; 'environment';'dependent'};
-txt(2).Position(1:2)=[.45 .1];
+txt(2).Position(1:2)=[.7 .2];
 aa=axis;
 axis([-.3 1.3 -.2 1.2])
 
@@ -163,24 +164,22 @@ pn=copyobj(ps(4),pD);
 pn.FaceColor=condColors(1,:);
 %pn=copyobj(ps,pD);
 close(f1);
-%%
-
-
+%% HIP Position
 
 pD.Position=[.63 .07 .2 .35];
 pD.FontSize=16;
 pD.FontWeight='bold';
-pD.Title.String={'\Delta HIP POSITION'};
+pD.Title.String={'KINEMATIC CHANGE'};
 pD.YTick=[-100 0 100];
 pD.YLim=[-100 100];
 
 axes(pD)
 hold on
 
-plot([.12 .49]*240,160*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
-text(.1*240,170,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
-plot((.5+[0.12 .49])*240,160*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
-text(.6*240,170,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
+plot([.01 .49]*240,160*[1 1],'LineWidth',6,'Color',[0,.447,.741],'Clipping','off')
+text(.05*240,170,{'FAST STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0,.447,.741])
+plot((.5+[0.01 .49])*240,160*[1 1],'LineWidth',6,'Color',[0.85,.325,.098],'Clipping','off')
+text(.54*240,170,{'SLOW STANCE'},'FontWeight','bold','Fontsize',12,'Color',[0.85,.325,.098])
 %legend(ll)
 pD.YAxis.FontSize=10;
 pD.XAxis.FontSize=12;
@@ -189,7 +188,11 @@ pause(1)
 pD.YTick=[-80:40:80];
 pD.YTickLabel={'80','40','0','-40','-80'};
 pD.YDir='reverse';
-pD.YLabel.String='HIP A-P pos. [mm]';
+pD.YLabel.String='A-P position. [mm]';
+pD.YLabel.Position(1)=pD.YLabel.Position(1)-5;
+pD.YLabel.Position(2)=pD.YLabel.Position(2)+25;
+pD.YLabel.FontSize=14;
+pD.YAxis.FontSize=12;
 %pD.XTickLabel={'fHS','sTO','sHS','fTO'};
 pD.XTickLabel='';
 
@@ -205,4 +208,5 @@ pD.Position=pp;
 aa=axis;
 axis([aa(1:3) 150])
 %%
+set(findobj(f1,'Type','Axes'),'FontName','Helvetica')
 saveFig(fh,'./','Fig4',1)

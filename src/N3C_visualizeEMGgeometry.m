@@ -68,6 +68,174 @@ end
 
 %% Sub select subjects
 subjIdx=2:16;
+
+%%
+c1=diag(cosine(eP-lA,-eA));
+c2=diag(cosine(eP-lA,eAT));
+c1s=diag(cosine(ePS-lS,-eA));
+c2s=diag(cosine(ePS-lS,eAT));
+c1g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),-median(eA(:,subjIdx),2)));
+c2g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),median(eAT(:,subjIdx),2)));
+c1gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),-median(eA(:,subjIdx),2)));
+c2gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),median(eAT(:,subjIdx),2)));
+if write
+diary(['../intfig/FBmodelingCosines_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
+end
+disp(['Subject list=' num2str(subjIdx)])
+% Show cosine results
+disp('Group')
+disp(['cos(eP-lA,-eA) = ' num2str((c1g))])
+disp(['cos(eP-lA,eA*) = ' num2str((c2g))])
+disp(['cos(ePS-lS,-eA) = ' num2str((c1gs))])
+disp(['cos(ePS-lS,eA*) = ' num2str((c2gs))])
+disp('Indiv')
+disp(['cos(eP-lA,-eA), mean \pm std: ' num2str(mean(c1(subjIdx))) ' \pm ' num2str(std(c1(subjIdx))) '; median \pm iqr: ' num2str(median(c1(subjIdx))) ' \pm ' num2str(iqr(c1(subjIdx)))])
+disp(['cos(eP-lA,eA*), mean \pm std: ' num2str(mean(c2(subjIdx))) ' \pm ' num2str(std(c2(subjIdx))) '; median \pm iqr: ' num2str(median(c2(subjIdx))) ' \pm ' num2str(iqr(c2(subjIdx)))])
+disp(['cos(ePS-lS,-eA), mean \pm std: ' num2str(mean(c1s(subjIdx))) ' \pm ' num2str(std(c1s(subjIdx))) '; median \pm iqr: ' num2str(median(c1s(subjIdx))) ' \pm ' num2str(iqr(c1s(subjIdx)))])
+disp(['cos(ePS-lS,eA*), mean \pm std: ' num2str(mean(c2s(subjIdx))) ' \pm ' num2str(std(c2s(subjIdx))) '; median \pm iqr: ' num2str(median(c2s(subjIdx))) ' \pm ' num2str(iqr(c2s(subjIdx)))])
+
+%Add explicit comparison between 2-factor models for LE and SE
+disp('Comparison of individual results in SE vs LE')
+[~,p1]=ttest(c1(subjIdx),c1s(subjIdx)); %\beta_S
+p2=signrank(c2(subjIdx),c2s(subjIdx),'method','exact'); %\beta_S
+d=mean(c1(subjIdx)-c1s(subjIdx))./std(c1(subjIdx)-c1s(subjIdx)); %Cohen's d to compute effect size
+disp(['cos(POST,-eA), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c1(subjIdx)-c1s(subjIdx))) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
+[~,p1]=ttest(c2(subjIdx),c2s(subjIdx)); %\beta_M
+p2=signrank(c2(subjIdx),c2s(subjIdx),'method','exact'); %\beta_M
+d=mean(c2(subjIdx)-c2s(subjIdx))./std(c2(subjIdx)-c2s(subjIdx)); %Cohen's d to compute effect size
+disp(['cos(POST,eA*), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c2(subjIdx)-c2s(subjIdx))) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
+
+disp([num2str(sum((c1(subjIdx)-c1s(subjIdx))<0)) '/' num2str(numel(subjIdx)) ' subjects decreased their cos(POST, -eA)'])
+disp(['Median change: ' num2str(median(c1(subjIdx)-c1s(subjIdx))) ', mean: ' num2str(mean(c1(subjIdx)-c1s(subjIdx)))])
+disp([num2str(sum((c2(subjIdx)-c2s(subjIdx))>0)) '/' num2str(numel(subjIdx)) ' subjects increased their cos(POST, eA*)'])
+disp(['Median change: ' num2str(median(c2(subjIdx)-c2s(subjIdx))) ', mean: ' num2str(mean(c2(subjIdx)-c2s(subjIdx)))])
+
+%Add age correlations:
+[rs,ps]=corr(age(subjIdx)',c1(subjIdx),'Type','Pearson');
+disp(['Age vs cos(eP-lA,-eA), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c2(subjIdx),'Type','Pearson');
+disp(['Age vs cos(eP-lA,eA*), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c1(subjIdx)-c1s(subjIdx),'Type','Pearson');
+disp(['Age vs \Delta cos(eP-lA,-eA), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c2(subjIdx)-c2s(subjIdx),'Type','Pearson');
+disp(['Age vs \Delta cos(eP-lA,eA*), r=' num2str(rs) ', p=' num2str(ps)])
+
+%-------------------------------------------------- Repeat for 15 strides:
+eP=e15P;
+eA=e15A;
+eAT=fftshift(eA,1);
+
+c1=diag(cosine(eP-lA,-eA));
+c2=diag(cosine(eP-lA,eAT));
+c1s=diag(cosine(ePS-lS,-eA));
+c2s=diag(cosine(ePS-lS,eAT));
+c1g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),-median(eA(:,subjIdx),2)));
+c2g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),median(eAT(:,subjIdx),2)));
+c1gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),-median(eA(:,subjIdx),2)));
+c2gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),median(eAT(:,subjIdx),2)));
+if write
+diary(['../intfig/FBmodelingCosines_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
+end
+% Show cosine results
+disp('---------------RESULTS FOR EARLY = 15 strides-----------------')
+disp('Group')
+disp(['cos(eP-lA,-eA) = ' num2str((c1g))])
+disp(['cos(eP-lA,eA*) = ' num2str((c2g))])
+disp(['cos(ePS-lS,-eA) = ' num2str((c1gs))])
+disp(['cos(ePS-lS,eA*) = ' num2str((c2gs))])
+disp('Indiv')
+disp(['cos(eP-lA,-eA), mean \pm std: ' num2str(mean(c1(subjIdx))) ' \pm ' num2str(std(c1(subjIdx))) '; median \pm iqr: ' num2str(median(c1(subjIdx))) ' \pm ' num2str(iqr(c1(subjIdx)))])
+disp(['cos(eP-lA,eA*), mean \pm std: ' num2str(mean(c2(subjIdx))) ' \pm ' num2str(std(c2(subjIdx))) '; median \pm iqr: ' num2str(median(c2(subjIdx))) ' \pm ' num2str(iqr(c2(subjIdx)))])
+disp(['cos(ePS-lS,-eA), mean \pm std: ' num2str(mean(c1s(subjIdx))) ' \pm ' num2str(std(c1s(subjIdx))) '; median \pm iqr: ' num2str(median(c1s(subjIdx))) ' \pm ' num2str(iqr(c1s(subjIdx)))])
+disp(['cos(ePS-lS,eA*), mean \pm std: ' num2str(mean(c2s(subjIdx))) ' \pm ' num2str(std(c2s(subjIdx))) '; median \pm iqr: ' num2str(median(c2s(subjIdx))) ' \pm ' num2str(iqr(c2s(subjIdx)))])
+
+%Add explicit comparison between 2-factor models for LE and SE
+disp('Comparison of individual results in SE vs LE')
+[~,p1]=ttest(c1(subjIdx),c1s(subjIdx)); %\beta_S
+p2=signrank(c2(subjIdx),c2s(subjIdx),'method','exact'); %\beta_S
+d=mean(c1(subjIdx)-c1s(subjIdx))./std(c1(subjIdx)-c1s(subjIdx)); %Cohen's d to compute effect size
+disp(['cos(POST,-eA), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c1(subjIdx)-c1s(subjIdx))) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
+[~,p1]=ttest(c2(subjIdx),c2s(subjIdx)); %\beta_M
+p2=signrank(c2(subjIdx),c2s(subjIdx),'method','exact'); %\beta_M
+d=mean(c2(subjIdx)-c2s(subjIdx))./std(c2(subjIdx)-c2s(subjIdx)); %Cohen's d to compute effect size
+disp(['cos(POST,eA*), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c2(subjIdx)-c2s(subjIdx))) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
+
+disp([num2str(sum((c1(subjIdx)-c1s(subjIdx))<0)) '/' num2str(numel(subjIdx)) ' subjects decreased their cos(POST, -eA)'])
+disp(['Median change: ' num2str(median(c1(subjIdx)-c1s(subjIdx))) ', mean: ' num2str(mean(c1(subjIdx)-c1s(subjIdx)))])
+disp([num2str(sum((c2(subjIdx)-c2s(subjIdx))>0)) '/' num2str(numel(subjIdx)) ' subjects increased their cos(POST, eA*)'])
+disp(['Median change: ' num2str(median(c2(subjIdx)-c2s(subjIdx))) ', mean: ' num2str(mean(c2(subjIdx)-c2s(subjIdx)))])
+
+%Add age correlations:
+[rs,ps]=corr(age(subjIdx)',c1(subjIdx),'Type','Pearson');
+disp(['Age vs cos(eP-lA,-eA), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c2(subjIdx),'Type','Pearson');
+disp(['Age vs cos(eP-lA,eA*), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c1(subjIdx)-c1s(subjIdx),'Type','Pearson');
+disp(['Age vs \Delta cos(eP-lA,-eA), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c2(subjIdx)-c2s(subjIdx),'Type','Pearson');
+disp(['Age vs \Delta cos(eP-lA,eA*), r=' num2str(rs) ', p=' num2str(ps)])
+
+
+%-------------------------------------------------- Repeat for 1 stride:
+eP=veP;
+eA=veA;
+eAT=veAT;
+
+c1=diag(cosine(eP-lA,-eA));
+c2=diag(cosine(eP-lA,eAT));
+c1s=diag(cosine(ePS-lS,-eA));
+c2s=diag(cosine(ePS-lS,eAT));
+c1g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),-median(eA(:,subjIdx),2)));
+c2g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),median(eAT(:,subjIdx),2)));
+c1gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),-median(eA(:,subjIdx),2)));
+c2gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),median(eAT(:,subjIdx),2)));
+if write
+diary(['../intfig/FBmodelingCosines_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
+end
+% Show cosine results
+disp('---------------RESULTS FOR EARLY = 1 stride-----------------')
+disp('Group')
+disp(['cos(eP-lA,-eA) = ' num2str((c1g))])
+disp(['cos(eP-lA,eA*) = ' num2str((c2g))])
+disp(['cos(ePS-lS,-eA) = ' num2str((c1gs))])
+disp(['cos(ePS-lS,eA*) = ' num2str((c2gs))])
+disp('Indiv')
+disp(['cos(eP-lA,-eA), mean \pm std: ' num2str(mean(c1(subjIdx))) ' \pm ' num2str(std(c1(subjIdx))) '; median \pm iqr: ' num2str(median(c1(subjIdx))) ' \pm ' num2str(iqr(c1(subjIdx)))])
+disp(['cos(eP-lA,eA*), mean \pm std: ' num2str(mean(c2(subjIdx))) ' \pm ' num2str(std(c2(subjIdx))) '; median \pm iqr: ' num2str(median(c2(subjIdx))) ' \pm ' num2str(iqr(c2(subjIdx)))])
+disp(['cos(ePS-lS,-eA), mean \pm std: ' num2str(mean(c1s(subjIdx))) ' \pm ' num2str(std(c1s(subjIdx))) '; median \pm iqr: ' num2str(median(c1s(subjIdx))) ' \pm ' num2str(iqr(c1s(subjIdx)))])
+disp(['cos(ePS-lS,eA*), mean \pm std: ' num2str(mean(c2s(subjIdx))) ' \pm ' num2str(std(c2s(subjIdx))) '; median \pm iqr: ' num2str(median(c2s(subjIdx))) ' \pm ' num2str(iqr(c2s(subjIdx)))])
+
+%Add explicit comparison between 2-factor models for LE and SE
+disp('Comparison of individual results in SE vs LE')
+[~,p1]=ttest(c1(subjIdx),c1s(subjIdx)); %\beta_S
+p2=signrank(c2(subjIdx),c2s(subjIdx),'method','exact'); %\beta_S
+d=mean(c1(subjIdx)-c1s(subjIdx))./std(c1(subjIdx)-c1s(subjIdx)); %Cohen's d to compute effect size
+disp(['cos(POST,-eA), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c1(subjIdx)-c1s(subjIdx))) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
+[~,p1]=ttest(c2(subjIdx),c2s(subjIdx)); %\beta_M
+p2=signrank(c2(subjIdx),c2s(subjIdx),'method','exact'); %\beta_M
+d=mean(c2(subjIdx)-c2s(subjIdx))./std(c2(subjIdx)-c2s(subjIdx)); %Cohen's d to compute effect size
+disp(['cos(POST,eA*), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c2(subjIdx)-c2s(subjIdx))) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
+
+disp([num2str(sum((c1(subjIdx)-c1s(subjIdx))<0)) '/' num2str(numel(subjIdx)) ' subjects decreased their cos(POST, -eA)'])
+disp(['Median change: ' num2str(median(c1(subjIdx)-c1s(subjIdx))) ', mean: ' num2str(mean(c1(subjIdx)-c1s(subjIdx)))])
+disp([num2str(sum((c2(subjIdx)-c2s(subjIdx))>0)) '/' num2str(numel(subjIdx)) ' subjects increased their cos(POST, eA*)'])
+disp(['Median change: ' num2str(median(c2(subjIdx)-c2s(subjIdx))) ', mean: ' num2str(mean(c2(subjIdx)-c2s(subjIdx)))])
+
+%Add age correlations:
+[rs,ps]=corr(age(subjIdx)',c1(subjIdx),'Type','Pearson');
+disp(['Age vs cos(eP-lA,-eA), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c2(subjIdx),'Type','Pearson');
+disp(['Age vs cos(eP-lA,eA*), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c1(subjIdx)-c1s(subjIdx),'Type','Pearson');
+disp(['Age vs \Delta cos(eP-lA,-eA), r=' num2str(rs) ', p=' num2str(ps)])
+[rs,ps]=corr(age(subjIdx)',c2(subjIdx)-c2s(subjIdx),'Type','Pearson');
+disp(['Age vs \Delta cos(eP-lA,eA*), r=' num2str(rs) ', p=' num2str(ps)])
+
+
+if write
+    diary off
+end
+
     %%
     figure;
     subplot(2,3,1)
@@ -113,7 +281,7 @@ subjIdx=2:16;
     xlabel('age')
     legend('Location','SouthEast')
     
-    correctedBetas=learnAll2a.*(norm_T2S)./norm_S2T;
+    correctedBetas=learnAll2a.*(norm_T2S)./norm_S2T; %Betas corrected by the effect of regressor factor size onto 'regresee'
     subplot(2,3,3)
     for k=1:4
         switch k
@@ -141,14 +309,14 @@ subjIdx=2:16;
     
     subplot(2,3,5)
     y=(norm_S2T)./norm_T2S;
-    [rs,ps]=corr(age',y,'Type','Spearman');
-    scatter(age',y,'DisplayName',['r=' num2str(rs,3) ',p=' num2str(ps,3)])
+    [rs,ps]=corr(age(subjIdx)',y(subjIdx),'Type','Spearman');
+    scatter(age(subjIdx)',y(subjIdx),'DisplayName',['r=' num2str(rs,3) ',p=' num2str(ps,3)])
     title('\|eP-lA\| / \|eA\|')
     legend
     subplot(2,3,4)
     y=(sum(eA.*eAT,1)')./norm_T2S.^2;
-    [rs,ps]=corr(age',y,'Type','Spearman');
-    scatter(age',y,'DisplayName',['r=' num2str(rs,3) ',p=' num2str(ps,3)])
+    [rs,ps]=corr(age(subjIdx)',y(subjIdx),'Type','Spearman');
+    scatter(age(subjIdx)',y(subjIdx),'DisplayName',['r=' num2str(rs,3) ',p=' num2str(ps,3)])
     title('(<eA,eA*> / \|eA\|)^2 = cos(eA,eA*)')
     legend
     subplot(2,3,6)
@@ -188,40 +356,3 @@ subjIdx=2:16;
     title('Angles')
     legend
     
-%%
-c1=diag(cosine(eP-lA,-eA));
-c2=diag(cosine(eP-lA,eAT));
-c1s=diag(cosine(ePS-lS,-eA));
-c2s=diag(cosine(ePS-lS,eAT));
-c1g=(cosine(mean(eP-lA,2),-mean(eA,2)));
-c2g=(cosine(mean(eP-lA,2),mean(eAT,2)));
-c1gs=(cosine(mean(ePS-lS,2),-mean(eA,2)));
-c2gs=(cosine(mean(ePS-lS,2),mean(eAT,2)));
-if write
-diary(['../intfig/FBmodelingCosines_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
-end
-% Show cosine results
-disp('Group')
-disp(['cos(eP-lA,-eA) = ' num2str((c1g))])
-disp(['cos(eP-lA,eA*) = ' num2str((c2g))])
-disp(['cos(ePS-lS,-eA) = ' num2str((c1gs))])
-disp(['cos(ePS-lS,eA*) = ' num2str((c2gs))])
-disp('Indiv')
-disp(['cos(eP-lA,-eA), mean \pm std: ' num2str(mean(c1)) ' \pm ' num2str(std(c1)) '; median \pm iqr: ' num2str(median(c1)) ' \pm ' num2str(iqr(c1))])
-disp(['cos(eP-lA,eA*), mean \pm std: ' num2str(mean(c2)) ' \pm ' num2str(std(c2)) '; median \pm iqr: ' num2str(median(c2)) ' \pm ' num2str(iqr(c2))])
-disp(['cos(ePS-lS,-eA), mean \pm std: ' num2str(mean(c1s)) ' \pm ' num2str(std(c1s)) '; median \pm iqr: ' num2str(median(c1s)) ' \pm ' num2str(iqr(c1s))])
-disp(['cos(ePS-lS,eA*), mean \pm std: ' num2str(mean(c2s)) ' \pm ' num2str(std(c2s)) '; median \pm iqr: ' num2str(median(c2s)) ' \pm ' num2str(iqr(c2s))])
-
-%Add explicit comparison between 2-factor models for LE and SE
-disp('Comparison of individual results in SE vs LE')
-[~,p1]=ttest(c1,c1s); %\beta_S
-p2=signrank(c2,c2s,'method','exact'); %\beta_S
-d=mean(c1-c1s)./std(c1-c1s); %Cohen's d to compute effect size
-disp(['cos(POST,-eA), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c1-c1s)) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
-[~,p1]=ttest(c2,c2s); %\beta_M
-p2=signrank(c2,c2s,'method','exact'); %\beta_M
-d=mean(c2-c2s)./std(c2-c2s); %Cohen's d to compute effect size
-disp(['cos(POST,eA*), paired t-test p=' num2str(p1) ', \Delta=' num2str(mean(c2-c2s)) ', Cohen''s d=' num2str(d) ', signrank p=' num2str(p2)])
-if write
-    diary off
-end

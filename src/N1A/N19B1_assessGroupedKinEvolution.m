@@ -14,12 +14,12 @@ color_palette(2:3,:)=color_palette([3,2],:);
 
 %%
 removeMissing=false;
-matDataDir='../../paramData/';
+matDataDir='../../data/HPF30/';
 loadName=[matDataDir 'groupedParams'];
 loadName=[loadName '_wMissingParameters']; %Never remove missing for this script
 if (~exist('patients','var') || ~isa('patients','groupAdaptationData')) || (~exist('controls','var') || ~isa('controls','groupAdaptationData'))
     load(loadName)
-    load([loadName 'Unbiased'])
+    %load([loadName 'Unbiased'])
 end
 patientFastList=strcat('P00',{'01','02','05','08','10','13','15'}); %Patients above .8m/s
 %patients=patients.getSubGroup(patientFastList);
@@ -30,7 +30,7 @@ patientUphillControlList={'C0001','C0002','C0003','C0004','C0009','C0010','C0011
 patientUphillList_={'P0001','P0002','P0003','P0004','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'}; %patients that did the uphill
 patientUphillList=strcat(patientUphillList_,'u'); %patients that did the uphill
 
-load ../../paramData/bioData.mat %speeds, ages and Fugl-Meyer
+load ../../data/bioData.mat %speeds, ages and Fugl-Meyer
 
 %Removing P07:
 noP07=true;

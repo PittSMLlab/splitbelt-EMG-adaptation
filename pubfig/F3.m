@@ -6,6 +6,7 @@ saveDir='./';
 name='allChangesEMG.fig';
 desiredPlotDescription={'Slow';'late A'; 'early P[5]'};
 plotTitles={'Slow Tied','Late Adaptation (LateA)','       Early Post-Adaptation (EarlyP)'};
+plotTitles={{'SLOW TIED';''},{'LATE ADAPTATION'; '(LateA)'},{'    EARLY POST-ADAPTATION'; ' (EarlyP)'}};
 saveName='Fig3B';
 lineFlag=0;
 makeN19DPrettyAgain_execute
@@ -31,4 +32,5 @@ contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',3,
 %%
 pl=plot3([-1.2 2.25],[15 15],[6 6],'k','LineWidth',1,'Clipping','off');
 %%
+set(findobj(fB,'Type','Axes'),'FontName','Helvetica')
 saveFig(fB,'./','Fig3',1)

@@ -14,7 +14,7 @@ subjIdx=2:16; %Excluding C01
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
 write=true;
-write=false;
+%write=false;
 %% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
@@ -265,13 +265,19 @@ for i=1:length(modNames)
 end
 %Add explicit comparison between 2-factor models for LE and SE
 
-[~,p1]=ttest(learnAll2a(:,1),learnAllS2a(:,1)); %\beta_S
-p2=signrank(learnAll2a(:,1),learnAllS2a(:,1),'method','exact'); %\beta_S
-d=mean(learnAll2a-learnAllS2a)./std(learnAll2a-learnAllS2a); %Cohen's d to compute effect size
+[~,p1]=ttest(learnAll2a(subjIdx,1),learnAllS2a(subjIdx,1)); %\beta_S
+p2=signrank(learnAll2a(subjIdx,1),learnAllS2a(subjIdx,1),'method','exact'); %\beta_S
+d=mean(learnAll2a(subjIdx,:)-learnAllS2a(subjIdx,:))./std(learnAll2a-learnAllS2a); %Cohen's d to compute effect size
 disp(['\beta_S, paired t-test p=' num2str(p1) ', Cohen''s d=' num2str(d(1)) ', signrank p=' num2str(p2)])
-[~,p1]=ttest(learnAll2a(:,2),learnAllS2a(:,2)); %\beta_M
-p2=signrank(learnAll2a(:,2),learnAllS2a(:,2),'method','exact'); %\beta_M
+[~,p1]=ttest(learnAll2a(subjIdx,2),learnAllS2a(subjIdx,2)); %\beta_M
+p2=signrank(learnAll2a(subjIdx,2),learnAllS2a(subjIdx,2),'method','exact'); %\beta_M
 disp(['\beta_M, paired t-test p=' num2str(p1) ', Cohen''s d=' num2str(d(2)) ', signrank p=' num2str(p2)])
+
+disp([num2str(sum((learnAll2a(subjIdx,1)-learnAllS2a(subjIdx,1))<0)) '/' num2str(numel(subjIdx)) ' subjects decreased their \beta_S'])
+disp(['Median change: ' num2str(median(learnAll2a(subjIdx,1)-learnAllS2a(subjIdx,1))) ', mean: ' num2str(mean(learnAll2a(subjIdx,1)-learnAllS2a(subjIdx,1)))])
+disp([num2str(sum((learnAll2a(subjIdx,2)-learnAllS2a(subjIdx,2))>0)) '/' num2str(numel(subjIdx)) ' subjects increased their \beta_M'])
+disp(['Median change: ' num2str(median(learnAll2a(subjIdx,2)-learnAllS2a(subjIdx,2))) ', mean: ' num2str(mean(learnAll2a(subjIdx,2)-learnAllS2a(subjIdx,2)))])
+
 if write
     diary off
 end
@@ -448,7 +454,7 @@ for i=1:3 %Three models
             cc=[3,3];
             tt='Regressors vs. age';
         else
-            data=cat(3,data1, data2);
+            data=cat(3,data1(subjIdx,:), data2(subjIdx,:));
             dataM=cat(2,data1M, data2M);
             nn={'Short Exp.','Long Exp.'};
             cc=[1,3];
@@ -531,10 +537,10 @@ for i=1:2
                 tt='Late Adaptation';
                 ci=[2];
                 ai=[1];
-                %data2=[r2All2a'];
-                %names={'R^2'};
-                %yl='Pearson''s R^2';
-                %tt='Model goodness-of-fit';
+                data2=[r2All2a'];
+                names={'R^2'};
+                yl='Pearson''s R^2';
+                tt='Model goodness-of-fit';
             case 3 %Third panel: feedback response sizes 
                 data2=[norm_T2S,norm_S2T]; 
                 names={'||FBK_{tied-to-split}||','||FBK_{split-to-tied}||'}; 
@@ -582,7 +588,7 @@ for i=1:2
 end
     %Save fig:
     if write
-        saveFig(fh,'../intfig/intersubj/',['AgeSpeedEffects_' groupName],0)
+        %saveFig(fh,'../intfig/intersubj/',['AgeSpeedEffects_' groupName],0)
     end
 %% Alternative figure
 fh=figure;
@@ -592,10 +598,10 @@ c2=(condColors(3,:));
 c1=condColors(1,:)*1.8;
 normAge=(age-min(age))/(max(age)-min(age));
 %scatter(data2(:,1),data2(:,2),60,normAge','filled')
-scatter(data2(:,1),data2(:,2),60,c2,'filled','MarkerFaceAlpha',.7)
+scatter(data2(subjIdx,1),data2(subjIdx,2),60,c2,'filled','MarkerFaceAlpha',.7)
 data3=learnAllS2a;
 hold on
-scatter(data3(:,1),data3(:,2),60,c1,'filled')
+scatter(data3(subjIdx,1),data3(subjIdx,2),60,c1,'filled')
 colormap((c1.*[0:.01:1]'+c2.*[1:-.01:0]').^.5)
 %cc=colorbar;
 xlabel('\beta_S')

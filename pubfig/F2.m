@@ -40,7 +40,7 @@ set(cc,'Ticks',[-.5 0 .5],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'-50%','0%','50%'});
 set(gcf,'Color',ones(1,3))
 %cc.Position=cc.Position+[.08 .01 -.02 0];
-title('FBK_{tied-to-split}')
+title({'EMG CHANGE'; '(FBK_{tied-to-split})'})
 ax=gca;
 ax.YAxis.FontSize=13;
 %ax.Title.Color=condColors(1,:);
@@ -73,7 +73,7 @@ fB=openfig('./fig/Fig1A.fig');
 axA=findobj(fB,'Type','Axes');
 
 pA=copyobj(axA,fh);
-pA.Position=[leftMarg bottomMarg+1.7*midColHeight+midColMargin colWidth .4*midColHeight];
+pA.Position=[leftMarg bottomMarg+1.6*midColHeight+midColMargin colWidth .4*midColHeight];
 ax=pA;
 axes(pA)
 tt=findobj(gca,'Type','text');
@@ -88,11 +88,13 @@ axis([10+[55,345] aa(3:4)])
 ax.YTick=[];
 ax.XLabel.String='';
     ax.YLabel.String='';
-    title({'TIED-TO-SPLIT'})
+    title({'TIED-TO-SPLIT TRANSITION';'CHANGE IN BELT SPEEDS'})
     ax.Title.FontSize=16;
     ax.YLabel.FontWeight='bold';
-    ax.YLabel.String='BELT SPEED';
+    ax.YLabel.String={'SPEED';'[a.u.]'};
     ax.YLabel.FontSize=13;
+    ax.Title.Position(2)=ax.Title.Position(2)+.2;
+    %text(ax.Title.Position(1)-140,ax.Title.Position(2)-.35,'CHANGE IN BELT SPEEDS','FontWeight','bold','FontName','Helvetica','FontSize',ax.Title.FontSize)
 
 %% Panel B
 fB=openfig('./fig/F2B.fig');
@@ -111,14 +113,15 @@ pB.YLim=pp;
 pB.FontSize=14;
 pB.FontWeight='bold';
 legend(ll)
-pB.YAxis.FontSize=10;
+pB.YAxis.FontSize=12;
+pB.YLabel.FontSize=13;
 pB.XAxis.FontSize=12;
 drawnow
 pause(1)
 pB.YTick=[-80:40:80];
 pB.YTickLabel={'80','40','0','-40','-80'};
-pB.YAxis.Label.String='HIP A-P position [mm]';
-title('\Delta HIP POSITION')
+pB.YAxis.Label.String='A-P POSITION [mm]';
+title('KINEMATIC CHANGE')
 ll=findobj(gca,'Type','Line');
 
 pB.Position=[leftMarg bottomMarg+.58*midColHeight+midColMargin colWidth .8*midColHeight];
@@ -157,4 +160,5 @@ pC.Visible='off';
 text(450,1500,{'DISPLACEMENT OF COM'},'Clipping','off','Fontsize',12,'FontWeight','bold')
 
 %%
+set(findobj(fh,'Type','Axes'),'FontName','Helvetica')
 saveFig(fh,'./','Fig2',1)
