@@ -14,12 +14,12 @@ makeN19DPrettyAgain_execute
 allSS=findobj(gcf,'Type','Surface');
 for i=1:length(allSS)
     ss=allSS(i);
-%ss.CData(16,:)=0;
-tt=findobj(gcf,'Type','Text');
-idx=strcmp(get(tt,'String'),'SLOW/PARETIC');
-set(tt(idx),'String','SLOW/NON-DOM');
-idx=strcmp(get(tt,'String'),'FAST/NON-PARETIC');
-set(tt(idx),'String','FAST/DOMINANT');
+    %ss.CData(16,:)=0;
+    tt=findobj(gcf,'Type','Text');
+    idx=strcmp(get(tt,'String'),'SLOW/PARETIC');
+    set(tt(idx),'String','SLOW/NON-DOM');
+    idx=strcmp(get(tt,'String'),'FAST/NON-PARETIC');
+    set(tt(idx),'String','FAST/DOMINANT');
 end
 %Colormap:
 figuresColorMap

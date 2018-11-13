@@ -15,7 +15,7 @@ load ../data/bioData.mat %speeds, ages and Fugl-Meyer
 %run ./N1/N19_loadGroupedData.m %This actually load indiv params files and
 
 %If N19 is not run, need to load:
-%load ../data/HPF30/groupedParams_wMissingParameters.mat
+load ../data/HPF30/groupedParams_wMissingParameters.mat
 
 matchSpeedFlag=0;
 suffix='Norm2';

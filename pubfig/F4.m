@@ -29,7 +29,7 @@ if i==1
     %cc.TickLabels={'-50%','0%','+50%'};
     cc.Ticks=[0];
     cc.TickLabels={'0%'};
-    cc.Position=cc.Position.*[1 1 1 .98] + [0 .02 0 0];
+    cc.Position=cc.Position.*[1 1 1 .98] + [.08 .02 0 0];
     text(1.2,31,'+50%','FontSize',16,'FontWeight','bold','Clipping','off')
     text(1.2,0,'- 50%','FontSize',16,'FontWeight','bold','Clipping','off')
     set(cc,'FontSize',16,'FontWeight','bold')
@@ -82,7 +82,7 @@ for i=1:length(pA)
        tt(j).Position=tt(j).Position+[10 .3 0]; 
     end
     aa=axis;
-    axis([10+[55,345]+(2-i)*600 aa(3:4)])
+    axis([110+[55,345]+(2-i)*500 aa(3:4)])
     ax=gca;
     ax.YTick=[];
     ax.XLabel.String='';

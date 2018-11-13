@@ -1,13 +1,30 @@
 %% Set figure sizes in pixels
+% figUnits='pixels';
+% figPos=[0 0  1500 900];
+% colWidth=350;
+% colHeight=800;
+% bottomMarg=50;
+% leftMarg=100;
+% leftMarg=.1;
+% btwMarg=.1;
+% colWidth=.6/3; %3 columns with .1 (left), .1 (betw cols)  and .1 (right) margins
+% colHeight=.7;
+% bottomMarg=.2; %Implicit top marg: .1
+% midColMargin=.1;
+% midColHeight=(colHeight-midColMargin)/2;
+
 figUnits='pixels';
-figPos=[0 0  1500 900];
-colWidth=350;
-colHeight=800;
-bottomMarg=50;
-leftMarg=100;
+figPosThreeCols=[1 1  17.4 10]*2.5*96/2.54; %96dpi on-screen resolution, to see real size
+figPosTwoCols=[1 1 11.6 10]*2.5*96/2.54; %Two-thirds of the width exactly
+paperUnits='centimeters';
+paperPositionThreeCols=[0 0 17.6 10];
+paperPositionTwoCols=[0 0 11.6 10]; 
 leftMarg=.1;
+leftMargTwoCol=leftMarg*1.5;
 btwMarg=.1;
+btwMargTwoCol=btwMarg*1.5;
 colWidth=.6/3; %3 columns with .1 (left), .1 (betw cols)  and .1 (right) margins
+colWidthTwoCol=colWidth*1.5;
 colHeight=.7;
 bottomMarg=.2; %Implicit top marg: .1
 midColMargin=.1;

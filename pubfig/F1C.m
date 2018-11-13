@@ -45,7 +45,7 @@ text(.6,0,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
 end
 
 text(-1.8,-.65,'eP-lA','Clipping','off','FontSize',14,'FontWeight','bold')
-plot([-3.5 1.5],-.3*[1 1],'k','LineWidth',2,'Clipping','off')
+plot([-4.1 1.5],-.3*[1 1],'k','LineWidth',2,'Clipping','off')
 %plot(-4*[1 1],[.5 7],'k','LineWidth',1,'Clipping','off')
 
 %Add lines on fast/slow:

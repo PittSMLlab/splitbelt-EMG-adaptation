@@ -25,7 +25,7 @@ for i=1:length(pA)
         set(tt(j),'FontSize',16,'Position',get(tt(j),'Position')-[0 0 0])
     end
     pA.Position=[colWidth+leftMarg+btwMarg bottomMarg colWidth colHeight];
-    %set(pA(i),'Position',get(pA(i),'Position').*[1.05 .3 1 .26] + [.03 .71 0 0]);
+    set(pA(i),'Position',get(pA(i),'Position').*[1 1 1 1.15] + [0 -.12 0 0]);
     pA(i).YLabel.FontWeight='bold';
     caxis(Clim*[-1 1])
     if i==1
@@ -84,7 +84,7 @@ for j=1:length(tt)
    tt(j).Position=tt(j).Position+[10 .3 0]; 
 end
 aa=axis;
-axis([10+[55,345] aa(3:4)])
+axis([110+[55,345] aa(3:4)])
 ax.YTick=[];
 ax.XLabel.String='';
     ax.YLabel.String='';

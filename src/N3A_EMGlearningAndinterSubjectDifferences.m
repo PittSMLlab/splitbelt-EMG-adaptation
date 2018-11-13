@@ -14,7 +14,7 @@ subjIdx=2:16; %Excluding C01
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
 write=true;
-%write=false;
+write=false;
 %% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
@@ -457,7 +457,7 @@ for i=1:3 %Three models
             data=cat(3,data1(subjIdx,:), data2(subjIdx,:));
             dataM=cat(2,data1M, data2M);
             nn={'Short Exp.','Long Exp.'};
-            cc=[1,3];
+            cc=[4,3];
             tt='Regressors vs. exposure length';
         end
     
@@ -471,7 +471,7 @@ for i=1:3 %Three models
     [fh,ph]=prettyBarPlot(data,condColors(cc,:),medianFlag,lineFlag,nn,mod.CoefficientNames,ph);
 
     % %Add group average results:
-    pS=scatter([1:size(dataM,1)]'-.19,[dataM(:,1)],120,condColors(1,:),'filled','MarkerFaceAlpha',1);
+    pS=scatter([1:size(dataM,1)]'-.19,[dataM(:,1)],120,condColors(4,:),'filled','MarkerFaceAlpha',1);
     p2=scatter([1:size(dataM,1)]'+.09,[dataM(:,2)],120,condColors(3,:),'filled','MarkerFaceAlpha',1);
     pS.Annotation.LegendInformation.IconDisplayStyle = 'off';
     p2.Annotation.LegendInformation.IconDisplayStyle = 'off';
@@ -504,12 +504,70 @@ if write
     saveFig(fh,'../intfig/intersubj/',['modelComparison_' groupName],0)
 end
 
+%% Do plots alt
+fh=figure('Units','Normalized','Position',[0 0 .5 .4])
+figuresColorMap
+modelNames={'2a','3b','2c'};
+idxY=age(subjIdx)<58; %Youngest 6, if we exclude C01
+idxO=age(subjIdx)>63; %Oldest 6
+for i=1 %Three models
+    for j=1
+            eval(['data1=learnAllS' modelNames{i} ';']);
+            eval(['data2=learnAll' modelNames{i} ';']);    
+            eval(['data1M=learnS' modelNames{i} ';']);
+            eval(['data2M=learn' modelNames{i} ';']);
+            data=cat(3,data1(subjIdx,:), data2(subjIdx,:));
+            data=permute(data,[1,3,2]);
+            dataM=cat(2,data1M, data2M);
+            covM=cat(2,modelFit2a.Coefficients.SE,modelFitS2a.Coefficients.SE);
+            nn={'\beta_S','\beta_M'};
+            cc=[4,3];
+            tt='Regressors vs. exposure length';
+    
+    
+    eval(['mod=modelFit' modelNames{i} ';']);
+
+    ph=subplot(1,2,1);
+    medianFlag=1;
+    lineFlag=2; %Set to 1 to see within-subject changes
+    [fh,ph]=prettyBarPlot(data,colorTransitions,medianFlag,lineFlag,nn,{'Short','Long'},ph);
+
+    % %Add group average results:
+    pS=scatter([1:size(dataM,1)]'-.19,[dataM(:,1)],120,colorTransitions(1,:),'filled','MarkerFaceAlpha',1);
+    p2=scatter([1:size(dataM,1)]'+.09,[dataM(:,2)],120,colorTransitions(2,:),'filled','MarkerFaceAlpha',1);
+    pS.Annotation.LegendInformation.IconDisplayStyle = 'off';
+    p2.Annotation.LegendInformation.IconDisplayStyle = 'off';
+    set(ph,'YLim',[-.5 1.8])
+    ylabel('Regressors')
+    title(tt)
+    set(gca,'FontSize',14)
+    
+    subplot(1,2,2)
+    bb=bar(reshape(dataM,2,2),'EdgeColor','none');
+    bb(1).FaceColor=colorTransitions(1,:);
+    bb(2).FaceColor=colorTransitions(2,:);
+    hold on
+    %errorbar(reshape(.15*[-1; 1]+[1 2],4,1),reshape(dataM',4,1),reshape(covM',4,1),'Color','k','LineWidth',2,'LineStyle','none')
+    for k=1:2
+        errorbar(.15+[1 2]-(2-k)*.3,dataM(:,k),-2*covM(:,k),2*covM(:,k),'Color',colorTransitions(k,:),'LineWidth',2,'LineStyle','none') %Plotting +- 2ste
+    end
+    axis([.5 2.5 -.2 1.3])
+    set(gca,'XTickLabel',{'Short','Long'})
+    legend({'\beta_S','\beta_M'},'Location','Northeast')
+    ylabel('Regressors')
+    title('Regressors vs. exposure length')
+    end
+end
+set(gca,'FontSize',14)
+%Save fig:
+if write
+   saveFig(fh,'../intfig/intersubj/',['modelComparison_' groupName 'ALT'],0)
+end
 
 
 %% Age and speed effects
 mod=modelFit2a;
 fh=figure('Units','Normalized','OuterPosition',[0 .2 .8 .5*16/10]);
-
 for i=1:2
     switch i
         case 1 %age
@@ -520,7 +578,7 @@ for i=1:2
             xl='Mid walking speed (m/s)';
     end
  
-    %Four panels:
+    %Five panels:
     for j=1:5
         switch j
             case 1 %First panel: regressors vs. explanatory variable
@@ -529,24 +587,30 @@ for i=1:2
                 yl='Regressors';
                 tt='Model fit';
                 ci=[3,3,2];
-                ai=[1,.5,1];
+                ccc=condColors(ci,:);
+                ccc=[colorTransitions;zeros(1,3)];
+                ai=[1,1,1];
             case 2 %Second panel: eP and lA sizes
                 data2=[norm_lA];
                 names={'||LateA||'};
                 yl='Response size (a.u.)';
                 tt='Late Adaptation';
                 ci=[2];
+                ccc=condColors(ci,:);
                 ai=[1];
-                data2=[r2All2a'];
-                names={'R^2'};
-                yl='Pearson''s R^2';
-                tt='Model goodness-of-fit';
+                %data2=[r2All2a'];
+                %ccc=zeros(1,3);
+                %names={'R^2'};
+                %yl='Pearson''s R^2';
+                %tt='Model goodness-of-fit';
             case 3 %Third panel: feedback response sizes 
                 data2=[norm_T2S,norm_S2T]; 
                 names={'||FBK_{tied-to-split}||','||FBK_{split-to-tied}||'}; 
                 yl='Response size (a.u.)'; 
                 tt='Feedback responses'; 
                 ci=[2,3]; 
+                ccc=condColors(ci,:);
+                ccc=colorTransitions;
                 ai=[1 1];  
             case 4 %Kin aftereffects 
                 data2=[SLA_eP]; 
@@ -554,6 +618,7 @@ for i=1:2
                 yl='Step-length asymmetry'; 
                 tt='Kinematic Aftereffects'; 
                 ci=[3]; 
+                ccc=condColors(ci,:);
                 ai=1; 
             case 5 %Overlayed on 4, EMG aftereffects
                 data2=[norm_eP];
@@ -561,6 +626,7 @@ for i=1:2
                 yl='Response size (a.u.)';
                 tt='EMG Aftereffects';
                 ci=[3];
+                ccc=condColors(ci,:);
                 ai=[1];
         end
         scf={'flat','flat'};
@@ -570,12 +636,12 @@ for i=1:2
         for k=1:min(2,length(names))
             [rs,ps]=corr(x(subjIdx)',data2(subjIdx,k),'Type','Spearman');
             mdl=fitlm(x(subjIdx)',data2(subjIdx,k),'RobustOpts',rob);
-            %[rs,ps]=corr(x(idx)',data2(idx,k),'Type','Pearson');
-            ss(k)=scatter(x(subjIdx),data2(subjIdx,k),50,condColors(ci(k),:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);% ', robR^2=' num2str(mdl.Rsquared.Ordinary,2) ', robP=' num2str(mdl.Coefficients.pValue(2),2)]);
+             %[rs,ps]=corr(x(subjIdx)',data2(subjIdx,k),'Type','Pearson');
+            ss(k)=scatter(x(subjIdx),data2(subjIdx,k),50,ccc(k,:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);% ', robR^2=' num2str(mdl.Rsquared.Ordinary,2) ', robP=' num2str(mdl.Coefficients.pValue(2),2)]);
             pp=polyfit1PCA(x(subjIdx),data2(subjIdx,k),1);
             pp=polyfit(x(subjIdx)',data2(subjIdx,k),1);
             if ps<.05
-            plot([min(x) max(x)],[min(x) max(x)]*pp(1)+pp(2),'Color',(ai(k))*condColors(ci(k),:)+(1-ai(k))*ones(1,3),'LineWidth',2)
+            plot([min(x) max(x)],[min(x) max(x)]*pp(1)+pp(2),'Color',(ai(k))*ccc(k,:)+(1-ai(k))*ones(1,3),'LineWidth',2)
             end
         end
         xlabel(xl)
@@ -588,37 +654,44 @@ for i=1:2
 end
     %Save fig:
     if write
-        %saveFig(fh,'../intfig/intersubj/',['AgeSpeedEffects_' groupName],0)
+        saveFig(fh,'../intfig/intersubj/',['AgeSpeedEffects_' groupName],0)
     end
 %% Alternative figure
 fh=figure;
 data2=learnAll2a;
-c1=[1,0,0]*.9;
 c2=(condColors(3,:));
-c1=condColors(1,:)*1.8;
+c2=zeros(1,3);
+c1=condColors(4,:);
+c1=.5*ones(1,3);
 normAge=(age-min(age))/(max(age)-min(age));
 %scatter(data2(:,1),data2(:,2),60,normAge','filled')
 scatter(data2(subjIdx,1),data2(subjIdx,2),60,c2,'filled','MarkerFaceAlpha',.7)
 data3=learnAllS2a;
 hold on
-scatter(data3(subjIdx,1),data3(subjIdx,2),60,c1,'filled')
-colormap((c1.*[0:.01:1]'+c2.*[1:-.01:0]').^.5)
+scatter(data3(subjIdx,1),data3(subjIdx,2),60,c1,'filled','MarkerFaceAlpha',.7)
 %cc=colorbar;
-xlabel('\beta_S')
-ylabel('\beta_M')
+xlabel(['\color[rgb]{' num2str(colorTransitions(1,1)) ',' num2str(colorTransitions(1,2)) ',' num2str(colorTransitions(1,3)) '} \beta_S'])
+ylabel(['\color[rgb]{' num2str(colorTransitions(2,1)) ',' num2str(colorTransitions(2,2)) ',' num2str(colorTransitions(2,3)) '} \beta_M'])
+ax=gca;
+ax.XLabel.FontWeight='bold';
+ax.XColor=colorTransitions(1,:);
+ax.YColor=colorTransitions(2,:);
+ax.XAxis.LineWidth=2;
+ax.YAxis.LineWidth=2;
+ax.YLabel.FontWeight='bold';
 %set(cc,'Ticks',[0:.2:1],'TickLabels',num2str((max(age)-min(age))*[0:.2:1]' +min(age),2))
 rL=modelFit2a.Coefficients.Estimate;
 rS=modelFitS2a.Coefficients.Estimate;
 hold on
-scatter(rS(1),rS(2),150,condColors(1,:)*1.2,'filled')
+scatter(rS(1),rS(2),150,c1,'filled')
 text(rS(1),rS(2)+.12,{'   Short','exposure'},'Color',c1/2,'FontWeight','bold')
-scatter(rL(1),rL(2),150,condColors(3,:),'filled')
+scatter(rL(1),rL(2),150,c2,'filled')
 %text(rL(1)+.05,rL(2),{'   Long','exposure'},'Color',c2,'FontWeight','bold')
 text(rL(1)+.05,rL(2),{'Long','exposure'},'Color',c2,'FontWeight','bold')
-scatter(1,0,80,'k','filled')
-scatter(0,1,80,'k','filled')
-text(.5,-.02,{'   H2: No','Adaptation'},'FontWeight','bold')
-text(.05,.99,{' H3: ''New normal'''},'FontWeight','bold')
+scatter(1,0,100,'k','filled','MarkerFaceColor',colorTransitions(1,:))
+scatter(0,1,100,'k','filled','MarkerFaceColor',colorTransitions(2,:))
+text(.5,-.02,{'   H2: No','Adaptation'},'FontWeight','bold','Color',colorTransitions(1,:))
+text(.05,.99,{' H3: ''New normal'''},'FontWeight','bold','Color',colorTransitions(2,:))
 %TO DO: add expected split-to-tied and tied-to-split
 axis([-.45 1.55 -.5 1.05])
 title('Regression analysis of \Delta EMG_{split-to-tied}')
