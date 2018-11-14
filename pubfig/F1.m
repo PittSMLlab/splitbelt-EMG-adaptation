@@ -15,17 +15,19 @@ fh=figure('Name',name,'Units',figUnits,'OuterPosition',figPosTwoCols);
 fh.OuterPosition(4)=fh.OuterPosition(4)*1.1; %taller
 figuresColorMap
 %% Panel A: protocol
-conditionOffset=[1 41 61 201 801 1101];
+conditionOffset=[1 51 105 301 801 1101];
 dV=nan(1,conditionOffset(end)-1);
 for i=1:length(conditionOffset)-1
     dV(conditionOffset(i):conditionOffset(i+1)-1)=mod(i-1,2);
 end
 v0=1;
 V=v0+.333*[1;-1]*dV +[.01;-.01];
-V=[.67*[ones(1,50)*1.015;ones(1,50)*.985] V];
+V=[.67*[ones(1,100)*1.015;ones(1,100)*.985] V];
 ph=subplot(5,1,1);
-set(ph,'Position',[leftMargTwoCol+.4*btwMargTwoCol .78 2*colWidthTwoCol+1*btwMargTwoCol .2],'FontSize',16)
+set(ph,'Position',[leftMargTwoCol+0*btwMargTwoCol .78 2*colWidthTwoCol+1.5*btwMargTwoCol .2],'FontSize',16,'ColorOrder',legColors)
 ll=plot([1:size(V,2)]-50,V','LineWidth',4);
+ll(1).Color=legColors(1,:);
+ll(2).Color=legColors(2,:);
 xlabel('STRIDE CYCLES')
 ylabel({'BELT'; 'SPEED'})
 ph.XLabel.FontWeight='bold';
@@ -47,26 +49,31 @@ ph.YLabel.FontSize=18;
 textY=.85*v0;
 epochAlpha=.2;
 ptWidth=80;
-ptc=patch(+[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
-uistack(ptc,'bottom')
-text(207,textY+.03,'EarlyA','FontSize',20,'FontWeight','bold','Color',condColors(2,:))
-text(345,textY+.58,'ADAPTATION','FontSize',20,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
-text(360,textY+.4,'(900 STRIDES)','FontSize',16,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
-ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(1,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
-uistack(ptc,'bottom')
-text(135,textY+.03,'B','FontSize',20,'FontWeight','bold','Color',condColors(1,:))
-text(60,textY+.58,'BASELINE','FontSize',20,'Clipping','off','Color',condColors(1,:),'FontWeight','bold')
-ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(5),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
-uistack(ptc,'bottom')
-text(conditionOffset(5)-140,textY+.03,'LateA','FontSize',20,'FontWeight','bold','Color',condColors(2,:))
-ptc=patch([0 ptWidth ptWidth 0]+conditionOffset(5),[.5 .5 1.6 1.6],condColors(3,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
-uistack(ptc,'bottom')
-text(conditionOffset(5)+10,textY+.03,'EarlyP','FontSize',20,'FontWeight','bold','Color',condColors(3,:))
-text(810,textY+.58,'POST-ADAP.','FontSize',20,'Clipping','off','Color',condColors(3,:),'FontWeight','bold')
-text(815,textY+.4,'(600 STRIDES)','FontSize',16,'Clipping','off','Color',condColors(3,:),'FontWeight','bold')
+condColors=repmat(.3*ones(1,3),5,1);
+condFontSize=16;
+text(-45,textY-.05,'SLOW','FontSize',condFontSize,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+text(63,textY+.58,'(SHORT)','FontSize',condFontSize,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+text(104,textY+.4,'[10]','FontSize',condFontSize*.75,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+%ptc=patch(+[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
+%uistack(ptc,'bottom')
+%text(condFontSize7,textY+.03,'EarlyA','FontSize',condFontSize,'FontWeight','bold','Color',condColors(2,:))
+text(450,textY+.58,'(LONG) ADAPTATION','FontSize',condFontSize,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+text(515,textY+.4,'[900 STRIDES]','FontSize',condFontSize*.75,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+%ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(1,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
+%uistack(ptc,'bottom')
+%text(135,textY+.03,'B','FontSize',condFontSize,'FontWeight','bold','Color',condColors(1,:))
+text(180,textY+.26,'BASELINE','FontSize',condFontSize,'Clipping','off','Color',condColors(1,:),'FontWeight','bold')
+%ptc=patch(-[0 ptWidth ptWidth 0]+conditionOffset(5),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
+%uistack(ptc,'bottom')
+%text(conditionOffset(5)-140,textY+.03,'LateA','FontSize',condFontSize,'FontWeight','bold','Color',condColors(2,:))
+%ptc=patch([0 ptWidth ptWidth 0]+conditionOffset(5),[.5 .5 1.6 1.6],condColors(3,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
+%uistack(ptc,'bottom')
+%text(conditionOffset(5)+10,textY+.03,'EarlyP','FontSize',condFontSize,'FontWeight','bold','Color',condColors(3,:))
+text(880,textY+.26,'POST-ADAP.','FontSize',condFontSize,'Clipping','off','Color',condColors(3,:),'FontWeight','bold')
+text(885,textY+.05,'[600 STRIDES]','FontSize',condFontSize*.75,'Clipping','off','Color',condColors(3,:),'FontWeight','bold')
 
-lg=legend(ll,{'DOMINANT (FAST) BELT','NON-DOM. (SLOW) BELT'},'FontSize',12,'FontWeight','bold','Location','South');
-lg.Position=lg.Position-[.01 .005 0 0];
+lg=legend(ll,{'DOMINANT (FAST) BELT','NON-DOM. (SLOW) BELT'},'FontSize',condFontSize*.75,'FontWeight','bold','Location','South');
+lg.Position=lg.Position-[-.05 .005 0 0];
 set(ph,'XTick','')
 %ph.XLabel.Position=ph.XLabel.Position-[300 0 0];
 axis([-50 conditionOffset(end) .5 1.55])
@@ -74,49 +81,47 @@ ph.Box='off';
 %saveFig(fh,'./','Fig1A',0)
 %% Panel B: EMG samples
 for k=1:2
-f1d=open(['./fig/Fig1B_' num2str(k) '.fig']);
-ph=findobj(f1d,'Type','Axes');
-p1d=copyobj(ph,fh);
+    f1d=open(['./fig/Fig1B_' num2str(k) '.fig']);
+    ph=findobj(f1d,'Type','Axes');
+    p1d=copyobj(ph,fh);
 for i=1:length(p1d)
     p1d(i).Colormap=ph(i).Colormap;
 end
 figuresColorMap
-scale=.2;
+scale=.3;
 for i=1:length(p1d)
-    p1d(i).Position=p1d(i).Position.*[0 scale 0 scale]+[leftMargTwoCol .2-(k==1)*.18+.32+(i>1)*.02 1.1*colWidthTwoCol 0];
+    p1d(i).Position=p1d(i).Position.*[0 scale 0 scale]+[.8*leftMargTwoCol .09-(k==1)*.35+.32+(i>1)*.02 1.1*colWidthTwoCol 0];
 end
 axes(p1d(1))
 ax=gca;
+if k==2
+    ax.YTick=[4.6e-6 1.1e-4];
+else
+    ax.YTick=[3.5e-6 5e-5];
+end
+ax.YTickLabel={'0%','100%'};
+%ax.YAxisLocation='right';
+grid on
 ll=findobj(gca,'Type','text');
 if k==2
-    delete(ll) %Deleting DS,STANCE,DS,SWING labels for top panel
-    text(-.2*p1d(1).XAxis.Limits(2), 1.3*p1d(1).YAxis.Limits(2),'B','FontSize',24,'FontWeight','bold','Clipping','off')
-    text(-.2*p1d(1).XAxis.Limits(2), 1.3*p1d(1).YAxis.Limits(2)+4e-4,'A','FontSize',24,'FontWeight','bold','Clipping','off')
-    text(-.2*p1d(1).XAxis.Limits(2), 1.3*p1d(1).YAxis.Limits(2)-7.3e-4,'C','FontSize',24,'FontWeight','bold','Clipping','off')
+    %delete(ll) %Deleting DS,STANCE,DS,SWING labels for top panel
+    %text(-.2*p1d(1).XAxis.Limits(2), 1.1*p1d(1).YAxis.Limits(2),'B','FontSize',24,'FontWeight','bold','Clipping','off')
+    %text(-.2*p1d(1).XAxis.Limits(2), 1.1*p1d(1).YAxis.Limits(2)+4e-4,'A','FontSize',24,'FontWeight','bold','Clipping','off')
     ax.Title.String='SINGLE MUSCLE';
-else
-     for i=1:length(ll)
-        ll(i).Position=ll(i).Position-[0 7.5e-5 0];
-    end
 end
+aux=diff(ax.YLim);
+ for i=1:length(ll)
+    ll(i).Position=ll(i).Position.*[1.03 1 1]-[0 .91*aux 0];
+end
+
 ll=findobj(gca,'Type','Line');
-ll(end).Color=condColors(1,:);
 ll2=findobj(gca,'Type','Patch');
-for i=1:length(ll2)
-ll2(i).FaceColor=condColors(i,:);
+for i=1:length(ll)-2
+        ll(i).YData=ll(i).YData-.88*aux;
 end
-if k==2
-        delete(ll(1:end-2))
-else
-    for i=1:length(ll)-2
-        ll(i).YData=ll(i).YData-7e-5;
-    end
-end
-
-
-ax.YLabel.String={'EMG';'(a.u.)'};
+ax.YLabel.String={'EMG (a.u.)'};
 ax.YLabel.FontWeight='bold';
-ax.YLabel.Color=ax.ColorOrder(k,:);
+ax.YLabel.Color=legColors(k,:);
 
 end
 
@@ -135,105 +140,41 @@ set(cc,'Ticks',[0 .5 1],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'0%','50%','100%'});
 set(gcf,'Color',ones(1,3))
 cc.Limits=[0 1];
-cc.Position=cc.Position+[.05 .01 -.02 0];
+cc.Position=cc.Position+[.08 -.092 -.02 0];
 title('BASELINE ACTIVITY')
 ax=gca;
 %ax.Title.Color=condColors(1,:);
 for i=1:length(ax.YTickLabel)
     if i<16
-    ax.YTickLabel{i}=['\color[rgb]{0,0.447,0.741} ' ax.YTickLabel{i}];
+        aux=strcat(num2str(legColors(1,:)'),',')';       
     else
-        ax.YTickLabel{i}=['\color[rgb]{0.85,0.325,0.098} ' ax.YTickLabel{i}];
+        aux=strcat(num2str(legColors(2,:)'),',')';     
+        aux=aux(2:end);
     end
+    %ax.YTickLabel{i}=['\color[rgb]{' aux(1:end-1) '} ' ax.YTickLabel{i}];
+    ax.YTickLabel{i}=regexprep(ax.YTickLabel{i},'\{.*\}',['\{' aux(1:end-1) '\}'])
 end
-text(-.3, 31,'D','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-.3, 31,'C','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-1.8, 31,'B','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-1.8, 43,'A','FontSize',24,'FontWeight','bold','Clipping','off')
+
 
 tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
 tt.String='NON-DOMINANT';
 tt.Position=tt.Position+[0 0 0];
 tt.FontWeight='bold';
+tt.Color=legColors(2,:);
 tt=findobj(gca,'Type','Text','String','FAST/DOMINANT');
 tt.String='DOMINANT';
 tt.Position=tt.Position+[0 2 0];
 tt.FontWeight='bold';
+tt.Color=legColors(1,:);
 p1c.YAxis.FontSize=12;
+ll=findobj(gca,'Type','Line','Color',ax.ColorOrder(1,:));
+set(ll,'Color',legColors(1,:));
 close(f1c)
-%% Add Panel C
-% f1c=open('./fig/Fig1C.fig');
-% ph=findobj(f1c,'Type','Axes');
-% p1d=copyobj(ph,fh);
-% close(f1c)
-% scaleX=1;
-% scaleY=.3;
-% for i=1:length(p1d)
-%     p1d(i).Position=p1d(i).Position.*[scaleX scaleY scaleX scaleY]+[.02 0 0 0];
-% end
-figuresColorMap;    
-auxF=[0;.35;-.3];
-auxS=[-.35;.35;.2];
-for k=1:4
-    switch k
-        case 1 %eA
-            aux1=auxF;
-            aux2=auxS;
-            tt='';
-tt2='EarlyA';
-        case 2
-            tt='C1';
-            aux1=zeros(size(auxF));
-            aux2=zeros(size(auxS));
-tt2='0';
-        case 3
-            tt='C2';
-            aux1=-auxF;
-            aux2=-auxS;
-tt2='-EarlyA';
-        case 4
-            tt='C3';
-            aux1=auxS;
-            aux2=auxF;
-tt2='EarlyA^*';
-    end
-ax=axes;
-ax.Position=[.01*leftMargTwoCol+(k-1)*.05+(k>1)*.03 .03 1.1*colWidthTwoCol .1];
-I=imshow(size(map,1)*(aux1+.5),flipud(map),'Border','tight');
-rectangle('Position',[.5 .5 1 3],'EdgeColor','k')
-%%Add arrows
-hold on
-quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux1),zeros(size(aux1)),-.7*sign(aux1),0,'Color','k','LineWidth',2,'MaxHeadSize',.5)
-ax=axes;
-ax.Position=[.01*leftMargTwoCol+(k-1)*.05+(k>1)*.03 .14 1.1*colWidthTwoCol .1];
-I=imshow(size(map,1)*(aux2+.5),flipud(map),'Border','tight');
-rectangle('Position',[.5 .5 1 3],'EdgeColor','k')
-%%Add arrows
-hold on
-quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux2),zeros(size(aux1)),-.7*sign(aux2),0,'Color','k','LineWidth',2,'MaxHeadSize',.5)
-
-set(gca,'XTickLabel','','YTickLabel','','XTick','','YTick','')
-text(-.1+(k==2)*.8+(k==3)*-.3,0,tt2,'Clipping','off','FontSize',12,'FontWeight','bold')
-text(.6,7.2,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
-if k==1
-    for j=1:3
-        text(1.7,j,['m' num2str(j)],'Clipping','off','FontSize',14,'FontWeight','bold')
-        text(1.7,j+3.3,['m' num2str(j)],'Clipping','off','FontSize',14,'FontWeight','bold')
-    end
-
-end
-
-end
-
-text(-2.5,-1.5,'CASES','Clipping','off','FontSize',12,'FontWeight','bold')
-text(-3.4,-.9,'EarlyP-LateA=','Clipping','off','FontSize',12,'FontWeight','bold')
-plot([-4.5 1.5],-.6*[1 1],'k','LineWidth',2,'Clipping','off')
-%plot(-4*[1 1],[.5 7],'k','LineWidth',1,'Clipping','off')
-
-%Add lines on fast/slow:
-ccc=get(gca,'ColorOrder');
-plot(-9.*[1 1],[.5 3.5],'LineWidth',4,'Color',ccc(2,:),'Clipping','off')
-text(-9.5,3.7,'NON-DOM','Color',ccc(2,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
-plot(-9*[1 1],3.3+[.5 3.5],'LineWidth',4,'Color',ccc(1,:),'Clipping','off')
-text(-9.5,6.25,'DOM','Color',ccc(1,:),'Rotation',90,'FontSize',14,'FontWeight','bold')
 
 
 %% Save fig
+resizeFigure(fh,1/2.5)
 saveFig(fh,'./',name,0)

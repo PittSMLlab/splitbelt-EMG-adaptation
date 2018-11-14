@@ -47,3 +47,5 @@ ext/cbrewer2/
 pubfig/auxFun/makeN19DPrettyAgain_execute_bak\.m
 
 *.svg
+
+ext/@ScaledFigure/
