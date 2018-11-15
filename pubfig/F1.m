@@ -11,9 +11,9 @@ clear all
 addpath(genpath('./auxFun/'));
 figSize
 name='Fig1';
-fh=figure('Name',name,'Units',figUnits,'OuterPosition',figPosTwoCols);
+fh=figure('Name',name,'Units',figUnits,'InnerPosition',figPosTwoCols,'PaperUnits',paperUnits,'PaperPosition',paperPositionTwoCols,'PaperSize',paperPositionTwoCols(3:4));
 fh.OuterPosition(4)=fh.OuterPosition(4)*1.1; %taller
-figuresColorMap
+myFiguresColorMap
 %% Panel A: protocol
 conditionOffset=[1 51 105 301 801 1101];
 dV=nan(1,conditionOffset(end)-1);
@@ -51,7 +51,7 @@ epochAlpha=.2;
 ptWidth=80;
 condColors=repmat(.3*ones(1,3),5,1);
 condFontSize=16;
-text(-45,textY-.05,'SLOW','FontSize',condFontSize,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
+text(-48,textY-.05,'SLOW','FontSize',condFontSize,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
 text(63,textY+.58,'(SHORT)','FontSize',condFontSize,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
 text(104,textY+.4,'[10]','FontSize',condFontSize*.75,'Clipping','off','Color',condColors(2,:),'FontWeight','bold')
 %ptc=patch(+[0 ptWidth ptWidth 0]+conditionOffset(4),[.5 .5 1.6 1.6],condColors(2,:),'FaceAlpha',epochAlpha,'EdgeColor','None');
@@ -89,36 +89,20 @@ for i=1:length(p1d)
 end
 figuresColorMap
 scale=.3;
+set(p1d,'FontSize',16);
 for i=1:length(p1d)
-    p1d(i).Position=p1d(i).Position.*[0 scale 0 scale]+[.8*leftMargTwoCol .09-(k==1)*.35+.32+(i>1)*.02 1.1*colWidthTwoCol 0];
+    p1d(i).Position=p1d(i).Position.*[0 scale 0 scale]+[.8*leftMargTwoCol .1-(k==1)*.35+.32 1.1*colWidthTwoCol 0];
 end
 axes(p1d(1))
 ax=gca;
-if k==2
-    ax.YTick=[4.6e-6 1.1e-4];
-else
-    ax.YTick=[3.5e-6 5e-5];
-end
-ax.YTickLabel={'0%','100%'};
 %ax.YAxisLocation='right';
 grid on
 ll=findobj(gca,'Type','text');
+set(ll,'FontSize',16)
 if k==2
-    %delete(ll) %Deleting DS,STANCE,DS,SWING labels for top panel
-    %text(-.2*p1d(1).XAxis.Limits(2), 1.1*p1d(1).YAxis.Limits(2),'B','FontSize',24,'FontWeight','bold','Clipping','off')
-    %text(-.2*p1d(1).XAxis.Limits(2), 1.1*p1d(1).YAxis.Limits(2)+4e-4,'A','FontSize',24,'FontWeight','bold','Clipping','off')
     ax.Title.String='SINGLE MUSCLE';
 end
 aux=diff(ax.YLim);
- for i=1:length(ll)
-    ll(i).Position=ll(i).Position.*[1.03 1 1]-[0 .91*aux 0];
-end
-
-ll=findobj(gca,'Type','Line');
-ll2=findobj(gca,'Type','Patch');
-for i=1:length(ll)-2
-        ll(i).YData=ll(i).YData-.88*aux;
-end
 ax.YLabel.String={'EMG (a.u.)'};
 ax.YLabel.FontWeight='bold';
 ax.YLabel.Color=legColors(k,:);
@@ -140,7 +124,7 @@ set(cc,'Ticks',[0 .5 1],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'0%','50%','100%'});
 set(gcf,'Color',ones(1,3))
 cc.Limits=[0 1];
-cc.Position=cc.Position+[.08 -.092 -.02 0];
+cc.Position=cc.Position+[.08 -.085 -.02 0];
 title('BASELINE ACTIVITY')
 ax=gca;
 %ax.Title.Color=condColors(1,:);
@@ -152,7 +136,8 @@ for i=1:length(ax.YTickLabel)
         aux=aux(2:end);
     end
     %ax.YTickLabel{i}=['\color[rgb]{' aux(1:end-1) '} ' ax.YTickLabel{i}];
-    ax.YTickLabel{i}=regexprep(ax.YTickLabel{i},'\{.*\}',['\{' aux(1:end-1) '\}'])
+    ax.YTickLabel{i}=regexprep(ax.YTickLabel{i},'\{.*\}',['\{' aux(1:end-1) '\}']);
+    ax.YAxis.Label.FontSize=8;
 end
 text(-.3, 31,'C','FontSize',24,'FontWeight','bold','Clipping','off')
 text(-1.8, 31,'B','FontSize',24,'FontWeight','bold','Clipping','off')
@@ -176,5 +161,7 @@ close(f1c)
 
 
 %% Save fig
+fh.PaperPosition
 resizeFigure(fh,1/2.5)
+fh.PaperPosition
 saveFig(fh,'./',name,0)
