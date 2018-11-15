@@ -24,7 +24,7 @@ v0=1;
 V=v0+.333*[1;-1]*dV +[.01;-.01];
 V=[.67*[ones(1,100)*1.015;ones(1,100)*.985] V];
 ph=subplot(5,1,1);
-set(ph,'Position',[leftMargTwoCol+0*btwMargTwoCol .78 2*colWidthTwoCol+1.5*btwMargTwoCol .2],'FontSize',16,'ColorOrder',legColors)
+set(ph,'Position',[leftMargTwoCol+0*btwMargTwoCol .8 2*colWidthTwoCol+1.5*btwMargTwoCol .18],'FontSize',16,'ColorOrder',legColors)
 ll=plot([1:size(V,2)]-50,V','LineWidth',4);
 ll(1).Color=legColors(1,:);
 ll(2).Color=legColors(2,:);
@@ -92,15 +92,22 @@ scale=.3;
 set(p1d,'FontSize',16);
 for i=1:length(p1d)
     p1d(i).Position=p1d(i).Position.*[0 scale 0 scale]+[.8*leftMargTwoCol .1-(k==1)*.35+.32 1.1*colWidthTwoCol 0];
+ll=findobj(p1d(i),'Type','text');
+set(ll,'FontSize',12)
+for kk=1:length(ll)
+    ll(kk).Position(1)=ll(kk).Position(1)-.2;
+end
 end
 axes(p1d(1))
 ax=gca;
 %ax.YAxisLocation='right';
 grid on
-ll=findobj(gca,'Type','text');
+ll=findobj(ax,'Type','text');
 set(ll,'FontSize',16)
 if k==2
-    ax.Title.String='SINGLE MUSCLE';
+    ax.Title.String='SINGLE MUSCLE ACTIVITY';
+    ll=findobj(ax,'Type','Line');
+    legend(ll(end-1:end),{'Adaptation','Baseline'},'Location','NorthEast');
 end
 aux=diff(ax.YLim);
 ax.YLabel.String={'EMG (a.u.)'};
@@ -125,7 +132,7 @@ set(cc,'TickLabels',{'0%','50%','100%'});
 set(gcf,'Color',ones(1,3))
 cc.Limits=[0 1];
 cc.Position=cc.Position+[.08 -.085 -.02 0];
-title('BASELINE ACTIVITY')
+title('ALL BASELINE ACTIVITY')
 ax=gca;
 %ax.Title.Color=condColors(1,:);
 for i=1:length(ax.YTickLabel)
@@ -141,7 +148,7 @@ for i=1:length(ax.YTickLabel)
 end
 text(-.3, 31,'C','FontSize',24,'FontWeight','bold','Clipping','off')
 text(-1.8, 31,'B','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.8, 43,'A','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-1.8, 43.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
 
 
 tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
@@ -161,7 +168,5 @@ close(f1c)
 
 
 %% Save fig
-fh.PaperPosition
-resizeFigure(fh,1/2.5)
-fh.PaperPosition
-saveFig(fh,'./',name,0)
+%resizeFigure(fh,1/2.5)
+%saveFig(fh,'./',name,0)

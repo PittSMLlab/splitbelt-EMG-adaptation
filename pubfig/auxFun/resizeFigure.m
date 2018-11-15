@@ -7,10 +7,10 @@ for i=1:length(tt)
     tt(i).Units='Normalized'; %This ensures axes get re-scaled with fig
 end
 lg=findobj(figHandle,'Type','Legend');
-for i=1:length(lg)
-    lg(i).Units='Pixels'; %This PREVENTS legends from being auto-rescaled
-    %because Matlab's rescaling of legends is weird. Doing by hand.
-end
+set(lg,'Units','normalized');
+%This PREVENTS legends from being auto-rescaled
+%because Matlab's rescaling of legends is weird. Doing by hand.
+
 
 %Rounding fun:
 if factor<1
@@ -26,7 +26,6 @@ set(figHandle,'InnerPosition',[ip(1:2) ip(3:4)*factor]);
 %Re-size axes fonts:
 tt=findobj(figHandle,'Type','Axes');
 for i=1:length(tt)
-    tt(i).Units='normalized';
     tt(i).FontSize=roundFun(tt(i).FontSize*factor);
 end
 
@@ -45,7 +44,7 @@ end
 %Re-size legend boxes and fonts:
 for i=1:length(lg)
     lg(i).FontSize=roundFun(lg(i).FontSize*factor);
-    lg(i).Position=lg(i).Position*factor;
+   % lg(i).Position=lg(i).Position*factor;
 end
 
 %Re-size color fonts:

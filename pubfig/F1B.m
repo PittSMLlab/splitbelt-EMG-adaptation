@@ -1,13 +1,12 @@
 %%Traces from example subject to show how data is summarized
-
+clearvars
 try
    % Load if existing:
     load C014sampleEMG.mat 
 catch
     % Load data
-    subj='C0014BAD';
+    subj='C0014FIXED';
     load(['../data/HPF30/' subj '.mat']);
-    figuresColorMap
     % Align it
     conds={'TM Base','Adap'};
     events={'RHS','LTO','LHS','RTO'};
@@ -18,12 +17,12 @@ catch
     RAdap=expData.getAlignedField('procEMGData',conds(2),events,alignmentLengths).getPartialDataAsATS({['R' muscle]});
     LAdap=expData.getAlignedField('procEMGData',conds(2),events([3,4,1,2]),alignmentLengths).getPartialDataAsATS({['L' muscle]});
     % Normalize:
-    normM=max(median(RBase.Data,3));
-    normm=min(median(RBase.Data,3));
+    normM=max(median(RBase.Data(:,:,end-40:end),3));
+    normm=min(median(RBase.Data(:,:,end-40:end),3));
     RBase.Data=(RBase.Data-normm)/(normM-normm);
     RAdap.Data=(RAdap.Data-normm)/(normM-normm);
-    normM=max(median(LBase.Data,3));
-    normm=min(median(LBase.Data,3));
+    normM=max(median(LBase.Data(:,:,end-40:end),3));
+    normm=min(median(LBase.Data(:,:,end-40:end),3));
     LBase.Data=(LBase.Data-normm)/(normM-normm);
     LAdap.Data=(LAdap.Data-normm)/(normM-normm);
 
@@ -33,18 +32,19 @@ catch
 end
 
 %% Create plots
+myFiguresColorMap
 for l=1:2
     switch l
         case 1
-            B=RBase;
-            A=RAdap;
+            B=RBase.getPartialStridesAsATS(110:150);
+            A=RAdap.getPartialStridesAsATS(2:16);
             tit=['F' muscle];
         case 2
-            B=LBase;
-            A=LAdap;
+            B=LBase.getPartialStridesAsATS(110:150);
+            A=LAdap.getPartialStridesAsATS(2:16);
             tit=['S' muscle];
     end
-fh=figure('Units','Normalized','Position',[0 0 .45 .2]);
+fh=figure('Units','Normalized','Position',[0 .5*(l-1) .45 .2]);
 ph=[];
 ph1=[];
 prc=[16,84];
@@ -62,7 +62,7 @@ fs=12; %FontSize
 
     B.plot(fh,ph,condColors(1,:),[],0,[-49:0],prc,true);
     A.plot(fh,ph,condColors(2,:),[],0,[-49:0],prc,true);
-    axis([0 95 -.2 2])
+    axis([0 95 -.05 1.9])
     ylabel('')
     ylabel(tit)
     set(ph,'YTick',[0,1],'YTickLabel',{'0%','100%'})
@@ -75,23 +75,27 @@ fs=12; %FontSize
         drawnow
         pause(1)
         da=randn(1,12);
-        gamma=.5;
-        ex1=condColors(j,:);
-        map=niceMap(ex1,gamma);
+
         switch j
             case 1
             aux=nanmedian(B.Data,3)';
             tt='Baseline';
-            ca=[0 1.2];
+            ca=[0 1.4];
+                    gamma=.5;
+                ex1=condColors(1,:);
+                map1=niceMap(ex1,gamma);
             case 2
-            aux=nanmedian(A.Data,3)';
-            tt='Late Adapt.';
-            ca=[0 1.2];
+                aux=nanmedian(A.Data,3)';
+                tt='Early Adapt.';
+                ca=[0 1.4];
+                    gamma=.5;
+                ex1=condColors(1,:);
+                map1=niceMap(ex1,gamma);
             case 3
-            aux=(nanmedian(A.Data,3)'-nanmedian(B.Data,3)');
-            ca=[-.8 .8];
-            figuresColorMap;
-            tt='Difference';
+                aux=(nanmedian(A.Data,3)'-nanmedian(B.Data,3)');
+                ca=[-.9 .9];
+                tt='Difference';
+                map1=map;
         end
         clear aux2
         for k=1:length(xt)-1
@@ -99,11 +103,11 @@ fs=12; %FontSize
         end
         I=image(aux2);
         I.CDataMapping='scaled';
-        I.Parent.Colormap=flipud(map);
+        I.Parent.Colormap=flipud(map1);
         drawnow
         rectangle('Position',[.5 .5 12 1],'EdgeColor','k')
         set(ph1(j),'XTickLabel','','YTickLabel','','XTick','','YTick','','CLim',ca)
-        text(-1.2-.1*length(tt),1,tt,'Clipping','off','FontSize',8)
+        text(-1.3-.11*length(tt),1,tt,'Clipping','off','FontSize',10)
     end
     drawnow
     %
@@ -130,7 +134,7 @@ fs=12; %FontSize
     plot([4.1 5.9]*2*phaseSize,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
     lg=legend(ll(end:-1:end-1),{'Baseline','Adaptation'});
     lg.Position(1:2)=lg.Position(1:2)+[-.03 -.1];
-    set(fh,'Position',[0 0 .45 .2])
+    set(fh,'Position',[0 .5*(l-1) .45 .2])
 
     saveFig(fh,'./',['Fig1B_' num2str(l)],1)
 end
