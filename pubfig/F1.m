@@ -11,7 +11,7 @@ clear all
 addpath(genpath('./auxFun/'));
 figSize
 name='Fig1';
-fh=figure('Name',name,'Units',figUnits,'InnerPosition',figPosTwoCols,'PaperUnits',paperUnits,'PaperPosition',paperPositionTwoCols,'PaperSize',paperPositionTwoCols(3:4));
+fh=figure('Name',name,'Units',figUnits,'InnerPosition',figPosThreeCols,'PaperUnits',paperUnits,'PaperPosition',paperPositionThreeCols,'PaperSize',paperPositionThreeCols(3:4));
 fh.OuterPosition(4)=fh.OuterPosition(4)*1.1; %taller
 myFiguresColorMap
 %% Panel A: protocol
@@ -24,12 +24,12 @@ v0=1;
 V=v0+.333*[1;-1]*dV +[.01;-.01];
 V=[.67*[ones(1,100)*1.015;ones(1,100)*.985] V];
 ph=subplot(5,1,1);
-set(ph,'Position',[leftMargTwoCol+0*btwMargTwoCol .8 2*colWidthTwoCol+1.5*btwMargTwoCol .18],'FontSize',16,'ColorOrder',legColors)
+set(ph,'Position',[leftMargThreeCol+0*btwMargThreeCol .8 3*colWidthThreeCol+2.5*btwMargThreeCol .18],'FontSize',16,'ColorOrder',legColors)
 ll=plot([1:size(V,2)]-50,V','LineWidth',4);
 ll(1).Color=legColors(1,:);
 ll(2).Color=legColors(2,:);
-xlabel('STRIDE CYCLES')
-ylabel({'BELT'; 'SPEED'})
+xlabel('Stride cycles')
+ylabel({'Belt'; 'speed'})
 ph.XLabel.FontWeight='bold';
 ph.YTickLabel={'-33%','Mid','+33%'};
 ph.YTick=[.667 1 1.333]*v0;
@@ -87,11 +87,10 @@ for k=1:2
 for i=1:length(p1d)
     p1d(i).Colormap=ph(i).Colormap;
 end
-figuresColorMap
 scale=.3;
 set(p1d,'FontSize',16);
 for i=1:length(p1d)
-    p1d(i).Position=p1d(i).Position.*[0 scale 0 scale]+[.8*leftMargTwoCol .1-(k==1)*.35+.32 1.1*colWidthTwoCol 0];
+    p1d(i).Position=p1d(i).Position.*[0 scale 0 scale]+[leftMargThreeCol+colWidthThreeCol+1.15*btwMargThreeCol .1-(k==1)*.35+.32 1.1*colWidthThreeCol 0];
 ll=findobj(p1d(i),'Type','text');
 set(ll,'FontSize',12)
 for kk=1:length(ll)
@@ -111,27 +110,26 @@ if k==2
 end
 aux=diff(ax.YLim);
 ax.YLabel.String={'EMG (a.u.)'};
+ax.YLabel.String='';
 ax.YLabel.FontWeight='bold';
 ax.YLabel.Color=legColors(k,:);
 
 end
 
-%% Add Panel D: checkerboard
+%% Add Panel C: baseline checkerboard
 f1c=open('./fig/Fig1D.fig');
 ph=findobj(f1c,'Type','Axes');
 p1c=copyobj(ph,fh);
 axes(p1c)
-figuresColorMap
-%map=repmat(mean(map,2),1,3);
 set(p1c,'Colormap',flipud(niceMap(condColors(1,:))),'Clim',[0 1])
-p1c.Position=p1c.Position.*[0 1 0 1] + [leftMargTwoCol+colWidthTwoCol+btwMargTwoCol -.1 colWidthTwoCol -.1];
+p1c.Position=p1c.Position.*[0 1 0 1] + [leftMargThreeCol+0*colWidthThreeCol+0*btwMargThreeCol -.1 colWidthThreeCol -.1];
 
 cc=colorbar('southoutside');
 set(cc,'Ticks',[0 .5 1],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'0%','50%','100%'});
 set(gcf,'Color',ones(1,3))
 cc.Limits=[0 1];
-cc.Position=cc.Position+[.08 -.085 -.02 0];
+cc.Position=cc.Position+[.05 -.085 -.02 0];
 title('ALL BASELINE ACTIVITY')
 ax=gca;
 %ax.Title.Color=condColors(1,:);
@@ -146,11 +144,11 @@ for i=1:length(ax.YTickLabel)
     ax.YTickLabel{i}=regexprep(ax.YTickLabel{i},'\{.*\}',['\{' aux(1:end-1) '\}']);
     ax.YAxis.Label.FontSize=8;
 end
-text(-.3, 31,'C','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.8, 31,'B','FontSize',24,'FontWeight','bold','Clipping','off')
-text(-1.8, 43.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-.3, 31,'B','FontSize',24,'FontWeight','bold','Clipping','off')
+%text(-1.8, 31,'B','FontSize',24,'FontWeight','bold','Clipping','off')
+text(-.3, 43.5,'A','FontSize',24,'FontWeight','bold','Clipping','off')
 
-
+p1c.YAxis.FontSize=12;
 tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
 tt.String='NON-DOMINANT';
 tt.Position=tt.Position+[0 0 0];
@@ -161,12 +159,58 @@ tt.String='DOMINANT';
 tt.Position=tt.Position+[0 2 0];
 tt.FontWeight='bold';
 tt.Color=legColors(1,:);
-p1c.YAxis.FontSize=12;
+
 ll=findobj(gca,'Type','Line','Color',ax.ColorOrder(1,:));
 set(ll,'Color',legColors(1,:));
 close(f1c)
 
+%% Panel D:
+fA=openfig('./fig/Fig2A.fig');
+axA=findobj(fA,'Type','Axes');
+Clim=.5;
+myFiguresColorMap
+p1c=copyobj(axA,fh);
+set(p1c,'Colormap',flipud(map),'Clim',.5*[-1 1])
+p1c.Position=p1c.Position.*[0 1 0 1] + [leftMargThreeCol+2*colWidthThreeCol+2.25*btwMargThreeCol -.1 colWidthThreeCol -.1];
+axes(p1c)
+cc=colorbar('southoutside');
+set(cc,'Ticks',[-.5 0 .5],'FontSize',16,'FontWeight','bold');
+set(cc,'TickLabels',{'-50%','0%','+50%'});
+set(gcf,'Color',ones(1,3))
+cc.Limits=.5*[-1 1];
+cc.Position=cc.Position+[.05 -.085 -.02 0];
+ax=gca;
+%ax.Title.Color=condColors(1,:);
+for i=1:length(ax.YTickLabel)
+    if i<16
+        aux=strcat(num2str(legColors(1,:)'),',')';       
+    else
+        aux=strcat(num2str(legColors(2,:)'),',')';     
+        aux=aux(2:end);
+    end
+    ax.YTickLabel{i}=regexprep(ax.YTickLabel{i},'\{.*\}',['\{' aux(1:end-1) '\}']);
+    ax.YAxis.Label.FontSize=8;
+end
+p1c.YAxis.FontSize=12;
+title({'\Delta EMG_{up}'; '( = early Adapt. - Baseline)'})
+tt=findobj(gca,'Type','Text','String','SLOW/NON-DOM');
+tt.String='NON-DOMINANT';
+tt.Position=tt.Position+[0 0 0];
+tt.FontWeight='bold';
+tt.Color=legColors(2,:);
+tt=findobj(gca,'Type','Text','String','FAST/DOMINANT');
+tt.String='DOMINANT';
+tt.Position=tt.Position+[0 2 0];
+tt.FontWeight='bold';
+tt.Color=legColors(1,:);
 
+ll=findobj(gca,'Type','Line');
+delete(ll(1:4))
+ll=findobj(gca,'Type','Line','Color',ax.ColorOrder(1,:));
+set(ll,'Color',legColors(1,:));
+
+legend off
+pl=plot3([-.1 1.2],[15 15],[6 6],'k','LineWidth',1,'Clipping','off');
 %% Save fig
 %resizeFigure(fh,1/2.5)
-%saveFig(fh,'./',name,0)
+saveFig(fh,'./',name,0)

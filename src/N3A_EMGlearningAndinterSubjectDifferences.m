@@ -14,7 +14,7 @@ subjIdx=2:16; %Excluding C01
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
 write=true;
-write=false;
+%write=false;
 %% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
@@ -313,7 +313,7 @@ logFile=['../intfig/interSubjectRegressions_' groupName '_' date '_' num2str(rou
 if write
 diary(logFile)
 end
-rob='on'; %These models CAN be fit robustly
+rob='off'; %These models CAN be fit robustly
 display('----------------------\beta_M VS. AGE and SLA---------------------')
 tt2=table(age(subjIdx)', SLA_eP(subjIdx),betaM(subjIdx),betaS(subjIdx),betaFF(subjIdx),norm_eP(subjIdx),norm_S2T(subjIdx),r2(subjIdx)','VariableNames',{'age','SLA_eP','beta_M','beta_S','beta_FF','norm_eP','norm_S2T','r2'}); %Taking SLA in eP minus lA makes SLA coefficients much less predictive (which is even better for making our point!)
 
@@ -437,7 +437,7 @@ end
 
 %% Do plots for model comparison
 fh=figure('Units','Normalized','OuterPosition',[0 .2 .65 .5*16/10]);
-figuresColorMap
+myFiguresColorMap
 modelNames={'2a','3b','2c'};
 idxY=age(subjIdx)<58; %Youngest 6, if we exclude C01
 idxO=age(subjIdx)>63; %Oldest 6
@@ -506,7 +506,7 @@ end
 
 %% Do plots alt
 fh=figure('Units','Normalized','Position',[0 0 .5 .4])
-figuresColorMap
+myFiguresColorMap
 modelNames={'2a','3b','2c'};
 idxY=age(subjIdx)<58; %Youngest 6, if we exclude C01
 idxO=age(subjIdx)>63; %Oldest 6
@@ -636,8 +636,9 @@ for i=1:2
         for k=1:min(2,length(names))
             [rs,ps]=corr(x(subjIdx)',data2(subjIdx,k),'Type','Spearman');
             mdl=fitlm(x(subjIdx)',data2(subjIdx,k),'RobustOpts',rob);
-             %[rs,ps]=corr(x(subjIdx)',data2(subjIdx,k),'Type','Pearson');
-            ss(k)=scatter(x(subjIdx),data2(subjIdx,k),50,ccc(k,:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',[names{k} ' r=' num2str(rs,2) ', p= ' num2str(ps,2)]);% ', robR^2=' num2str(mdl.Rsquared.Ordinary,2) ', robP=' num2str(mdl.Coefficients.pValue(2),2)]);
+             [rs1,ps1]=corr(x(subjIdx)',data2(subjIdx,k),'Type','Pearson');
+             dname=[names{k} ' \rho =' num2str(rs,2) ', p= ' num2str(ps,2) ];%', R^2=' num2str(rs1^2,2) ', p=' num2str(ps1,2)];
+            ss(k)=scatter(x(subjIdx),data2(subjIdx,k),50,ccc(k,:),'MarkerFaceColor',scf{k},'MarkerEdgeColor','none','MarkerFaceAlpha',ai(k),'DisplayName',dname);% ', robR^2=' num2str(mdl.Rsquared.Ordinary,2) ', robP=' num2str(mdl.Coefficients.pValue(2),2)]);
             pp=polyfit1PCA(x(subjIdx),data2(subjIdx,k),1);
             pp=polyfit(x(subjIdx)',data2(subjIdx,k),1);
             if ps<.05

@@ -86,7 +86,7 @@ fs=12; %FontSize
                 map1=niceMap(ex1,gamma);
             case 2
                 aux=nanmedian(A.Data,3)';
-                tt='Early Adapt.';
+                tt='early Adapt.';
                 ca=[0 1.4];
                     gamma=.5;
                 ex1=condColors(1,:);
@@ -94,7 +94,7 @@ fs=12; %FontSize
             case 3
                 aux=(nanmedian(A.Data,3)'-nanmedian(B.Data,3)');
                 ca=[-.9 .9];
-                tt='Difference';
+                tt='difference';
                 map1=map;
         end
         clear aux2
@@ -132,7 +132,7 @@ fs=12; %FontSize
     plot([1.1 2.9]*2*phaseSize,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
     plot([3.1 3.9]*2*phaseSize,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
     plot([4.1 5.9]*2*phaseSize,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-    lg=legend(ll(end:-1:end-1),{'Baseline','Adaptation'});
+    lg=legend(ll(end:-1:end-1),{'Baseline','early Adapt.'});
     lg.Position(1:2)=lg.Position(1:2)+[-.03 -.1];
     set(fh,'Position',[0 .5*(l-1) .45 .2])
 

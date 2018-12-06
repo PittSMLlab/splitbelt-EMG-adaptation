@@ -62,7 +62,7 @@ for i=1:length(names)
             eL=1;
             s=15;
             c='Adaptation';
-            sN='eA';
+            sN='e15A';
         case 'late A'
             eF=1;
             eL=1;
@@ -86,7 +86,7 @@ for i=1:length(names)
             eL=1;
             s=15;
             c='Washout';
-            sN='eP';
+            sN='e15P';
         case 'late P'
             eF=1;
             eL=1;

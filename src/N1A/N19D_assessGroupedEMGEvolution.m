@@ -117,9 +117,9 @@ axes(ph(1,end))
 colorbar
 set(ph(1,end),'Position',pos);
 %% Do stats.plotCheckerboard
-%minEffectSize=0;%At least 5% increase over max baseline activity
+%minEffectSize=0;
 minEffectSize2=0.1;
-fdr=.1;
+fdr=.05;
 for k=1:length(groups)
     for i=1:length(ep)+1
         if i>1
@@ -139,7 +139,11 @@ for k=1:length(groups)
         end
         %p=2*min(pR,pL); %Two-tailed test for effect larger than MES: taking twice the minimum of the two p-values
         p=p2;
-        [h,pTh]=BenjaminiHochberg(p,fdr); %Conservative mult-comparisons: Benjamini & Hochberg approach
+        %[h,pTh,~,pAdj]=BenjaminiHochberg(p,fdr); %Conservative mult-comparisons: Benjamini & Hochberg approach
+        [h,pTh,~,pAdj]=BenjaminiHochberg(p,fdr,true); %Two-stage Benjamini, Krieger, Yekuteli approach
+        %Alternative, use Matlab's built-in (single-pass):
+        %[pAdj]=mafdr(p,'BHFDR',true); %Matlab's built-in
+        %h=pAdj<fdr;
         h(abs(median(dd'))<minEffectSize2)=0; %Conservative approach to Bonferroni: not reporting small effects
         %Add to plot:
         subplot(ph(k,i))
@@ -181,4 +185,4 @@ end
 if plotSym
     saveName=[saveName '_sym'];
 end
-saveFig(fh,dirStr,[saveName],0);
+%saveFig(fh,dirStr,[saveName],0);

@@ -1,7 +1,7 @@
 function resizeFigure(figHandle, factor)
 
 %Some pre-amble:
-set(figHandle,'Units','pixels')
+set(figHandle,'Units','pixels','PaperPosition',get(figHandle,'PaperPosition')*factor)
 tt=findobj(figHandle,'Type','Axes');
 for i=1:length(tt)
     tt(i).Units='Normalized'; %This ensures axes get re-scaled with fig
@@ -38,7 +38,7 @@ end
 %Re-size line widths:
 tt=findobj(figHandle,'Type','Line');
 for i=1:length(tt)
-    set(tt(i),'LineWidth',roundFun(get(tt(i),'LineWidth')*factor))
+    set(tt(i),'LineWidth',roundFun(get(tt(i),'LineWidth')*factor),'MarkerSize',roundFun(get(tt(i),'MarkerSize')*factor))
 end
 
 %Re-size legend boxes and fonts:

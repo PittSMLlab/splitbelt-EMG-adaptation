@@ -1,0 +1,81 @@
+----------------------THE EFFECTS OF AGE ON RESPONSE SIZES--------------------------
+
+S2TvsAge = 
+
+
+Linear regression model:
+    norm_S2T = 1 + age
+
+Estimated Coefficients:
+                   Estimate       SE        tStat       pValue  
+                   ________    ________    _______    __________
+
+    (Intercept)      23.639      4.5012     5.2516    0.00015643
+    age            -0.24757    0.071774    -3.4493     0.0043139
+
+
+Number of observations: 15, Error degrees of freedom: 13
+Root Mean Squared Error: 2.47
+R-squared: 0.478,  Adjusted R-Squared 0.438
+F-statistic vs. constant model: 11.9, p-value = 0.00431
+Spearman correlation: r=-0.70714, p=0.004316
+
+T2SvsAge = 
+
+
+Linear regression model:
+    norm_T2S = 1 + age
+
+Estimated Coefficients:
+                   Estimate      SE        tStat      pValue  
+                   ________    _______    _______    _________
+
+    (Intercept)      24.596      6.977     3.5254    0.0037283
+    age            -0.24452    0.11125    -2.1979     0.046675
+
+
+Number of observations: 15, Error degrees of freedom: 13
+Root Mean Squared Error: 3.83
+R-squared: 0.271,  Adjusted R-Squared 0.215
+F-statistic vs. constant model: 4.83, p-value = 0.0467
+Spearman correlation: r=-0.61786, p=0.01631
+
+AEvsAge = 
+
+
+Linear regression model:
+    norm_eP = 1 + age
+
+Estimated Coefficients:
+                   Estimate       SE       tStat       pValue  
+                   ________    ________    ______    __________
+
+    (Intercept)       25.59      4.5373    5.6398    8.0666e-05
+    age            -0.28498    0.072349    -3.939     0.0016964
+
+
+Number of observations: 15, Error degrees of freedom: 13
+Root Mean Squared Error: 2.49
+R-squared: 0.544,  Adjusted R-Squared 0.509
+F-statistic vs. constant model: 15.5, p-value = 0.0017
+Spearman correlation: r=-0.83929, p=0.00010431
+
+SLAvsAge = 
+
+
+Linear regression model:
+    SLA_eP = 1 + age
+
+Estimated Coefficients:
+                    Estimate        SE         tStat      pValue 
+                   __________    _________    _______    ________
+
+    (Intercept)       0.29609      0.14376     2.0595    0.060053
+    age            -0.0027015    0.0022924    -1.1784     0.25974
+
+
+Number of observations: 15, Error degrees of freedom: 13
+Root Mean Squared Error: 0.079
+R-squared: 0.0965,  Adjusted R-Squared 0.027
+F-statistic vs. constant model: 1.39, p-value = 0.26
+Spearman correlation: r=-0.36429, p=0.18239

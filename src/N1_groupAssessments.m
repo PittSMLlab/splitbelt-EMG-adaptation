@@ -28,11 +28,11 @@ suffix='Norm2';
 %%
   for matchSpeedFlag=0%:1 %Unimplemented
      for subCountFlag=0%0:1 %Unimplemented
-         for useLateAdapBase=0:1
+         for useLateAdapBase=0%:1
              for removeP07Flag=0%:1
-             for plotSym=0%:1 %Unimplemented
-                run ./N1A/N19D_assessGroupedEMGEvolution.m
-             end
+                 for plotSym=0%:1 %Unimplemented
+                    run ./N1A/N19D_assessGroupedEMGEvolution.m
+                 end
              end
          end
      end
