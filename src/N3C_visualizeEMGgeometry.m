@@ -2,7 +2,7 @@
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
 write=true;
-write=false;
+%write=false;
 %% Define eAT, lAT, etc
 eAT=fftshift(eA,1);
 lAT=fftshift(lA,1);
@@ -82,7 +82,15 @@ if write
 diary(['../intfig/FBmodelingCosines_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
 end
 disp(['Subject list=' num2str(subjIdx)])
+disp('---------------RESULTS FOR EARLY = 5 strides-----------------')
+% Show norms
+disp('Magnitude effects:')
+disp(['S2T over T2S magnitude, median across subj: ' num2str(median(norm_S2T./norm_T2S))])
+a1=median(eP-lA,2);
+a2=median(eA,2);
+disp(['S2T over T2S magnitude on group median data: ' num2str(sqrt(sum(a1.^2)/sum(a2.^2)))])
 % Show cosine results
+
 disp('Group')
 disp(['cos(eP-lA,-eA) = ' num2str((c1g))])
 disp(['cos(eP-lA,eA*) = ' num2str((c2g))])
@@ -133,9 +141,7 @@ c1g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),-median(eA(:,subjIdx),2)));
 c2g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),median(eAT(:,subjIdx),2)));
 c1gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),-median(eA(:,subjIdx),2)));
 c2gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),median(eAT(:,subjIdx),2)));
-if write
-diary(['../intfig/FBmodelingCosines_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
-end
+
 % Show cosine results
 disp('---------------RESULTS FOR EARLY = 15 strides-----------------')
 disp('Group')
@@ -189,9 +195,7 @@ c1g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),-median(eA(:,subjIdx),2)));
 c2g=(cosine(median(eP(:,subjIdx)-lA(:,subjIdx),2),median(eAT(:,subjIdx),2)));
 c1gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),-median(eA(:,subjIdx),2)));
 c2gs=(cosine(median(ePS(:,subjIdx)-lS(:,subjIdx),2),median(eAT(:,subjIdx),2)));
-if write
-diary(['../intfig/FBmodelingCosines_' groupName '_' date '_' num2str(round(1e6*(now-today)))])
-end
+
 % Show cosine results
 disp('---------------RESULTS FOR EARLY = 1 stride-----------------')
 disp('Group')
@@ -237,7 +241,7 @@ if write
 end
 
     %%
-    figure;
+    fh=figure;
     subplot(2,3,1)
     %The 1D model has a straight-forward relation between R^2 and beta^2
     %scatter(r2All1a',learnAll1a(:,1))
@@ -355,4 +359,8 @@ end
     end
     title('Angles')
     legend
+    %Save fig:
+if write
+   saveFig(fh,'../intfig/intersubj/','cosineRegressions')
+end
     

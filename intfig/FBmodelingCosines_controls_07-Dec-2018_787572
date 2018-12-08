@@ -1,0 +1,70 @@
+Subject list=2   3   4   5   6   7   8   9  10  11  12  13  14  15  16
+---------------RESULTS FOR EARLY = 5 strides-----------------
+Magnitude effects:
+S2T over T2S magnitude, median across subj: 0.81627
+S2T over T2S magnitude on group median data: 0.7484
+Group
+cos(eP-lA,-eA) = 0.36088
+cos(eP-lA,eA*) = 0.77825
+cos(ePS-lS,-eA) = 0.91888
+cos(ePS-lS,eA*) = 0.1699
+Indiv
+cos(eP-lA,-eA), mean \pm std: 0.017141 \pm 0.30916; median \pm iqr: 0.1886 \pm 0.59534
+cos(eP-lA,eA*), mean \pm std: 0.52428 \pm 0.12645; median \pm iqr: 0.52151 \pm 0.17499
+cos(ePS-lS,-eA), mean \pm std: 0.64344 \pm 0.14164; median \pm iqr: 0.67103 \pm 0.16568
+cos(ePS-lS,eA*), mean \pm std: 0.024665 \pm 0.20935; median \pm iqr: 0.038773 \pm 0.33573
+Comparison of individual results in SE vs LE
+cos(POST,-eA), paired t-test p=4.8933e-08, \Delta=-0.6263, Cohen's d=-2.7195, signrank p=6.1035e-05
+cos(POST,eA*), paired t-test p=5.1507e-06, \Delta=0.49962, Cohen's d=1.8391, signrank p=6.1035e-05
+15/15 subjects decreased their cos(POST, -eA)
+Median change: -0.53907, mean: -0.6263
+15/15 subjects increased their cos(POST, eA*)
+Median change: 0.55772, mean: 0.49962
+Age vs cos(eP-lA,-eA), r=0.6421, p=0.009854
+Age vs cos(eP-lA,eA*), r=-0.57279, p=0.025628
+Age vs \Delta cos(eP-lA,-eA), r=0.6899, p=0.0044242
+Age vs \Delta cos(eP-lA,eA*), r=-0.55077, p=0.033356
+---------------RESULTS FOR EARLY = 15 strides-----------------
+Group
+cos(eP-lA,-eA) = 0.42683
+cos(eP-lA,eA*) = 0.75307
+cos(ePS-lS,-eA) = 0.90537
+cos(ePS-lS,eA*) = 0.14792
+Indiv
+cos(eP-lA,-eA), mean \pm std: 0.038808 \pm 0.36787; median \pm iqr: 0.19473 \pm 0.57813
+cos(eP-lA,eA*), mean \pm std: 0.53183 \pm 0.15687; median \pm iqr: 0.51652 \pm 0.27738
+cos(ePS-lS,-eA), mean \pm std: 0.64362 \pm 0.15928; median \pm iqr: 0.70145 \pm 0.20617
+cos(ePS-lS,eA*), mean \pm std: 0.034304 \pm 0.1976; median \pm iqr: 0.018464 \pm 0.34447
+Comparison of individual results in SE vs LE
+cos(POST,-eA), paired t-test p=8.8426e-07, \Delta=-0.60481, Cohen's d=-2.1442, signrank p=6.1035e-05
+cos(POST,eA*), paired t-test p=1.0165e-05, \Delta=0.49753, Cohen's d=1.729, signrank p=6.1035e-05
+15/15 subjects decreased their cos(POST, -eA)
+Median change: -0.47078, mean: -0.60481
+15/15 subjects increased their cos(POST, eA*)
+Median change: 0.57701, mean: 0.49753
+Age vs cos(eP-lA,-eA), r=0.68126, p=0.0051668
+Age vs cos(eP-lA,eA*), r=-0.67063, p=0.0062119
+Age vs \Delta cos(eP-lA,-eA), r=0.7133, p=0.0028298
+Age vs \Delta cos(eP-lA,eA*), r=-0.62786, p=0.012207
+---------------RESULTS FOR EARLY = 1 stride-----------------
+Group
+cos(eP-lA,-eA) = 0.21714
+cos(eP-lA,eA*) = 0.676
+cos(ePS-lS,-eA) = 0.84766
+cos(ePS-lS,eA*) = 0.095449
+Indiv
+cos(eP-lA,-eA), mean \pm std: -0.019382 \pm 0.24302; median \pm iqr: -0.086676 \pm 0.39331
+cos(eP-lA,eA*), mean \pm std: 0.3219 \pm 0.26342; median \pm iqr: 0.376 \pm 0.35189
+cos(ePS-lS,-eA), mean \pm std: 0.55392 \pm 0.21114; median \pm iqr: 0.59834 \pm 0.23136
+cos(ePS-lS,eA*), mean \pm std: -0.02387 \pm 0.1619; median \pm iqr: -0.040723 \pm 0.24661
+Comparison of individual results in SE vs LE
+cos(POST,-eA), paired t-test p=3.7815e-06, \Delta=-0.5733, Cohen's d=-1.8904, signrank p=0.00018311
+cos(POST,eA*), paired t-test p=0.00024015, \Delta=0.34577, Cohen's d=1.2618, signrank p=0.00018311
+15/15 subjects decreased their cos(POST, -eA)
+Median change: -0.46724, mean: -0.5733
+14/15 subjects increased their cos(POST, eA*)
+Median change: 0.40861, mean: 0.34577
+Age vs cos(eP-lA,-eA), r=0.11174, p=0.69176
+Age vs cos(eP-lA,eA*), r=-0.32889, p=0.23133
+Age vs \Delta cos(eP-lA,-eA), r=0.073566, p=0.79444
+Age vs \Delta cos(eP-lA,eA*), r=-0.53951, p=0.037925
