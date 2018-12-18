@@ -13,6 +13,11 @@ subjIdx=2:16; %Excluding C01
 %% Get all needed vars
 load(['../data/' groupName 'EMGsummary'])
 load ../data/bioData.mat
+if strcmp(groupName,'controls')
+    vels=velsC;
+else %Patients
+    vels=velsS;
+end
 write=true;
 %write=false;
 %% Define eAT, lAT, etc
@@ -315,7 +320,7 @@ diary(logFile)
 end
 rob='off'; %These models CAN be fit robustly
 display('----------------------\beta_M VS. AGE and SLA---------------------')
-tt2=table(age(subjIdx)', SLA_eP(subjIdx),betaM(subjIdx),betaS(subjIdx),betaFF(subjIdx),norm_eP(subjIdx),norm_S2T(subjIdx),r2(subjIdx)','VariableNames',{'age','SLA_eP','beta_M','beta_S','beta_FF','norm_eP','norm_S2T','r2'}); %Taking SLA in eP minus lA makes SLA coefficients much less predictive (which is even better for making our point!)
+tt2=table(age(subjIdx)', vels(subjIdx)', SLA_eP(subjIdx),betaM(subjIdx),betaS(subjIdx),betaFF(subjIdx),norm_eP(subjIdx),norm_S2T(subjIdx),r2(subjIdx)','VariableNames',{'age','vels','SLA_eP','beta_M','beta_S','beta_FF','norm_eP','norm_S2T','r2'}); %Taking SLA in eP minus lA makes SLA coefficients much less predictive (which is even better for making our point!)
 
 learnVsAge=fitlm(tt2,'beta_M~age','RobustOpts',rob)
 [r,p]=corr(betaM(subjIdx),age(subjIdx)','Type','Spearman');
@@ -327,6 +332,18 @@ disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 
 r2VsAge=fitlm(tt2,'r2~age','RobustOpts',rob)
 [r,p]=corr(r2(subjIdx)',age(subjIdx)','Type','Spearman');
+disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
+
+learnVsVel=fitlm(tt2,'beta_M~vels','RobustOpts',rob)
+[r,p]=corr(betaM(subjIdx),vels(subjIdx)','Type','Spearman');
+disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
+
+staticVsVel=fitlm(tt2,'beta_S~vels','RobustOpts',rob)
+[r,p]=corr(betaS(subjIdx),vels(subjIdx)','Type','Spearman');
+disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
+
+r2VsVel=fitlm(tt2,'r2~vels','RobustOpts',rob)
+[r,p]=corr(r2(subjIdx)',vels(subjIdx)','Type','Spearman');
 disp(['Spearman''s r:' num2str(r) ', p=' num2str(p)])
 
 learnVsSLA=fitlm(tt2,'beta_M~SLA_eP','RobustOpts',rob) 
@@ -359,33 +376,35 @@ diary(logFile)
 end
 display('----------------------THE EFFECTS OF AGE ON RESPONSE SIZES--------------------------')
 %Making sure that age is not a confound for sth. else: 
-ttA=table(age(subjIdx)',norm_S2T(subjIdx),r2All2c(subjIdx)',norm_T2S(subjIdx),norm_lA(subjIdx),betaFF(subjIdx),SLA_eP(subjIdx),norm_eP(subjIdx),'VariableNames',{'age','norm_S2T','res','norm_T2S','norm_lA','beta_FF','SLA_eP','norm_eP'});
+ttA=table(age(subjIdx)',vels(subjIdx)',norm_S2T(subjIdx),r2All2c(subjIdx)',norm_T2S(subjIdx),norm_lA(subjIdx),betaFF(subjIdx),SLA_eP(subjIdx),norm_eP(subjIdx),'VariableNames',{'age','vels','norm_S2T','res','norm_T2S','norm_lA','beta_FF','SLA_eP','norm_eP'});
 
-S2TvsAge=fitlm(ttA,'norm_S2T~age','RobustOpts',rob)   %Slightly (strongly if we exclude C01) (negatively) correlated: older subjs. show less feedback responses (as expected)
-[rs,ps]=corr(norm_S2T(subjIdx),age(subjIdx)','Type','Spearman');
+for k=1:2
+    switch k
+        case 1
+            x='age';
+        case 2
+            x='vels';
+    end
+    xx=eval(x);
+    for kk=1:4
+        switch kk
+            case 1
+                y='norm_lA';
+            case 2
+                y='norm_T2S';
+            case 3
+                y='norm_S2T';
+            case 4
+                y='norm_eP';
+            case 5
+                y='SLA_eP';
+        end
+        yy=eval(y);
+fitlm(ttA,[y '~' x],'RobustOpts',rob)   
+[rs,ps]=corr(yy(subjIdx),xx(subjIdx)','Type','Spearman');
 disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
-
-T2SvsAge=fitlm(ttA,'norm_T2S~age','RobustOpts',rob)   %NOT correlated -> Older subjects are not altogether weaker
-[rs,ps]=corr(norm_T2S(subjIdx),age(subjIdx)','Type','Spearman');
-disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
-
-AEvsAge=fitlm(ttA,'norm_eP~age','RobustOpts',rob)
-[rs,ps]=corr(norm_eP(subjIdx),age(subjIdx)','Type','Spearman');
-disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
-
-%AEvsAge_SLA=fitlm(ttA,'norm_eP~age+SLA_eP','RobustOpts',rob)
-%resVsAge=fitlm(ttA,'res~age')           %Sanity check: residuals not correlated with age! this is proof that reduced regressors are NOT due to older subjects doing something different, but doing just LESS feedback
-%FFvsAge=fitlm(ttA,'norm_lA~age','RobustOpts',rob)     %Learned response, also not correlated with age: they don't seem to be reaching a different SS
-%Potential confound: they may have responses more aligned with eA, which is
-%correlated to lA. Indeed on the regression with eA,eA*, the eA regressor
-%is highly correlated with age. Is it more carryover and less feedback or a different feedback
-%response? Or both? How to tell?
-%FF3vsAge=fitlm(age(idx),FFasym(idx))    %Symmetry of learned response NOT correlated with age either
-%FF2vsAge=fitlm(ttA,'beta_FF~age');  %Slight (pos) (strong if C01 excluded) correlation: they may be carrying over more (.01/year of age) 
-
-SLAvsAge=fitlm(ttA,'SLA_eP~age')
-[rs,ps]=corr(SLA_eP(subjIdx),age(subjIdx)','Type','Spearman');
-disp(['Spearman correlation: r=' num2str(rs) ', p=' num2str(ps)])
+    end
+end
 
 if write
 diary off
