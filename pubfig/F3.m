@@ -1,18 +1,20 @@
 %% 
 %This script generates the checkerboards with late Adaptation (steady-state) and early Post-adaptation (aftereffects)
 addpath(genpath('./auxFun/'))
+figSize
 %% Get panels from existing figure and make pretty:
 saveDir='./';
 name='allChangesEMG.fig';
 desiredPlotDescription={'Slow';'late A'; 'early P[5]'};
-plotTitles={'Slow Tied','Late Adaptation (LateA)','       Early Post-Adaptation (EarlyP)'};
-plotTitles={{'SLOW TIED';''},{'LATE ADAPTATION'; '(LateA)'},{'    EARLY POST-ADAPTATION'; ' (EarlyP)'}};
+%plotTitles={'Slow Tied','Late Adaptation (LateA)','       Early Post-Adaptation (EarlyP)'};
+plotTitles={{'SLOW (TIED)'},{'LATE LONG EXPOSURE'},{' EARLY WASHOUT'}};
 saveName='Fig3B';
 lineFlag=0;
 makeN19DPrettyAgain_execute
 fB=gcf;
 
 %% Add some details:
+figPos=figPosThreeCols;
 threePanelArrange
 %% Add contours 
 s1=findobj(axB(1),'Type','surface'); 
@@ -29,8 +31,6 @@ contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',3,
 axes(axB(2)) 
 contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',3,'Clipping','off') 
 
-%%
-pl=plot3([-1.2 2.25],[15 15],[6 6],'k','LineWidth',1,'Clipping','off');
 %%
 set(findobj(fB,'Type','Axes'),'FontName','Helvetica')
 saveFig(fB,'./','Fig3',1)

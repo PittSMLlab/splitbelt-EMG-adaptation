@@ -26,7 +26,8 @@ map=[bsxfun(@plus,ex1,bsxfun(@times,1-ex1,[0:.01:1]'));bsxfun(@plus,ex2,bsxfun(@
 cLim=[-.6 .6];
 bgColor=.9*ones(1,3); %Default background color
 map=[bgColor; map; bgColor];
-figuresColorMap %This loads an alternative map
+myFiguresColorMap %This loads an alternative map
+ccc=legColors;
 
 %Create new fig:
 newFig=figure('Name',saveName,'Units','Normalized','OuterPosition',[.3 .1 .5 .8],'Color',bgColor,'Renderer','opengl');
@@ -84,7 +85,6 @@ for i=1:Npanels
     newAxes.YAxisLocation='right';
     hold on
     newAxes.XTick=[1 4 7 10]/12;
-    ccc=get(gca,'ColorOrder');
 
     % Find significant points & mark anti-symmetric changes
     ss=findobj(newAxes,'Type','Surface');
@@ -207,12 +207,24 @@ for i=1:Npanels
         aux=cellfun(@(x) x(1:end-1),mLabels,'UniformOutput',false);
         newAxes.YTick=.5:1:length(mLabels);
         newAxes.YTickLabel=cellfun(@(x) x([2,max(3,length(x)-1):length(x)]),aux,'UniformOutput',false);
+        ax=newAxes;
         for j=1:length(newAxes.YTickLabel)
             if j<16
                 newAxes.YTickLabel{j}=['\color[rgb]{0,0.447,0.741} ' newAxes.YTickLabel{j}]; %Matches first default color in Matlab R2018a
             else
                 newAxes.YTickLabel{j}=['\color[rgb]{0.85,0.325,0.098} ' newAxes.YTickLabel{j}]; %Matches first default color in Matlab R2018a
             end
+        end
+        for j=1:length(ax.YTickLabel)
+            if j<16
+                aux=strcat(num2str(legColors(1,:)'),',')';       
+            else
+                aux=strcat(num2str(legColors(2,:)'),',')';     
+                aux=aux(2:end);
+            end
+            %ax.YTickLabel{i}=['\color[rgb]{' aux(1:end-1) '} ' ax.YTickLabel{i}];
+            ax.YTickLabel{j}=regexprep(ax.YTickLabel{j},'\{.*\}',['\{' aux(1:end-1) '\}']);
+            ax.YAxis.Label.FontSize=8;
         end
     end
 end

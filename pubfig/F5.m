@@ -4,7 +4,8 @@ addpath(genpath('./auxFun/'))
 figSize
 %%
 
-f1=figure('Units',figUnits,'OuterPosition',figPosThreeCols);
+f1=figure('Units',figUnits,'OuterPosition',figPosThreeCols,'PaperUnits',paperUnits,'PaperPosition',paperPositionThreeCols,'PaperSize',paperPositionThreeCols(3:4));
+
 ph=findobj(fh,'Type','Axes');
 pa=copyobj(ph([7:10,6]),f1);
 mapI=[1,2,3,1,2]; %Alignment along x-axis
@@ -33,8 +34,11 @@ j=mapJ(k);
                 aa=cell2mat(get(ll2,'MarkerFaceAlpha'));
                 cc=(cc.*aa +(1-aa));
                 if k==4
-                    nn{1}=['\beta_M ' nn{1}(5:end)];
-                nn{2}=['\beta_S ' nn{2}(4:end)];
+                    nn{1}=['\beta_A: ' nn{1}(5:end)];
+                nn{2}=['\beta_E: ' nn{2}(4:end)];
+                elseif k==2
+                    nn{1}=['|| \Delta EMG_{up} || ' nn{1}(24:end)];
+                    nn{2}=['|| \Delta EMG_{P}^{long} ||  ' nn{2}(24:end)];
                 end
                 for ii=1:size(cc,1)
                     nn{ii} = sprintf('\\color[rgb]{%f, %f, %f}%s', cc(ii,:), nn{ii});
@@ -51,17 +55,18 @@ j=mapJ(k);
             case 1 %SLA aftereffects
                 axis([45 80 0 .35])
                 %text(60,.27,nn([1:41,50:end]),'FontSize',13,'FontWeight','bold','FontName',fname)
+                nn=[nn(9:end)];
                 text(60,.27,nn,'FontSize',13,'FontWeight','bold','FontName',fname)
                 set(gca,'YTick',[0:.1:.3])
-                p.YLabel.String={'Step-length';'asymmetry'};
+                p.YLabel.String={'Step-length asymmetry';'(early Wash. - Base.)'};
                 ll2=findobj(gca,'Type','Scatter');
                 ll2.CData=[0 0 0];
                  set(ll2,'MarkerEdgeColor','w');
             case 2 %Feedback
                 axis([45 80 2 14.8])
                 text(54,13,nn,'FontSize',11,'FontWeight','bold','FontName',fname)
-                p.Title.String='Feedback responses';
-                p.YLabel.String='Magnitude (a.u.)';
+                p.Title.String='Corrective responses';
+                p.YLabel.String='||\Delta EMG|| (a.u.)';
                                 ll2=findobj(gca,'Type','Scatter');
                 set(ll2,'MarkerEdgeColor','w');
                 ll2=findobj(gca,'Type','Line');
@@ -69,10 +74,11 @@ j=mapJ(k);
             case 3 %Late adapt
                 axis([45 80 2 9])
                 %text(50,7,nn([1:41,52:end]),'FontSize',13,'FontWeight','bold','FontName',fname)
+                nn=[nn(10:end)];
                 text(50,7,nn,'FontSize',13,'FontWeight','bold','FontName',fname)
-                p.Title.String='Late Adaptation modulation';
+                p.Title.String='Late Long Exp. modulation';
                 set(gca,'YTick',3:4:15)
-                p.YLabel.String='Magnitude (a.u.)';
+                p.YLabel.String={'||\Delta EMG|| (a.u.)';'(late Long Exp. - Base.)'};
                 ll2=findobj(gca,'Type','Scatter');
                  set(ll2,'MarkerEdgeColor','w');
                 ll2.CData=[0 0 0];
@@ -96,10 +102,11 @@ j=mapJ(k);
                 p.Title.String='Regression model';
             case 5 %EMG aftereffects
                 axis([45 80 2 14])
+                nn=[nn(11:end)];
                 %text(59,12,nn([1:41,52:end]),'FontSize',13,'FontWeight','bold','FontName',fname)
                 text(59,12,nn,'FontSize',13,'FontWeight','bold','FontName',fname)
                 set(gca,'YTick',[0:5:15])
-                p.YLabel.String='Magnitude (a.u.)';
+                p.YLabel.String={'||\Delta EMG|| (a.u.)';'(early Wash. - Base.)'};
                 ll2=findobj(gca,'Type','Scatter');
                 ll2.CData=[0 0 0];
                 set(ll2,'MarkerEdgeColor','w');
@@ -116,4 +123,4 @@ j=mapJ(k);
 end
 %%
 set(findobj(f1,'Type','Axes'),'FontName','Helvetica')
-%saveFig(f1,'./','Fig5',0)
+saveFig(f1,'./','Fig5',0)
