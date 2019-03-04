@@ -117,7 +117,7 @@ axes(ph(1,end))
 colorbar
 set(ph(1,end),'Position',pos);
 %% Do stats.plotCheckerboard
-%minEffectSize=0;
+%minEffectSize2=0;
 minEffectSize2=0.1;
 fdr=.05;
 for k=1:length(groups)
@@ -127,24 +127,17 @@ for k=1:length(groups)
         else
             dd=reshape(dataRef{k}(:,:,i,:),size(dataRef{k},1)*size(dataRef{k},2),size(dataRef{k},4));
         end
-        %effects that are significantly larger than the minEffectSize (MES)
-        %[~,pR]=ttest(dd',minEffectSize,'tail','right');
-        %[~,pL]=ttest(dd',-minEffectSize,'tail','left');
-        %p2=nan(size(pL));
         [~,p2]=ttest(dd');
         for j=1:size(dd,1)
-           %[pR(j)]=signrank(dd(j,:),minEffectSize,'tail','right','method','exact');
-           %[pL(j)]=signrank(dd(j,:),-minEffectSize,'tail','left','method','exact');
            [p2(j)]=signrank(dd(j,:),0,'method','exact');
         end
-        %p=2*min(pR,pL); %Two-tailed test for effect larger than MES: taking twice the minimum of the two p-values
         p=p2;
         %[h,pTh,~,pAdj]=BenjaminiHochberg(p,fdr); %Conservative mult-comparisons: Benjamini & Hochberg approach
         [h,pTh,~,pAdj]=BenjaminiHochberg(p,fdr,true); %Two-stage Benjamini, Krieger, Yekuteli approach
         %Alternative, use Matlab's built-in (single-pass):
         %[pAdj]=mafdr(p,'BHFDR',true); %Matlab's built-in
         %h=pAdj<fdr;
-        h(abs(median(dd'))<minEffectSize2)=0; %Conservative approach to Bonferroni: not reporting small effects
+        h(abs(median(dd,2))<minEffectSize2)=0; %not reporting small (meaningless) effects
         %Add to plot:
         subplot(ph(k,i))
         hold on
@@ -185,4 +178,4 @@ end
 if plotSym
     saveName=[saveName '_sym'];
 end
-%saveFig(fh,dirStr,[saveName],0);
+saveFig(fh,dirStr,[saveName],0);
