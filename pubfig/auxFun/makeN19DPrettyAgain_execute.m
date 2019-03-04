@@ -124,7 +124,7 @@ for i=1:Npanels
 
     drawnow
     %Add swing/stance/DS lines & text
-    newAxes.XTickLabel={'DS','STANCE','DS','SWING'};
+    newAxes.XTickLabel={'DS','SINGLE','DS','SWING'};
     plot([.1 1.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
     plot([2.1 5.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
     plot([6.1 7.9]/12,-.3*[1 1],'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')

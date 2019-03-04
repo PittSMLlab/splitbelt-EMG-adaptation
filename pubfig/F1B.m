@@ -136,7 +136,7 @@ fs=12; %FontSize
     lg.Position(1:2)=lg.Position(1:2)+[-.03 -.1];
     set(fh,'Position',[0 .5*(l-1) .45 .2])
 
-    saveFig(fh,'./',['Fig1B_' num2str(l)],1)
+    saveFig2(fh,'./',['Fig1B_' num2str(l)],1)
 end
 %%
 

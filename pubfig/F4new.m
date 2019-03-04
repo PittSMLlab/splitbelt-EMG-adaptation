@@ -15,10 +15,7 @@ fB=gcf;
 
 %% Add some details:
 figPos=figPosThreeCols;
-resizeFigure(fB,.5)
 threePanelArrange
-ph=findobj(gcf,'Type','Axes');
-set(ph, 'TickLength',[0 0]) %Invisible ticks
 %% Add contours 
 s1=findobj(axB(1),'Type','surface'); 
 s2=findobj(axB(2),'Type','surface'); 
@@ -30,11 +27,10 @@ matchedC(end,:)=0;
 matchedC=[zeros(1,size(matchedC,2)+1); zeros(size(matchedC,1),1) matchedC; ]; 
 mC=3*interp2([-1:30],[-1:12]',matchedC',[-1:.1:30],[-1:.1:12]','nearest')'; 
 axes(axB(1)) 
-contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',1,'Clipping','off') 
+contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',3,'Clipping','off') 
 axes(axB(2)) 
-contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',1,'Clipping','off') 
+contour3([-.5:.1:12.5]/12+.05/12,[-1:.1:30]'+.55,mC,2.9*[1 1],'k','LineWidth',3,'Clipping','off') 
 
 %%
-ax=findobj(fB,'Type','Axes');
-set(ax,'FontName','OpenSans','FontWeight','normal');
-saveFig2(fB,'./','Fig3',1)
+set(findobj(fB,'Type','Axes'),'FontName','Helvetica')
+saveFig(fB,'./','Fig3',1)

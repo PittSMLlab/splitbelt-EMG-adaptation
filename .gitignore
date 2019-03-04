@@ -50,3 +50,5 @@ pubfig/auxFun/makeN19DPrettyAgain_execute_bak\.m
 
 ext/@ScaledFigure/
 src/auxData/Colors.mat
+
+*.mat

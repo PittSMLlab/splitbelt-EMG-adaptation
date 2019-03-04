@@ -2,7 +2,7 @@
 saveDir='./';
 name={'allChangesEMG.fig','allChangesEMG.fig','allChangesEMG_lateAdapBase.fig'};
 desiredPlotDescription={'early','A[5]';'early','A[5]';'early','P[5]'};
-plotTitles={'-\Delta EMG_{\uparrow on}','\Delta EMG_{\downarrow on}','    \Delta EMG_{\uparrow off}^{long}'};
+plotTitles={{'PREDICTION (O1)';'−{\Delta}EMG_{on (+)}'},{'PREDICTION (O2)';['{\Delta}EMG_{on (' char(8211) ')}']},{'OBSERVED';'{\Delta}EMG_{off (+)}^{long}'}};
 saveName='Fig4A';
 lineFlag=0;
 makeN19DPrettyAgain_execute
@@ -11,6 +11,13 @@ makeN19DPrettyAgain_execute
 allSS=findobj(gcf,'Type','Surface');
 allSS(3).CData=-allSS(3).CData;
 allSS(2).CData=allSS(2).CData([16:30,1:15],:);
+allLL=findobj(gcf,'Type','Line','Marker','o');
+for i=31:60
+aux=get(allLL(i),'YData');
+set(allLL(i),'YData',get(allLL(i+15),'YData'));
+set(allLL(i+15),'YData',aux);
+end
+%delete(allLL)
 for i=1:length(allSS)
     ss=allSS(i);
 %ss.CData(16,:)=0;
@@ -30,7 +37,10 @@ set(cc,'Ticks',[-.5 -.25 0 .25 .5],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'-50%','-25%','No change','+25%','+50%'});
 set(gcf,'Color',ones(1,3))
 %%
-axB=findobj(gcf,'Type','Axes');
+fB=gcf;
+resizeFigure(gcf,1/2)
 threePanelArrange
+ph=findobj(gcf,'Type','Axes');
+set(ph, 'TickLength',[0 0],'Fontsize',8) %Invisible ticks
 %%
-%saveFig(gcf,saveDir,saveName,0)
+saveFig2(gcf,saveDir,saveName,0)

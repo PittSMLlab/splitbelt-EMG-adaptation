@@ -14,11 +14,12 @@
 % midColHeight=(colHeight-midColMargin)/2;
 
 factor=2.5; %To see largr!
+factor=1;
 figUnits='pixels';
 figPosThreeCols=[1 1  17.4 10]*factor*96/2.54; %96dpi on-screen resolution, to see real size
 figPosTwoCols=[1 1 11.6 10]*factor*96/2.54; %Two-thirds of the width exactly
 paperUnits='centimeters';
-paperPositionThreeCols=[0 0 17.6 10]*factor;
+paperPositionThreeCols=[0 0 17.4 10]*factor;
 paperPositionTwoCols=[0 0 11.6 10]*factor; 
 leftMargThreeCol=.1;
 leftMargTwoCol=leftMargThreeCol*1.5;

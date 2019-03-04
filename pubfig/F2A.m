@@ -62,4 +62,7 @@ plot3([x fliplr(x) x(1)], 15.2+rectHeight, 5*ones(1,5),'LineWidth',3,'Color',ccc
 plot3(.5+[x fliplr(x) x(1)], 0.2+rectHeight, 5*ones(1,5),'LineWidth',3,'Color',ccc(2,:) ); %Same time inteval, contralateral side
 
 %%
-saveFig(gcf,saveDir,saveName,0)
+resizeFigure(gcf,.5)
+figSize
+set(gcf,'Name','','Units',figUnits,'InnerPosition',figPosTwoCols,'PaperUnits',paperUnits,'PaperPosition',paperPositionTwoCols,'PaperSize',paperPositionTwoCols(3:4));
+saveFig2(gcf,saveDir,saveName,0)

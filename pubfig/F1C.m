@@ -55,4 +55,4 @@ text(-7.5,3,'FAST','Color',ccc(1,:),'Rotation',90,'FontSize',20,'FontWeight','bo
 plot(-7*[1 1],3.45+[.5 3.5],'LineWidth',4,'Color',ccc(2,:),'Clipping','off')
 text(-7.5,6.5,'SLOW','Color',ccc(2,:),'Rotation',90,'FontSize',20,'FontWeight','bold')
 %%
-    saveFig(fh,'./',['Fig1C'],1)
+    saveFig2(fh,'./',['Fig1C'],1)

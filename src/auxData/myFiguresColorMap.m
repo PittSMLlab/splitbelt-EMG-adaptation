@@ -9,6 +9,7 @@ cc=[0    0.4470    0.7410
 
 %Transitions: yellow, purple
 colorTransitions=cc(3:4,:);
+colorTransitions(1,:)=[248,153,29]/255;
 
 %Colormap:
 gamma=.5;
