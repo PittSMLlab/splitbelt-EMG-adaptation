@@ -42,8 +42,10 @@ j=mapJ(k);
                 elseif k==2
                     %nn{1}=['||{\Delta}EMG_{{\uparrow}on}||:' nn{1}(24:end)];
                     %nn{2}=['||{\Delta} EMG_{{\uparrow}off}^{long}||:' nn{2}(24:end)];
-                    nn{1}=['on (+):' nn{1}(24:end)];
-                    nn{2}=['off (+) long:' nn{2}(24:end)];
+                    nn{2}=['on (+):' nn{2}(24:end)];
+                    nn{1}=['off (+) long:' nn{1}(24:end)];
+                    %cc(2,:)=cc(1,:);
+                    cc(1,:)=[0 0 0];
                 end
                 for ii=1:size(cc,1)
                     nn{ii} = sprintf('\\color[rgb]{%f, %f, %f}%s', cc(ii,:), nn{ii});
@@ -71,14 +73,18 @@ j=mapJ(k);
                 set(ll2,'MarkerFaceColor','k')
             case 2 %Feedback
                 axis([45 80 2 14.8])
-                text(54,13,nn{1},'FontSize',annotSize,'FontWeight','bold','FontName',fname)
-                text(48,3,nn{2},'FontSize',annotSize,'FontWeight','bold','FontName',fname)
                 p.Title.String='Corrective responses';
                 p.YLabel.String='||{\Delta}EMG|| (a.u.)';
-                                ll2=findobj(gca,'Type','Scatter');
+                ll2=findobj(gca,'Type','Scatter');
                 set(ll2,'MarkerEdgeColor','w');
-                ll2=findobj(gca,'Type','Line');
-                uistack(ll2,'bottom')
+                %ll2(1).MarkerFaceColor=ll2(2).MarkerFaceColor;
+                %ll2(2).MarkerFaceColor=[0 0 0];
+                l2=findobj(gca,'Type','Line');
+                l2(2).Color=ll2(2).MarkerFaceColor;
+                l2(1).Color=ll2(1).MarkerFaceColor;
+                uistack(l2,'bottom')
+                text(54,13,nn{2},'FontSize',annotSize,'FontWeight','bold','FontName',fname)
+                text(47,3,nn{1},'FontSize',annotSize,'FontWeight','bold','FontName',fname)
             case 3 %Late adapt
                 axis([45 80 2 9])
                 %text(50,7,nn([1:41,52:end]),'FontSize',annotSize,'FontWeight','bold','FontName',fname)
