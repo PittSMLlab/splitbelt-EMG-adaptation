@@ -104,11 +104,11 @@ j=mapJ(k);
                 uistack(ll2,'bottom')
                 set(gca,'YTick',[-.4:.4:.8])
                 text(54,.68,nn{1},'FontSize',annotSize,'FontWeight','bold','FontName',fname)
-                text(54,-.3,nn{2},'FontSize',annotSize,'FontWeight','bold','FontName',fname)
+                text(53,-.3,nn{2},'FontSize',annotSize,'FontWeight','bold','FontName',fname)
                  %Add panel letters:
-                text(38,.98,'A','FontWeight','Bold','FontSize',16)
-                text(88,.98,'B','FontWeight','Bold','FontSize',16)
-                text(136,.98,'C','FontWeight','Bold','FontSize',16)
+                text(38,1,'A','FontWeight','Bold','FontSize',16)
+                text(88,1,'B','FontWeight','Bold','FontSize',16)
+                text(136,1,'C','FontWeight','Bold','FontSize',16)
                 text(117,-.9,'E','FontWeight','Bold','FontSize',16)
                 text(51,-.9,'D','FontWeight','Bold','FontSize',16)
                 ax=gca; ax.YLabel.String='Coefficients';
@@ -139,4 +139,5 @@ j=mapJ(k);
 end
 %%
 set(findobj(f1,'Type','Axes'),'FontName',fname)
-saveFig2(f1,'./','Fig5',0)
+%saveFig2(f1,'./','Fig5',0)
+export_fig ./png/Fig5.png -png -c[0 5 0 5] -transparent -r600
