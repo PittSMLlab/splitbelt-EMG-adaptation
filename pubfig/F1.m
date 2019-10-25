@@ -285,4 +285,5 @@ set(ax,'FontName',fName);
 for i=1:length(ax)
     ax(i).Title.FontWeight='normal';
 end
-  saveFig2(fh,'./',name,0)
+%  saveFig2(fh,'./',name,0)
+export_fig ./png/Fig1.png -png -c[0 5 0 5] -transparent -r600
